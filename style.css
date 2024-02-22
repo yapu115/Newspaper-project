@@ -1,6 +1,9 @@
 /* Todo el documento*/
 html{
+    /*
     font-family: 'Times New Roman', Times, serif;
+    */
+    font-family: 'Oswald';
 }
 
 /* Toda la página */
@@ -34,6 +37,22 @@ body {
     padding: 0;
 }
 
+
+/* Cada post individual*/
+.post {
+    width: 500px;
+    margin: 10rem auto 5rem; 
+    transition: box-shadow 0.3s ease;
+    background-color: #fff;
+    border: 5px solid #222;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.post:hover{
+    box-shadow: 0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.3);
+}
+
 .title {
     /*
     */
@@ -58,20 +77,6 @@ body {
     word-spacing: 2px;
 }
 
-/* Cada post individual*/
-.post {
-    width: 500px;
-    margin: 10rem auto 20rem; 
-    transition: box-shadow 0.3s ease;
-    background-color: #fff;
-    border: 5px solid #222;
-    border-radius: 5px;
-    padding: 20px;
-}
-
-.post:hover{
-    box-shadow: 0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.3);
-}
 
 .post-photo {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -88,7 +93,64 @@ body {
     margin: 10px 0;
     padding: 10px 30px; 
     border-top: 5px solid #efefef;
-    text-align: justify;    
+    
+    /*
+    
+    */
+    text-align: justify;
+}
+
+
+.buttons-container {
+    /*
+    
+    */
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.share-button {
+    /*
+    
+    */
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-image: url(img/share_button.png);
+    background-size: cover;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.like-button {
+    /*
+    
+    */
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-image: url(img/like_button.png);
+    background-size: cover;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 15px;
+
+}
+
+.comment-button {
+    /*
+    
+    */
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-image: url(img/comment_button.png);
+    background-size: cover;
+    background-color: transparent;
+    cursor: pointer;
+    margin-left: 15px;
 }
 
 img {

@@ -1,0 +1,55 @@
+/* Todo el documento*/
+html{
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* Toda la página */
+body {
+    margin: 0;
+    background-color: #dfdfdf;
+}
+
+/* La parte de arriba*/
+header {
+    background-color: rgb(200, 10, 20);
+    padding: 3rem 2rem;
+    color: white;
+}
+ /* Todos los posts*/
+.posts {
+    width: 800px;
+    margin: 0 auto;
+}
+
+/* Cada post individual*/
+.post {
+    margin: 10rem 0 20rem; 
+    transition: box-shadow 0.3s ease;
+    background-color: #fff;
+    border: 5px solid #222;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.post:hover{
+    box-shadow: 0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+/* El cuerpo de cada post */
+.body {
+    text-align: justify;    
+    margin: 100px 10rem; 
+    background-color: aqua;
+}
+.title {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}

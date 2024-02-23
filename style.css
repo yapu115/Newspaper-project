@@ -14,18 +14,63 @@ body {
 
 /* La parte de arriba*/
 .page-head {
-    background-color: rgb(200, 10, 20);
-    padding: 3rem 2rem;
+    background-color: #1c4065;
     color: white;
+    text-align: center;
+    
+}
+
+.head-elements{
+    padding: 0 400px;   
 }
 
 .head-title{
-    font-size: 50px;
+    display: inline-block;
+    padding-bottom: 10px;
+    font-family: 'Times New Roman';
+    border-top : 10px double black;
+    border-bottom: 10px double black;
+    font-size: 60px;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-align: center;
+    letter-spacing: 15px;
+    margin-bottom: 10px;
 }
 
+.head-subtitle{
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+
+.navbar {
+    /*
+    
+    */
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.navbar-item {
+       /*
+    
+    */
+    color: white;
+    text-decoration: none;
+    padding: 5px 10px;
+    background-size: cover;
+    background-color: transparent;
+    cursor: pointer;
+    margin-right: 15px;
+
+    margin-left: 50px;
+
+    border-left: 2px solid #026a13;
+    border-right: 2px solid #026a13;
+}
 
 .heading {
     /*
@@ -36,6 +81,7 @@ body {
 .logo-head {
     padding: 0;
 }
+
 
 
 /* Cada post individual*/
@@ -157,3 +203,7 @@ img {
     display: block;
     margin: 0 auto;
 }
+
+
+
+

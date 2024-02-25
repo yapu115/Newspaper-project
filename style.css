@@ -21,13 +21,16 @@ body {
 }
 
 .head-elements{
-    padding: 0 400px;   
+    padding: 0 10rem;
+    /*
+    
+    */
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .head-title{
     display: inline-block;
     padding-bottom: 10px;
-    font-family: 'Times New Roman';
     border-top : 10px double black;
     border-bottom: 10px double black;
     font-size: 60px;
@@ -48,29 +51,36 @@ body {
     /*
     
     */
-    margin-top: 20px;
+    margin-top: 2rem;
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 0.5rem 10rem;
 }
 
 .navbar-item {
        /*
-    
-    */
+       
+       */
     color: white;
+    margin-right: 2rem;
+    margin-left: 2rem;
+    padding: 0.5rem 2rem;
     text-decoration: none;
-    padding: 5px 10px;
     background-size: cover;
     background-color: transparent;
     cursor: pointer;
-    margin-right: 15px;
-
-    margin-left: 50px;
 
     border-left: 2px solid #026a13;
     border-right: 2px solid #026a13;
+
+    transition: transform 0.3s ease;
 }
+
+.navbar-item:hover {
+    transform: scale(1.10);
+}
+
+
 
 .heading {
     /*
@@ -87,7 +97,7 @@ body {
 /* Cada post individual*/
 .post {
     width: 500px;
-    margin: 10rem auto 5rem; 
+    margin: 50px auto 50px; 
     transition: box-shadow 0.3s ease;
     background-color: #fff;
     border: 5px solid #222;
@@ -205,5 +215,37 @@ img {
 }
 
 
+.staff-members-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1rem 5rem;
+}
 
+.staff-member-item {
+    width: calc(30% - 100px); /* Establece el ancho de cada caja (33.33% del contenedor - margen) */
+    border: 5px solid black;
+    margin: 1rem 5px;
+    background-color: #1c4065;
+    /*
+    
+    */
+}
+
+.staff-member-photo{
+    margin-top: 10px;
+    width: 50%;
+    object-fit: cover;
+}
+
+.staff-name {
+    text-align: center;
+    color: #6e797c;
+    font-size: larger;
+    margin: 1.5rem;
+}
+
+.staff-member-description {
+    margin: 20px 30px 10px;
+    color: #fff;
+}
 

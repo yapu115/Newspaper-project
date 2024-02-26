@@ -37,6 +37,8 @@ body {
     text-transform: uppercase;
     letter-spacing: 15px;
     margin-bottom: 10px;
+    text-shadow: 4px 0px 1px rgba(0, 0, 0, 1);
+    color: #bebebe;
 }
 
 .head-subtitle{
@@ -53,8 +55,8 @@ body {
     */
     margin-top: 2rem;
     display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 10rem;
+    justify-content:center;
+    padding: 10px 20px;
 }
 
 .navbar-item {
@@ -62,9 +64,9 @@ body {
        
        */
     color: white;
-    margin-right: 2rem;
-    margin-left: 2rem;
-    padding: 0.5rem 2rem;
+    margin-right: 15px;
+    margin-left: 15px;
+    padding: 0.3rem 2rem;
     text-decoration: none;
     background-size: cover;
     background-color: transparent;
@@ -96,7 +98,7 @@ body {
 
 /* Cada post individual*/
 .post {
-    width: 500px;
+    width: 600px;
     margin: 50px auto 50px; 
     transition: box-shadow 0.3s ease;
     background-color: #fff;
@@ -136,11 +138,17 @@ body {
 
 .post-photo {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 900px;
 }
 
 .post-photo:hover{
     transform: scale(1.05);
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.post-date {
+    display: flex;
+    justify-content: flex-end;
 }
 /* El cuerpo de cada post */
 .post-content {
@@ -216,36 +224,76 @@ img {
 
 
 .staff-members-list {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 1rem 5rem;
-}
-
-.staff-member-item {
-    width: calc(30% - 100px); /* Establece el ancho de cada caja (33.33% del contenedor - margen) */
-    border: 5px solid black;
-    margin: 1rem 5px;
-    background-color: #1c4065;
     /*
     
     */
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1rem 5vw;
 }
+
+.staff-member-item {
+    /*
+    
+    */
+    min-width: 200px;
+    width: calc(25% - 20px); /* Establece el ancho de cada caja (33.33% del contenedor - margen) */
+    min-height: 40rem;
+    max-height: 120rem;
+    border: 5px solid black;
+    margin: 1rem 5px;
+    background-color: #1c4065;
+    transition: box-shadow 0.1s ease;
+}
+.staff-member-item:hover {
+    box-shadow: 0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.3);
+}
+
 
 .staff-member-photo{
     margin-top: 10px;
     width: 50%;
     object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.staff-member-photo:hover{
+    transform: scale(1.05);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .staff-name {
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     text-align: center;
-    color: #6e797c;
+    color: #000000;
     font-size: larger;
     margin: 1.5rem;
+    text-decoration: underline;
 }
 
 .staff-member-description {
+    letter-spacing: 2px;
     margin: 20px 30px 10px;
     color: #fff;
 }
 
+
+.about-us-description {
+    margin: 80px 250px;
+    font-size: 25px;
+}
+
+.about-us-description h1 {
+    font-size: 50px;
+}
+
+
+
+
+
+
+.page-footer {
+    margin-top: 100px;
+    padding-top: 20px;
+    background-color: #a8a8ac;
+}

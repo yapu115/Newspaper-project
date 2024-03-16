@@ -53,6 +53,8 @@ body {
     /*
     
     */
+    /* position: fixed; */
+    width: 100%;
     margin-top: 2rem;
     display: flex;
     justify-content:center;
@@ -255,6 +257,7 @@ img {
     width: 50%;
     object-fit: cover;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
 }
 
 .staff-member-photo:hover{
@@ -287,6 +290,21 @@ img {
     font-size: 50px;
 }
 
+
+#create-article-button{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    height: 40px;
+    border-radius: 9px;
+    background: #1c4065;
+    color: #fff;
+}
+
+#error-message {
+    color: #c99;
+}
 
 
 
@@ -354,6 +372,7 @@ button:hover {
     margin: 30px auto;
 }
 
+
 .login-container p{
     font-size: 14px;
     line-height: 20px;
@@ -399,3 +418,29 @@ button:hover {
 }
 
 
+
+#welcome-container{
+    background-color: #fff;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+    width: 700px;
+    max-width: 90%;
+    min-height: 600px;
+    margin: 30px auto;
+}
+
+#welcome-text {
+    font-size: xx-large;
+    margin-left: 20px;
+    margin-top: 50px;
+}
+
+#user-picture {
+    margin-top: 10px;
+    margin-right: 40px; 
+    width: 30%;
+    float: right;
+    border-radius: 8px;
+}

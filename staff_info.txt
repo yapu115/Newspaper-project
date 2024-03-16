@@ -1,0 +1,45 @@
+[
+    {
+        "username": "park3r115",
+        "password": "IloveSpidey",
+        "name": "Peter",
+        "last_name": "Parker",
+        "email": "parkerP115@gmail.com",
+        "age": "18",
+        "sex": "male",
+        "picture": "img/staff/parker.png"
+    },
+
+    {
+        "username": "JJonahJ",
+        "password": "IHateSpiderman",
+        "name": "James",
+        "last_name": "Jameson",
+        "email": "JJJameson99@gmail.com",
+        "age": "55",
+        "sex": "male",
+        "picture": "img/staff/jameson.png"
+    },
+
+    {
+        "username": "Robbie007",
+        "password": "password1",
+        "name": "Joseph",
+        "last_name": "Robertson",
+        "email": "RobbieRob15@gmail.com",
+        "age": "60",
+        "sex": "male",
+        "picture": "img/staff/Robertson.png"
+    },
+
+    {
+        "username": "Ned_L",
+        "password": "HobGoblin66",
+        "name": "Edward",
+        "last_name": "Leeds",
+        "email": "HobLeeds935@gmail.com",
+        "age": "18",
+        "sex": "male",
+        "picture" : "img/staff/Leeds.jpg"
+    }
+]

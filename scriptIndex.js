@@ -1,4 +1,8 @@
+
+
+
 const container = document.querySelector(".posts")
+
 
 function createHeader(title, subtitle, image,){
     const header = document.createElement("HEADER");
@@ -102,3 +106,53 @@ for (i=5; i < 11; i++){
     documentFragment.appendChild(article)
 }
 container.appendChild(documentFragment)
+
+
+
+
+
+
+
+function stringToBoolConvertion(string) {
+    let boolStatus
+    if (string == "true") boolStatus = true
+    else boolStatus = false
+    return boolStatus
+}
+
+let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
+
+if (loggedIn){
+    let createArticleBtn = document.createElement("button")
+    let createArticleDiv = document.getElementById("new-article-button-div")
+    createArticleBtn.setAttribute("id", "create-article-button")
+
+    createArticleDiv.appendChild(createArticleBtn) 
+    const botonText = document.createTextNode(`New Article`)
+    createArticleBtn.appendChild(botonText)
+
+    createArticleBtn.addEventListener("click", function() {
+        createArticleBtn.remove()
+        loggedIn = false;
+        localStorage.setItem("loggedIn", loggedIn)
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -323,8 +323,27 @@
                     </footer>
                 </article>
             </section>
-            <div id="new-article-button-div">
+            <div id="new-article-button-div"></div>
+            <div id="modal-background" display="none"></div>
+            <div id="new-article-modal" display="none">
+                <form id="new-article-form">
+                    <p>Title:</p>
+                    <input type="text" id="new-article-title" name="title">
 
+                    <p>Subtitle:<p>
+                    <input type="text" id="new-article-subtitle" name="subtitle">
+
+                    <p>Image:</p>
+                    <input type="file" id="new-article-img" name="image">
+
+                    <p>Author:</p>
+                    <input type="text" id="new-article-author" name="author">
+
+                    <p>Body:</p>
+                    <textarea id="contenido" name="contenido"></textarea>
+
+                    <button type="submit">Publish</button>
+                </form>
             </div>
             <script src="scriptIndex.js"></script>
         </form> 

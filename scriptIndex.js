@@ -1,6 +1,4 @@
-
-
-
+// Creacion de varios articulos
 const container = document.querySelector(".posts")
 
 
@@ -97,7 +95,6 @@ function createArticle(title, subtitle, image, date, author, bodyText, hashtags)
 }
 
 
-// div.classList.add(`item-${i}` ,"flex-item")
 let documentFragment = document.createDocumentFragment();
 
 for (i=5; i < 11; i++){
@@ -106,6 +103,7 @@ for (i=5; i < 11; i++){
     documentFragment.appendChild(article)
 }
 container.appendChild(documentFragment)
+
 
 
 
@@ -123,30 +121,47 @@ function stringToBoolConvertion(string) {
 let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
 
 if (loggedIn){
+    let createArticleBtn = createNewArticleButton()
+    
+    const modalBackground = document.getElementById("modal-background");
+    const newArticleModal = document.getElementById("new-article-modal");
+    
+    createArticleBtn.addEventListener("click", function() {
+        createNewArticle(modalBackground, newArticleModal)
+    })
+
+    // Opcional: Agregar un listener para cerrar el modal cuando se hace clic fuera de él
+    modalBackground.addEventListener("click", function() {
+        modalBackground.style.display = "none";
+        newArticleModal.style.display = "none";
+    });
+
+}
+
+
+function createNewArticleButton() {
     let createArticleBtn = document.createElement("button")
     let createArticleDiv = document.getElementById("new-article-button-div")
     createArticleBtn.setAttribute("id", "create-article-button")
+    createArticleBtn.setAttribute("type", "button")
 
     createArticleDiv.appendChild(createArticleBtn) 
     const botonText = document.createTextNode(`New Article`)
     createArticleBtn.appendChild(botonText)
 
-    createArticleBtn.addEventListener("click", function() {
-        createArticleBtn.remove()
-        loggedIn = false;
-        localStorage.setItem("loggedIn", loggedIn)
-    })
+    return createArticleBtn
+
+
+}
+
+function createNewArticle(modalBackground, newArticleModal) {
+    modalBackground.style.display = "block";
+    newArticleModal.style.display = "block";
+        
 }
 
 
-
-
-
-
-
-
-
-
+console.log(localStorage.getItem("loggedIn"))
 
 
 

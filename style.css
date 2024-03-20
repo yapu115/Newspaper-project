@@ -461,24 +461,136 @@ button:hover {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); 
+    display: none;
 }
 
 #new-article-modal {
     position: fixed;
+    min-width: 30%;
+    max-width: 80%;
+    height: auto;
+    max-height: 80%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #1c4065;
+    background-color: #eaeaea;
     padding: 20px;
-    border-radius: 8px;
+    border: 5px solid #222;
+    border-radius: 5px;
+
 
     text-align: center;
     font-size: medium;
+    overflow-y: auto;
+    display: none;
 }
 
 #new-article-modal input {
     margin-bottom: 20px;
     margin-top: 5px;
 
-    background-color: #a8a8ac;
+    border-radius: 5px;
+    /* background-color: #a8a8ac; */
+
+    margin: 0 auto;
+    display: block;
+    margin-top: 10px;
 }
+
+#new-article-title {
+    font-size: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #000;
+    background-color: #fff;
+    border-bottom: 10px double black;
+    border-top: 10px double black;
+
+    min-width: none;
+    max-width: 700px;
+}
+
+#new-article-subtitle {
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+    text-transform: capitalize;
+    word-spacing: 2px;
+    width: 300px;
+}
+
+#new-article-img-container{
+    /* margin: 0 auto ; */
+    margin-top: 30px;
+}
+
+#new-article-img-container label {
+    background: #a8a8ac;
+    border: solid #000;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+#new-article-img-file {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+#new-article-img {
+    margin-top: 30px;
+}
+
+#new-article-img-container button {
+    margin-top:  20px;
+    display: none;
+}
+
+#new-article-body-container {
+    margin: 10px 0;
+    padding: 10px 30px; 
+    border-top: 5px solid #b4b3b3;
+    border-radius: 5px;
+    /*
+    
+    */
+}
+
+
+#new-article-date {
+    position:absolute;
+    right: 10px;
+    text-align: right; 
+}
+
+#new-article-author {
+    position:absolute;
+    left: 10px;
+}
+
+#new-article-body {
+    margin-top: 80px;
+    width: 100%;
+    height: 400px;
+
+    border: 2px solid #ccc;
+    border-radius: 5px;
+
+}
+
+#new-article-body::-webkit-scrollbar {
+    width: 12px;
+}
+
+#new-article-body::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 6px;
+}
+
+#new-article-body::-webkit-scrollbar-thumb:hover {
+    cursor:auto
+}
+

@@ -66,15 +66,14 @@ function createSection(date, author, bodyText){
     
     const divBody = document.createElement("DIV");
 
-    for (let i = 0; i < 5; i++) {
-        const divParagraph = document.createElement("DIV")
-        const pParagraph = document.createElement("P")
-        const textParagraph = document.createTextNode(bodyText)
-        pParagraph.appendChild(textParagraph)
-        divParagraph.appendChild(pParagraph)
-        
-        divBody.appendChild(divParagraph)
-    }
+    const divParagraph = document.createElement("DIV")
+    const pParagraph = document.createElement("P")
+    const textParagraph = document.createTextNode(bodyText)
+    pParagraph.appendChild(textParagraph)
+    divParagraph.appendChild(pParagraph)
+    
+    divBody.appendChild(divParagraph)
+
     section.appendChild(divBody)
 
     return section;
@@ -82,7 +81,7 @@ function createSection(date, author, bodyText){
 
 
 function createArticle(title, subtitle, image, date, author, bodyText, hashtags){
-    const article = document.createElement("ARTICLE"); // "Crea el elemento"
+    const article = document.createElement("ARTICLE"); 
     article.classList.add("post");
 
     const header = createHeader(title, subtitle, image)
@@ -91,13 +90,14 @@ function createArticle(title, subtitle, image, date, author, bodyText, hashtags)
     const section = createSection(date, author, bodyText)
     article.appendChild(section);
     
+    console.log("a")
     return article
 }
 
 
 let documentFragment = document.createDocumentFragment();
 
-for (i=5; i < 11; i++){
+for (i=5; i < 7; i++){
     let article = createArticle(`Article No: ${i}`, `Subtitle: ${i}`, "img/report_images/miss_stacy.jpg", `March: ${i}`, "Ned leeds", "This is a test text", "a")
     
     documentFragment.appendChild(article)
@@ -118,50 +118,106 @@ function stringToBoolConvertion(string) {
     return boolStatus
 }
 
-let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
 
+// If the user is logged
+let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
 if (loggedIn){
     let createArticleBtn = createNewArticleButton()
     
     const modalBackground = document.getElementById("modal-background");
     const newArticleModal = document.getElementById("new-article-modal");
     
+    // New article form
     createArticleBtn.addEventListener("click", function() {
         createNewArticle(modalBackground, newArticleModal)
     })
-
-    // Opcional: Agregar un listener para cerrar el modal cuando se hace clic fuera de él
+    
     modalBackground.addEventListener("click", function() {
         modalBackground.style.display = "none";
         newArticleModal.style.display = "none";
     });
+    
+    
+    const newArtImgFile = document.getElementById("new-article-img-file");
+    const newArtImage = document.getElementById("new-article-img");
+    const increaseImgWidth = document.getElementById("increase-img-width")
+    const reduceImgWidth = document.getElementById("reduce-img-width")
+    let urlImg
+    
+    newArtImgFile.addEventListener("change", function(event) {
+        let file = event.target.files[0];
+        
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                urlImg = event.target.result;
+                
+                const img = document.createElement("img");
+                img.src = urlImg;
+                img.width = 300
+                
+                newArtImage.innerHTML = "";
+                newArtImage.appendChild(img);
+                
+                increaseImgWidth.style.display = "inline-block";
+                reduceImgWidth.style.display = "inline-block";
+                
+                increaseImgWidth.addEventListener("click", function(){
+                    if (img.width < 400) img.width += 50
+                    console.log(img.width)
+                })
+                
+                reduceImgWidth.addEventListener("click", function(){
+                    if (img.width > 200) img.width -= 50
+                    console.log(img.width)
+                })
 
+                
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
+    publishNewArticleBtn.addEventListener("click", () => {
+        
+        const title = document.getElementById("new-article-title").value;
+        const subtitle = document.getElementById("new-article-subtitle").value;
+        const img = urlImg
+        const date = document.getElementById("new-article-date").value;
+        const author = document.getElementById("new-article-author").value;
+        const bodyText = document.getElementById("new-article-body").value;
+        const hashtags = document.getElementById("new-article-hashtags").value;
+        
+        let newArticle = createArticle(title, subtitle, img, date, author, bodyText, hashtags)
+        
+        let documentFrad = document.createDocumentFragment()
+        documentFrad.appendChild(newArticle)
+        container.appendChild(documentFrad)
+        modalBackground.style.display = "none";
+        newArticleModal.style.display = "none";
+    } )
 }
 
-
+// New articles creation
 function createNewArticleButton() {
     let createArticleBtn = document.createElement("button")
     let createArticleDiv = document.getElementById("new-article-button-div")
     createArticleBtn.setAttribute("id", "create-article-button")
     createArticleBtn.setAttribute("type", "button")
-
+    
     createArticleDiv.appendChild(createArticleBtn) 
     const botonText = document.createTextNode(`New Article`)
     createArticleBtn.appendChild(botonText)
-
+    
     return createArticleBtn
-
-
 }
 
 function createNewArticle(modalBackground, newArticleModal) {
     modalBackground.style.display = "block";
     newArticleModal.style.display = "block";
-        
+    
 }
-
-
-console.log(localStorage.getItem("loggedIn"))
 
 
 

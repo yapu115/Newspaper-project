@@ -327,22 +327,30 @@
             <div id="modal-background" display="none"></div>
             <div id="new-article-modal" display="none">
                 <form id="new-article-form">
-                    <p>Title:</p>
-                    <input type="text" id="new-article-title" name="title">
+                    <img src="img/bugle_logo.jpg" alt="daily bugle logo" class="logo-head" width="400">
 
-                    <p>Subtitle:<p>
-                    <input type="text" id="new-article-subtitle" name="subtitle">
+                    <input type="text" id="new-article-title" maxlength="35" placeholder="Title">
 
-                    <p>Image:</p>
-                    <input type="file" id="new-article-img" name="image">
+                    <input type="text" id="new-article-subtitle" maxlength="80" placeholder="Subtitle">
 
-                    <p>Author:</p>
-                    <input type="text" id="new-article-author" name="author">
+                    <div id="new-article-img-container">
+                        <label for="new-article-img-file">Image</label>
+                        <input type="file" id="new-article-img-file" name="image">
+                        <div id="new-article-img"></div>
+                        <button type="button" id="reduce-img-width">-</button>
+                        <button type="button" id="increase-img-width">+</button>
+                    </div>
+                    
+                    <div id="new-article-body-container">
+                        <input type="text" id="new-article-date" placeholder="Date">
 
-                    <p>Body:</p>
-                    <textarea id="contenido" name="contenido"></textarea>
+                        <input type="text" id="new-article-author" placeholder="Author">
+                        
+                        <textarea id="new-article-body" placeholder="Body of the article"></textarea>
 
-                    <button type="submit">Publish</button>
+                        <textarea id="new-article-hashtags" placeholder="hashtags of the article"></textarea>
+                    </div>
+                        <button type="button" id="publish-new-article-btn">Publish</button>
                 </form>
             </div>
             <script src="scriptIndex.js"></script>

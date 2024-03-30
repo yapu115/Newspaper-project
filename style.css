@@ -466,10 +466,9 @@ button:hover {
 
 #new-article-modal {
     position: fixed;
-    min-width: 30%;
-    max-width: 80%;
+    width: 35%;
     height: auto;
-    max-height: 80%;
+    max-height: 90%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -485,12 +484,19 @@ button:hover {
     display: none;
 }
 
+#new-article-modal div {
+    margin-bottom: 20px;
+}
+
+#new-article-logo-head {
+    width: 95%;
+}
+
 #new-article-modal input {
     margin-bottom: 20px;
     margin-top: 5px;
 
     border-radius: 5px;
-    /* background-color: #a8a8ac; */
 
     margin: 0 auto;
     display: block;
@@ -498,7 +504,9 @@ button:hover {
 }
 
 #new-article-title {
-    font-size: 30px;
+    resize: none;
+    overflow-y: hidden;
+    font-size: 25px;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: center;
@@ -507,21 +515,23 @@ button:hover {
     border-bottom: 10px double black;
     border-top: 10px double black;
 
-    min-width: none;
-    max-width: 700px;
+    width: 90%;
+    height: 40px;
 }
 
 #new-article-subtitle {
+    resize: none;
+    overflow-y: hidden;
+    height: 20px;
     text-align: center;
     font-weight: bold;
     font-style: italic;
     text-transform: capitalize;
     word-spacing: 2px;
-    width: 300px;
+    width: 65%;
 }
 
 #new-article-img-container{
-    /* margin: 0 auto ; */
     margin-top: 30px;
 }
 
@@ -566,12 +576,9 @@ button:hover {
     text-align: right; 
 }
 
-#new-article-author {
-    position:absolute;
-    left: 10px;
-}
 
 #new-article-body {
+    resize: none;
     margin-top: 80px;
     width: 100%;
     height: 400px;

@@ -1,8 +1,13 @@
-// Creacion de varios articulos
+"use strict"
+
+// Variables
 const container = document.querySelector(".posts")
+let documentFragment = document.createDocumentFragment();
+let userInfo = JSON.parse(localStorage.getItem("userInfo"))
+const date = new Date()
 
-
-function createHeader(title, subtitle, image,){
+// New articles creation
+function createHeader(title, subtitle, image){
     const header = document.createElement("HEADER");
     header.classList.add("heading");
     
@@ -40,7 +45,9 @@ function createHeader(title, subtitle, image,){
 }
 
 
-function createSection(date, author, bodyText){
+function createSection(date,bodyText){
+    let author = `${userInfo.name} ${userInfo.last_name}`
+
     const section = document.createElement("SECTION");
     section.classList.add("post-content");
     
@@ -80,29 +87,19 @@ function createSection(date, author, bodyText){
 }
 
 
-function createArticle(title, subtitle, image, date, author, bodyText, hashtags){
+function createArticle(title, subtitle, image, date, bodyText, hashtags){
     const article = document.createElement("ARTICLE"); 
     article.classList.add("post");
 
     const header = createHeader(title, subtitle, image)
     article.appendChild(header);
 
-    const section = createSection(date, author, bodyText)
+    const section = createSection(date, bodyText)
     article.appendChild(section);
     
-    console.log("a")
     return article
 }
 
-
-let documentFragment = document.createDocumentFragment();
-
-for (i=5; i < 7; i++){
-    let article = createArticle(`Article No: ${i}`, `Subtitle: ${i}`, "img/report_images/miss_stacy.jpg", `March: ${i}`, "Ned leeds", "This is a test text", "a")
-    
-    documentFragment.appendChild(article)
-}
-container.appendChild(documentFragment)
 
 
 
@@ -129,7 +126,7 @@ if (loggedIn){
     
     // New article form
     createArticleBtn.addEventListener("click", function() {
-        createNewArticle(modalBackground, newArticleModal)
+        showNewArticleContainer(modalBackground, newArticleModal)
     })
     
     modalBackground.addEventListener("click", function() {
@@ -171,8 +168,6 @@ if (loggedIn){
                     if (img.width > 200) img.width -= 50
                     console.log(img.width)
                 })
-
-                
             };
             reader.readAsDataURL(file);
         }
@@ -183,13 +178,14 @@ if (loggedIn){
         
         const title = document.getElementById("new-article-title").value;
         const subtitle = document.getElementById("new-article-subtitle").value;
+        const imgTest = document.getElementById("new-article-img-file").files[0];
+        console.log(imgTest)
         const img = urlImg
         const date = document.getElementById("new-article-date").value;
-        const author = document.getElementById("new-article-author").value;
         const bodyText = document.getElementById("new-article-body").value;
         const hashtags = document.getElementById("new-article-hashtags").value;
         
-        let newArticle = createArticle(title, subtitle, img, date, author, bodyText, hashtags)
+        let newArticle = createArticle(title, subtitle, img, date, bodyText, hashtags)
         
         let documentFrad = document.createDocumentFragment()
         documentFrad.appendChild(newArticle)
@@ -213,17 +209,79 @@ function createNewArticleButton() {
     return createArticleBtn
 }
 
-function createNewArticle(modalBackground, newArticleModal) {
+function showNewArticleContainer(modalBackground, newArticleModal) {
     modalBackground.style.display = "block";
-    newArticleModal.style.display = "block";
-    
+    newArticleModal.style.display = "block";    
+
+    let newArticleTitle = document.getElementById("new-article-title");
+    let newArticleSubtitle = document.getElementById("new-article-subtitle");
+    let newArticleBody = document.getElementById("new-article-body");
+
+    newArticleTitle.value = "";
+    newArticleSubtitle.value = "";
+    newArticleBody.value = "";
+
+    applyTextAreaStyle(newArticleTitle)
+    applyTextAreaStyle(newArticleSubtitle)
+
+    document.getElementById("new-article-date").innerHTML = `${getCompleteDate()}`
+}
+
+
+// Image reader
+function readImage(imageFile){
+    let file = imageFile.target.files[0];
+        
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(imageFile) {
+            let urlImg = imageFile.target.result;
+            
+            const img = document.createElement("img");
+            img.src = urlImg;
+            img.width = 300
+            
+
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 
 
+const applyTextAreaStyle = (textarea)=> {
+    textarea.addEventListener("input",function(){
+        if (this.value.length > 31){
+            this.style.height = 'auto'; 
+            this.style.height = (this.scrollHeight) + 'px';
+        }
+    })
+}
 
+const getCompleteDate = ()=> {
+    let suffix;
+    let day = date.getDate()
 
+    if (day === 1 || day === 21 || day === 31){
+        suffix = "st"
+    }
+    else if (day === 2 || day === 22){
+        suffix = "nd"
+    }
+    else if (date === 3 || day === 23){
+        suffix = "rd"
+    }
+    else {
+        suffix = "th"
+    }
 
+    const completeDate = `${date.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric', 
+    }) + suffix} ${date.getFullYear()}`; 
+    
+    return completeDate
+}
 
 
 

@@ -172,51 +172,46 @@ body {
     
     */
     display: flex;
+    /* flex-direction: column;
+    align-items: flex-end; */
     justify-content: flex-end;
 }
 
-
-.share-button {
-    /*
-    
-    */
-    width: 30px;
-    height: 30px;
-    border: none;
-    background-image: url(img/share_button.png);
-    background-size: cover;
-    background-color: transparent;
-    cursor: pointer;
-    margin-left: 15px;
+.button-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.like-button {
+.buttons-container button {
     /*
     
     */
-    width: 30px;
-    height: 30px;
-    border: none;
-    background-image: url(img/like_button.png);
-    background-size: cover;
-    background-color: transparent;
-    cursor: pointer;
+    width: 40px;
+    height: 40px;
     margin-left: 15px;
-
+    background-color: #1c4065;
+    color: #fff; 
+    border: none;
+    border-radius: 50%; 
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 20px;
 }
 
-.comment-button {
-    /*
-    
-    */
-    width: 30px;
-    height: 30px;
-    border: none;
-    background-image: url(img/comment_button.png);
-    background-size: cover;
-    background-color: transparent;
-    cursor: pointer;
-    margin-left: 15px;
+.buttons-container button:hover {
+    background-color: #24619f;
+}
+
+.buttons-container button i {
+    margin: auto;
+}
+
+.buttons-container p {
+    margin-top: 5px;
+    margin-left: 25%;
+    font-size: 16px;
+    /* background-color: #888; */
 }
 
 img {
@@ -239,7 +234,7 @@ img {
     
     */
     min-width: 200px;
-    width: calc(25% - 20px); /* Establece el ancho de cada caja (33.33% del contenedor - margen) */
+    width: calc(25% - 20px); 
     min-height: 40rem;
     max-height: 120rem;
     border: 5px solid black;
@@ -482,6 +477,13 @@ button:hover {
     font-size: medium;
     overflow-y: auto;
     display: none;
+}
+
+@media screen and (max-width: 900px) {
+    #new-article-modal {
+        width: 60%; 
+        max-width: none; 
+    }
 }
 
 #new-article-modal div {

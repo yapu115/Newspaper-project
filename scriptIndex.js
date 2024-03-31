@@ -8,6 +8,7 @@ const date = new Date()
 
 // New articles creation
 function createHeader(title, subtitle, image){
+    console.log(image)
     const header = document.createElement("HEADER");
     header.classList.add("heading");
     
@@ -151,7 +152,7 @@ if (loggedIn){
                 
                 const img = document.createElement("img");
                 img.src = urlImg;
-                img.width = 300
+                img.width = 300;
                 
                 newArtImage.innerHTML = "";
                 newArtImage.appendChild(img);
@@ -178,9 +179,7 @@ if (loggedIn){
         
         const title = document.getElementById("new-article-title").value;
         const subtitle = document.getElementById("new-article-subtitle").value;
-        const imgTest = document.getElementById("new-article-img-file").files[0];
-        console.log(imgTest)
-        const img = urlImg
+        const img = document.getElementById("new-article-img-file").files[0];
         const date = document.getElementById("new-article-date").value;
         const bodyText = document.getElementById("new-article-body").value;
         const hashtags = document.getElementById("new-article-hashtags").value;

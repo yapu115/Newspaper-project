@@ -6,9 +6,154 @@ let documentFragment = document.createDocumentFragment();
 let userInfo = JSON.parse(localStorage.getItem("userInfo"))
 const date = new Date()
 
+// IndexedDatabase
+const DBRequestArticles = indexedDB.open("ArticlesDB",1);
+
+DBRequestArticles.addEventListener("upgradeneeded", ()=> {
+    const db = DBRequestArticles.result;
+    const store = db.createObjectStore("articles", {
+        autoIncrement: true
+    })
+
+    store.createIndex("likesCount", "likes", { unique: false } )
+    store.createIndex("commentsCount", "comments", { unique: false })
+})
+
+DBRequestArticles.onsuccess = () => {
+    const db = DBRequestArticles.result;
+    
+    function saveArticle(article){
+        const transaction = db.transaction("articles", "readwrite");    
+        const objectStore = transaction.objectStore("articles")
+        
+        const request = objectStore.add(article)
+        request.onsuccess = function(){
+            console.log("Article saved")
+        }
+        request.onerror = function() {
+            console.log("There has been an error")
+        }
+    }
+
+    //////////////////////////////////////////////////////////////
+
+
+    
+// If the user is logged
+let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
+if (loggedIn){
+    let createArticleBtn = createNewArticleButton()
+    
+    const modalBackground = document.getElementById("modal-background");
+    const newArticleModal = document.getElementById("new-article-modal");
+    
+    // New article form
+    createArticleBtn.addEventListener("click", function() {
+        showNewArticleContainer(modalBackground, newArticleModal)
+    })
+    
+    modalBackground.addEventListener("click", function() {
+        modalBackground.style.display = "none";
+        newArticleModal.style.display = "none";
+    });
+    
+    
+    const newArtImgFile = document.getElementById("new-article-img-file");
+    const newArtImage = document.getElementById("new-article-img");
+    const increaseImgWidth = document.getElementById("increase-img-width")
+    const reduceImgWidth = document.getElementById("reduce-img-width")
+    let urlImg
+    
+    newArtImgFile.addEventListener("change", function(event) {
+        let file = event.target.files[0];
+        
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                urlImg = event.target.result;
+                
+                const img = document.createElement("img");
+                img.src = urlImg;
+                img.width = 300;
+                
+                newArtImage.innerHTML = "";
+                newArtImage.appendChild(img);
+                
+                increaseImgWidth.style.display = "inline-block";
+                reduceImgWidth.style.display = "inline-block";
+                
+                increaseImgWidth.addEventListener("click", function(){
+                    if (img.width < 400) img.width += 50
+                    console.log(img.width)
+                })
+                
+                reduceImgWidth.addEventListener("click", function(){
+                    if (img.width > 200) img.width -= 50
+                    console.log(img.width)
+                })
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    const likeButtons = document.querySelectorAll(".like-button")
+    for (let button of likeButtons){
+        let clicked = false;
+        button.addEventListener("click", ()=> {
+            const likeCount = button.nextElementSibling;
+            let currentLikes = parseInt(likeCount.textContent)
+            
+            if (!clicked) {
+                button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                currentLikes ++;
+                clicked = true;
+            }
+            else {
+                button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+                currentLikes --;
+                clicked = false;
+            }
+            likeCount.textContent = currentLikes;
+        })
+    }
+
+    
+    const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
+    publishNewArticleBtn.addEventListener("click", () => {
+        
+        const title = document.getElementById("new-article-title").value;
+        const subtitle = document.getElementById("new-article-subtitle").value;
+        const img = document.getElementById("new-article-img-file").files[0];
+        const date = document.getElementById("new-article-date").innerHTML;
+        const bodyText = document.getElementById("new-article-body").value;
+        const hashtags = document.getElementById("new-article-hashtags").value;
+        
+        const newArticle = createArticle(title, subtitle, img, date, bodyText, hashtags)
+        const newArticleJSON = {
+            title: title,
+            subtitle: subtitle,
+            img: img,
+            date: date,
+            bodyText: bodyText
+        }
+
+        let documentFrad = document.createDocumentFragment()
+        documentFrad.appendChild(newArticle)
+        container.appendChild(documentFrad)
+        saveArticle(newArticleJSON)
+        modalBackground.style.display = "none";
+        newArticleModal.style.display = "none";
+    } )
+}
+
+
+
+    
+}
+
+
 // New articles creation
 function createHeader(title, subtitle, image){
-    console.log(image)
     const header = document.createElement("HEADER");
     header.classList.add("heading");
     
@@ -24,11 +169,21 @@ function createHeader(title, subtitle, image){
     const p = document.createElement("P");
     p.classList.add("subtitle")
     
+
+
     const imgPost = document.createElement("IMG");
     imgPost.classList.add("post-photo")
-    imgPost.setAttribute("src", image)
+    readFileImage(image).then(imgUrl => {
+        imgPost.setAttribute("src", imgUrl)
+    }).catch(error =>{
+        console.log(error.message);
+    })
+    // imgPost.setAttribute("src", image)
     imgPost.setAttribute("width", "300")
     imgPost.setAttribute("alt", "article image")
+
+
+
 
     header.appendChild(imgLogo);
     header.appendChild(h2);
@@ -98,6 +253,7 @@ function createArticle(title, subtitle, image, date, bodyText, hashtags){
     const section = createSection(date, bodyText)
     article.appendChild(section);
     
+
     return article
 }
 
@@ -117,82 +273,6 @@ function stringToBoolConvertion(string) {
 }
 
 
-// If the user is logged
-let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
-if (loggedIn){
-    let createArticleBtn = createNewArticleButton()
-    
-    const modalBackground = document.getElementById("modal-background");
-    const newArticleModal = document.getElementById("new-article-modal");
-    
-    // New article form
-    createArticleBtn.addEventListener("click", function() {
-        showNewArticleContainer(modalBackground, newArticleModal)
-    })
-    
-    modalBackground.addEventListener("click", function() {
-        modalBackground.style.display = "none";
-        newArticleModal.style.display = "none";
-    });
-    
-    
-    const newArtImgFile = document.getElementById("new-article-img-file");
-    const newArtImage = document.getElementById("new-article-img");
-    const increaseImgWidth = document.getElementById("increase-img-width")
-    const reduceImgWidth = document.getElementById("reduce-img-width")
-    let urlImg
-    
-    newArtImgFile.addEventListener("change", function(event) {
-        let file = event.target.files[0];
-        
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function(event) {
-                urlImg = event.target.result;
-                
-                const img = document.createElement("img");
-                img.src = urlImg;
-                img.width = 300;
-                
-                newArtImage.innerHTML = "";
-                newArtImage.appendChild(img);
-                
-                increaseImgWidth.style.display = "inline-block";
-                reduceImgWidth.style.display = "inline-block";
-                
-                increaseImgWidth.addEventListener("click", function(){
-                    if (img.width < 400) img.width += 50
-                    console.log(img.width)
-                })
-                
-                reduceImgWidth.addEventListener("click", function(){
-                    if (img.width > 200) img.width -= 50
-                    console.log(img.width)
-                })
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-    
-    const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
-    publishNewArticleBtn.addEventListener("click", () => {
-        
-        const title = document.getElementById("new-article-title").value;
-        const subtitle = document.getElementById("new-article-subtitle").value;
-        const img = document.getElementById("new-article-img-file").files[0];
-        const date = document.getElementById("new-article-date").value;
-        const bodyText = document.getElementById("new-article-body").value;
-        const hashtags = document.getElementById("new-article-hashtags").value;
-        
-        let newArticle = createArticle(title, subtitle, img, date, bodyText, hashtags)
-        
-        let documentFrad = document.createDocumentFragment()
-        documentFrad.appendChild(newArticle)
-        container.appendChild(documentFrad)
-        modalBackground.style.display = "none";
-        newArticleModal.style.display = "none";
-    } )
-}
 
 // New articles creation
 function createNewArticleButton() {
@@ -284,3 +364,27 @@ const getCompleteDate = ()=> {
 
 
 
+
+
+const readFileImage = (file) => {
+    if (file) {
+        return new Promise((resolve, reject) => {
+            if (!file.type.startsWith("image/")){
+                reject(new Error("The file is not an image"))
+                return;
+            }
+
+            const reader = new FileReader();
+    
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+                resolve(imageUrl)
+            };
+            
+            reader.onerror = ()=> {
+                reject(new Error("Error reading the  file"));
+            }
+            reader.readAsDataURL(file);
+        })
+    }
+}

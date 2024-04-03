@@ -13,6 +13,7 @@ const DBRequestArticles = indexedDB.open("ArticlesDB",1);
 DBRequestArticles.addEventListener("upgradeneeded", ()=> {
     const db = DBRequestArticles.result;
     const store = db.createObjectStore("articles", {
+        keyPath: "id",
         autoIncrement: true
     })
 
@@ -54,136 +55,151 @@ DBRequestArticles.onsuccess = () => {
     }
 
     // Load articles on the page
-    // window.addEventListener("DOMContentLoaded", ()=> {
-        getArticles().then((articles) =>{
-            console.log(articles.length)
-            for (let articleData of articles){
-                const title = articleData.title;
-                const subtitle = articleData.subtitle;
-                const img = articleData.img;
-                const date = articleData.date;
-                const body = articleData.bodyText;
-                
-                const article = createArticle(title, subtitle, img, date, body, "a")
-                
-                documentFragment.appendChild(article)
-            }
-            postsContainer.appendChild(documentFragment)
-        }).catch(e=>{
-            console.log(e)
-        })
-    // })
-
-    //////////////////////////////////////////////////////////////
-
-    
-    // If the user is logged
-    let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
-    if (loggedIn){
-        let createArticleBtn = createNewArticleButton()
-        
-        const modalBackground = document.getElementById("modal-background");
-        const newArticleModal = document.getElementById("new-article-modal");
-        
-        // New article form
-        createArticleBtn.addEventListener("click", function() {
-            showNewArticleContainer(modalBackground, newArticleModal)
-        })
-        
-        modalBackground.addEventListener("click", function() {
-            modalBackground.style.display = "none";
-            newArticleModal.style.display = "none";
-        });
-        
-        
-        const newArtImgFile = document.getElementById("new-article-img-file");
-        const newArtImage = document.getElementById("new-article-img");
-        const increaseImgWidth = document.getElementById("increase-img-width")
-        const reduceImgWidth = document.getElementById("reduce-img-width")
-        
-
-        // Select an image
-        newArtImgFile.addEventListener("change", function(event) {
-            let file = event.target.files[0];
+    getArticles().then((articles) =>{
+        for (let articleData of articles){
+            const title = articleData.title;
+            const subtitle = articleData.subtitle;
+            const img = articleData.img;
+            const date = articleData.date;
+            const body = articleData.bodyText;
+            const likes = articleData.likes;
+            const comments = articleData.comments;
+            // const id = articleData;
+            // console.log(id)
             
-            if (file) {
-                let reader = new FileReader();
-                reader.onload = function(event) {
-                    let urlImg = event.target.result;
-                    
-                    const img = document.createElement("img");
-                    img.src = urlImg;
-                    img.width = 300;
-                    
-                    newArtImage.innerHTML = "";
-                    newArtImage.appendChild(img);
-                    
-                    increaseImgWidth.style.display = "inline-block";
-                    reduceImgWidth.style.display = "inline-block";
-                    
-                    increaseImgWidth.addEventListener("click", function(){
-                        if (img.width < 400) img.width += 50
-                        console.log(img.width)
-                    })
-                    
-                    reduceImgWidth.addEventListener("click", function(){
-                        if (img.width > 200) img.width -= 50
-                        console.log(img.width)
-                    })
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        
-        // Publish new article 
-        const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
-        publishNewArticleBtn.addEventListener("click", () => {
+            const article = createArticle(title, subtitle, img, date, body, "a", likes, comments)
             
-            const title = document.getElementById("new-article-title").value;
-            const subtitle = document.getElementById("new-article-subtitle").value;
-            const img = document.getElementById("new-article-img-file").files[0];
-            const date = document.getElementById("new-article-date").innerHTML;
-            const bodyText = document.getElementById("new-article-body").value;
-            const hashtags = document.getElementById("new-article-hashtags").value;
-            
-            const newArticleJSON = {
-                title: title,
-                subtitle: subtitle,
-                img: img,
-                date: date,
-                bodyText: bodyText
-            }
-            
-            saveArticle(newArticleJSON)
-            location.reload();
-            modalBackground.style.display = "none";
-            newArticleModal.style.display = "none";
-        } )
-
-
-        const likeButtons = document.querySelectorAll(".like-button")
-        for (let button of likeButtons){
-            let clicked = false;
-            button.addEventListener("click", ()=> {
-                const likeCount = button.nextElementSibling;
-                let currentLikes = parseInt(likeCount.textContent)
-                
-                if (!clicked) {
-                    button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                    currentLikes ++;
-                    clicked = true;
-                }
-                else {
-                    button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
-                    currentLikes --;
-                    clicked = false;
-                }
-                likeCount.textContent = currentLikes;
-            })
+            documentFragment.appendChild(article)
         }
-    }
+        postsContainer.appendChild(documentFragment)
+        
+
+
+        //////////////////////////////////////////////////////////////
+
+        // If the user is logged
+        let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
+        if (loggedIn){
+            let createArticleBtn = createNewArticleButton()
+            
+            const modalBackground = document.getElementById("modal-background");
+            const newArticleModal = document.getElementById("new-article-modal");
+            
+            // New article form
+            createArticleBtn.addEventListener("click", function() {
+                showNewArticleContainer(modalBackground, newArticleModal)
+            })
+            
+            modalBackground.addEventListener("click", function() {
+                modalBackground.style.display = "none";
+                newArticleModal.style.display = "none";
+            });
+            
+            
+            const newArtImgFile = document.getElementById("new-article-img-file");
+            const newArtImage = document.getElementById("new-article-img");
+            const increaseImgWidth = document.getElementById("increase-img-width")
+            const reduceImgWidth = document.getElementById("reduce-img-width")
+            
+
+            // Select an image
+            newArtImgFile.addEventListener("change", function(event) {
+                let file = event.target.files[0];
+                
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function(event) {
+                        let urlImg = event.target.result;
+                        
+                        const img = document.createElement("img");
+                        img.src = urlImg;
+                        img.width = 300;
+                        
+                        newArtImage.innerHTML = "";
+                        newArtImage.appendChild(img);
+                        
+                        increaseImgWidth.style.display = "inline-block";
+                        reduceImgWidth.style.display = "inline-block";
+                        
+                        increaseImgWidth.addEventListener("click", function(){
+                            if (img.width < 400) img.width += 50
+                            console.log(img.width)
+                        })
+                        
+                        reduceImgWidth.addEventListener("click", function(){
+                            if (img.width > 200) img.width -= 50
+                            console.log(img.width)
+                        })
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            
+            // Publish new article 
+            const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
+            publishNewArticleBtn.addEventListener("click", () => {
+                
+                const title = document.getElementById("new-article-title").value;
+                const subtitle = document.getElementById("new-article-subtitle").value;
+                const img = document.getElementById("new-article-img-file").files[0];
+                const date = document.getElementById("new-article-date").innerHTML;
+                const bodyText = document.getElementById("new-article-body").value;
+                const hashtags = document.getElementById("new-article-hashtags").value;
+                
+                const newArticleJSON = {
+                    title: title,
+                    subtitle: subtitle,
+                    img: img,
+                    date: date,
+                    bodyText: bodyText,
+                    likes: 0,
+                    comments: 0,
+                }
+                
+                saveArticle(newArticleJSON)
+                location.reload();
+                modalBackground.style.display = "none";
+                newArticleModal.style.display = "none";
+            } )
+
+
+            const likeButtons = document.querySelectorAll(".like-button")
+            for (let button of likeButtons){
+                let clicked = false;
+                button.addEventListener("click", ()=> {
+                    const likeCount = button.nextElementSibling;
+                    let currentLikes = parseInt(likeCount.textContent);
+                    
+                    if (!clicked) {
+                        button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                        currentLikes ++;
+                        clicked = true;
+                    }
+                    else {
+                        button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+                        currentLikes --;
+                        clicked = false;
+                    }
+                    likeCount.textContent = currentLikes;
+                })
+            }
+        }  
+    }).catch(e=>{
+        console.log(e)
+    })
+
+    // DB modification
+    function updateLikes(){
+        const transaction = db.transaction("articles", "readonly");
+        const objectStore = transaction.objectStore("articles");  
+
+        const reques = objectStore.put()
+    } 
 }
+
+
+
 
 
 // Articles creation
@@ -272,8 +288,70 @@ function createSection(date,bodyText){
     return section;
 }
 
+function createFooter(topics, likes, comments){
+    const footer = document.createElement("footer");
+    footer.classList.add("article-footer");
 
-function createArticle(title, subtitle, image, date, bodyText, hashtags){
+    const divTopics = document.createElement("div")
+    divTopics.classList.add("article-topics")
+
+    const pTopics = document.createElement("p");
+    const textTopics = document.createTextNode(topics)
+
+    pTopics.appendChild(textTopics)
+    divTopics.appendChild(pTopics);
+
+
+    const divButtonContainer = document.createElement("div");
+    divButtonContainer.classList.add("buttons-container")
+    
+    for (let i = 0; i < 2; i++) {
+        let buttonType;
+        let iclassIconType;
+        let iclassIcon;
+        let count;
+        if (i == 0){
+            buttonType = "like"
+            iclassIconType = "fa-regular"
+            iclassIcon = "fa-heart"
+            count = likes;
+        }
+        else{
+            buttonType = "comment"
+            iclassIconType = "fa-solid"
+            iclassIcon = "fa-comment"
+            count = comments;
+        }
+
+        const divButtonWrapper = document.createElement("div");
+        divButtonWrapper.classList.add("button-wrapper");
+        
+        const button = document.createElement("button");
+        button.classList.add(`${buttonType}-button`)
+        button.setAttribute("type", "button");
+
+        const iButton = document.createElement("i");
+        iButton.classList.add(iclassIconType)
+        iButton.classList.add(iclassIcon)
+
+        const pCount = document.createElement("p")
+        pCount.classList.add(`${buttonType}-count`)
+        const textCount = document.createTextNode(count)
+        
+        pCount.appendChild(textCount)
+        button.appendChild(iButton)
+        divButtonWrapper.append(button)
+        divButtonWrapper.append(pCount)
+        divButtonContainer.appendChild(divButtonWrapper)
+    }
+
+    footer.appendChild(divTopics);
+    footer.appendChild(divButtonContainer);
+
+    return footer;
+}
+
+function createArticle(title, subtitle, image, date, bodyText, topics, likes, comments){
     const article = document.createElement("ARTICLE"); 
     article.classList.add("post");
 
@@ -282,7 +360,9 @@ function createArticle(title, subtitle, image, date, bodyText, hashtags){
 
     const section = createSection(date, bodyText)
     article.appendChild(section);
-    
+
+    const footer = createFooter(topics, likes, comments)
+    article.appendChild(footer)
 
     return article
 }
@@ -421,4 +501,5 @@ const getCompleteDate = ()=> {
     
     return completeDate
 }
+
 

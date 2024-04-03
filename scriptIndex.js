@@ -1,7 +1,7 @@
 "use strict"
 
 // Variables
-const container = document.querySelector(".posts")
+const postsContainer = document.querySelector(".posts")
 let documentFragment = document.createDocumentFragment();
 let userInfo = JSON.parse(localStorage.getItem("userInfo"))
 const date = new Date()
@@ -9,6 +9,7 @@ const date = new Date()
 // IndexedDatabase
 const DBRequestArticles = indexedDB.open("ArticlesDB",1);
 
+// Open DB
 DBRequestArticles.addEventListener("upgradeneeded", ()=> {
     const db = DBRequestArticles.result;
     const store = db.createObjectStore("articles", {
@@ -19,6 +20,7 @@ DBRequestArticles.addEventListener("upgradeneeded", ()=> {
     store.createIndex("commentsCount", "comments", { unique: false })
 })
 
+// Succesfull DB open
 DBRequestArticles.onsuccess = () => {
     const db = DBRequestArticles.result;
     
@@ -27,132 +29,164 @@ DBRequestArticles.onsuccess = () => {
         const objectStore = transaction.objectStore("articles")
         
         const request = objectStore.add(article)
-        request.onsuccess = function(){
+        request.onsuccess = ()=> {
             console.log("Article saved")
         }
-        request.onerror = function() {
+        request.onerror = ()=> {
             console.log("There has been an error")
         }
     }
 
-    //////////////////////////////////////////////////////////////
-
-
+    function getArticles(){
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("articles", "readonly");
+            const objectStore = transaction.objectStore("articles");
     
-// If the user is logged
-let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
-if (loggedIn){
-    let createArticleBtn = createNewArticleButton()
-    
-    const modalBackground = document.getElementById("modal-background");
-    const newArticleModal = document.getElementById("new-article-modal");
-    
-    // New article form
-    createArticleBtn.addEventListener("click", function() {
-        showNewArticleContainer(modalBackground, newArticleModal)
-    })
-    
-    modalBackground.addEventListener("click", function() {
-        modalBackground.style.display = "none";
-        newArticleModal.style.display = "none";
-    });
-    
-    
-    const newArtImgFile = document.getElementById("new-article-img-file");
-    const newArtImage = document.getElementById("new-article-img");
-    const increaseImgWidth = document.getElementById("increase-img-width")
-    const reduceImgWidth = document.getElementById("reduce-img-width")
-    let urlImg
-    
-    newArtImgFile.addEventListener("change", function(event) {
-        let file = event.target.files[0];
-        
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function(event) {
-                urlImg = event.target.result;
-                
-                const img = document.createElement("img");
-                img.src = urlImg;
-                img.width = 300;
-                
-                newArtImage.innerHTML = "";
-                newArtImage.appendChild(img);
-                
-                increaseImgWidth.style.display = "inline-block";
-                reduceImgWidth.style.display = "inline-block";
-                
-                increaseImgWidth.addEventListener("click", function(){
-                    if (img.width < 400) img.width += 50
-                    console.log(img.width)
-                })
-                
-                reduceImgWidth.addEventListener("click", function(){
-                    if (img.width > 200) img.width -= 50
-                    console.log(img.width)
-                })
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    const likeButtons = document.querySelectorAll(".like-button")
-    for (let button of likeButtons){
-        let clicked = false;
-        button.addEventListener("click", ()=> {
-            const likeCount = button.nextElementSibling;
-            let currentLikes = parseInt(likeCount.textContent)
-            
-            if (!clicked) {
-                button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                currentLikes ++;
-                clicked = true;
+            const request = objectStore.getAll();
+            request.onsuccess = ()=> {
+                const articles = request.result
+                resolve(articles)
+            }    
+            request.onerror = ()=> {
+                reject(new Error("Error obtaining the articles"))
             }
-            else {
-                button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
-                currentLikes --;
-                clicked = false;
-            }
-            likeCount.textContent = currentLikes;
         })
     }
 
+    // Load articles on the page
+    // window.addEventListener("DOMContentLoaded", ()=> {
+        getArticles().then((articles) =>{
+            console.log(articles.length)
+            for (let articleData of articles){
+                const title = articleData.title;
+                const subtitle = articleData.subtitle;
+                const img = articleData.img;
+                const date = articleData.date;
+                const body = articleData.bodyText;
+                
+                const article = createArticle(title, subtitle, img, date, body, "a")
+                
+                documentFragment.appendChild(article)
+            }
+            postsContainer.appendChild(documentFragment)
+        }).catch(e=>{
+            console.log(e)
+        })
+    // })
+
+    //////////////////////////////////////////////////////////////
+
     
-    const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
-    publishNewArticleBtn.addEventListener("click", () => {
+    // If the user is logged
+    let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
+    if (loggedIn){
+        let createArticleBtn = createNewArticleButton()
         
-        const title = document.getElementById("new-article-title").value;
-        const subtitle = document.getElementById("new-article-subtitle").value;
-        const img = document.getElementById("new-article-img-file").files[0];
-        const date = document.getElementById("new-article-date").innerHTML;
-        const bodyText = document.getElementById("new-article-body").value;
-        const hashtags = document.getElementById("new-article-hashtags").value;
+        const modalBackground = document.getElementById("modal-background");
+        const newArticleModal = document.getElementById("new-article-modal");
         
-        const newArticle = createArticle(title, subtitle, img, date, bodyText, hashtags)
-        const newArticleJSON = {
-            title: title,
-            subtitle: subtitle,
-            img: img,
-            date: date,
-            bodyText: bodyText
+        // New article form
+        createArticleBtn.addEventListener("click", function() {
+            showNewArticleContainer(modalBackground, newArticleModal)
+        })
+        
+        modalBackground.addEventListener("click", function() {
+            modalBackground.style.display = "none";
+            newArticleModal.style.display = "none";
+        });
+        
+        
+        const newArtImgFile = document.getElementById("new-article-img-file");
+        const newArtImage = document.getElementById("new-article-img");
+        const increaseImgWidth = document.getElementById("increase-img-width")
+        const reduceImgWidth = document.getElementById("reduce-img-width")
+        
+
+        // Select an image
+        newArtImgFile.addEventListener("change", function(event) {
+            let file = event.target.files[0];
+            
+            if (file) {
+                let reader = new FileReader();
+                reader.onload = function(event) {
+                    let urlImg = event.target.result;
+                    
+                    const img = document.createElement("img");
+                    img.src = urlImg;
+                    img.width = 300;
+                    
+                    newArtImage.innerHTML = "";
+                    newArtImage.appendChild(img);
+                    
+                    increaseImgWidth.style.display = "inline-block";
+                    reduceImgWidth.style.display = "inline-block";
+                    
+                    increaseImgWidth.addEventListener("click", function(){
+                        if (img.width < 400) img.width += 50
+                        console.log(img.width)
+                    })
+                    
+                    reduceImgWidth.addEventListener("click", function(){
+                        if (img.width > 200) img.width -= 50
+                        console.log(img.width)
+                    })
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        
+        // Publish new article 
+        const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
+        publishNewArticleBtn.addEventListener("click", () => {
+            
+            const title = document.getElementById("new-article-title").value;
+            const subtitle = document.getElementById("new-article-subtitle").value;
+            const img = document.getElementById("new-article-img-file").files[0];
+            const date = document.getElementById("new-article-date").innerHTML;
+            const bodyText = document.getElementById("new-article-body").value;
+            const hashtags = document.getElementById("new-article-hashtags").value;
+            
+            const newArticleJSON = {
+                title: title,
+                subtitle: subtitle,
+                img: img,
+                date: date,
+                bodyText: bodyText
+            }
+            
+            saveArticle(newArticleJSON)
+            location.reload();
+            modalBackground.style.display = "none";
+            newArticleModal.style.display = "none";
+        } )
+
+
+        const likeButtons = document.querySelectorAll(".like-button")
+        for (let button of likeButtons){
+            let clicked = false;
+            button.addEventListener("click", ()=> {
+                const likeCount = button.nextElementSibling;
+                let currentLikes = parseInt(likeCount.textContent)
+                
+                if (!clicked) {
+                    button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                    currentLikes ++;
+                    clicked = true;
+                }
+                else {
+                    button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+                    currentLikes --;
+                    clicked = false;
+                }
+                likeCount.textContent = currentLikes;
+            })
         }
-
-        let documentFrad = document.createDocumentFragment()
-        documentFrad.appendChild(newArticle)
-        container.appendChild(documentFrad)
-        saveArticle(newArticleJSON)
-        modalBackground.style.display = "none";
-        newArticleModal.style.display = "none";
-    } )
+    }
 }
 
 
-
-    
-}
-
-
-// New articles creation
+// Articles creation
 function createHeader(title, subtitle, image){
     const header = document.createElement("HEADER");
     header.classList.add("heading");
@@ -168,8 +202,6 @@ function createHeader(title, subtitle, image){
     
     const p = document.createElement("P");
     p.classList.add("subtitle")
-    
-
 
     const imgPost = document.createElement("IMG");
     imgPost.classList.add("post-photo")
@@ -181,8 +213,6 @@ function createHeader(title, subtitle, image){
     // imgPost.setAttribute("src", image)
     imgPost.setAttribute("width", "300")
     imgPost.setAttribute("alt", "article image")
-
-
 
 
     header.appendChild(imgLogo);
@@ -265,16 +295,9 @@ function createArticle(title, subtitle, image, date, bodyText, hashtags){
 
 
 
-function stringToBoolConvertion(string) {
-    let boolStatus
-    if (string == "true") boolStatus = true
-    else boolStatus = false
-    return boolStatus
-}
 
 
-
-// New articles creation
+// New articles creation documents/ implementation
 function createNewArticleButton() {
     let createArticleBtn = document.createElement("button")
     let createArticleDiv = document.getElementById("new-article-button-div")
@@ -291,26 +314,37 @@ function createNewArticleButton() {
 function showNewArticleContainer(modalBackground, newArticleModal) {
     modalBackground.style.display = "block";
     newArticleModal.style.display = "block";    
-
+    
     let newArticleTitle = document.getElementById("new-article-title");
     let newArticleSubtitle = document.getElementById("new-article-subtitle");
     let newArticleBody = document.getElementById("new-article-body");
-
+    
     newArticleTitle.value = "";
     newArticleSubtitle.value = "";
     newArticleBody.value = "";
-
+    
     applyTextAreaStyle(newArticleTitle)
     applyTextAreaStyle(newArticleSubtitle)
-
+    
     document.getElementById("new-article-date").innerHTML = `${getCompleteDate()}`
+}
+
+// Usefull functions
+////////////////////////////////////////////////////////
+
+// convertion
+function stringToBoolConvertion(string) {
+    let boolStatus
+    if (string == "true") boolStatus = true
+    else boolStatus = false
+    return boolStatus
 }
 
 
 // Image reader
 function readImage(imageFile){
     let file = imageFile.target.files[0];
-        
+    
     if (file) {
         let reader = new FileReader();
         reader.onload = function(imageFile) {
@@ -320,14 +354,38 @@ function readImage(imageFile){
             img.src = urlImg;
             img.width = 300
             
-
+            
         };
         reader.readAsDataURL(file);
     }
 }
 
+// Image File reader
+const readFileImage = (file) => {
+    if (file) {
+        return new Promise((resolve, reject) => {
+            if (!file.type.startsWith("image/")){
+                reject(new Error("The file is not an image"))
+                return;
+            }
+
+            const reader = new FileReader();
+    
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+                resolve(imageUrl)
+            };
+            
+            reader.onerror = ()=> {
+                reject(new Error("Error reading the  file"));
+            }
+            reader.readAsDataURL(file);
+        })
+    }
+}
 
 
+// Text area styles
 const applyTextAreaStyle = (textarea)=> {
     textarea.addEventListener("input",function(){
         if (this.value.length > 31){
@@ -337,6 +395,8 @@ const applyTextAreaStyle = (textarea)=> {
     })
 }
 
+
+// Date format
 const getCompleteDate = ()=> {
     let suffix;
     let day = date.getDate()
@@ -362,29 +422,3 @@ const getCompleteDate = ()=> {
     return completeDate
 }
 
-
-
-
-
-const readFileImage = (file) => {
-    if (file) {
-        return new Promise((resolve, reject) => {
-            if (!file.type.startsWith("image/")){
-                reject(new Error("The file is not an image"))
-                return;
-            }
-
-            const reader = new FileReader();
-    
-            reader.onload = function(event) {
-                const imageUrl = event.target.result;
-                resolve(imageUrl)
-            };
-            
-            reader.onerror = ()=> {
-                reject(new Error("Error reading the  file"));
-            }
-            reader.readAsDataURL(file);
-        })
-    }
-}

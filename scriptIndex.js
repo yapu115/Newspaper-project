@@ -24,10 +24,17 @@ DBRequestArticles.addEventListener("upgradeneeded", ()=> {
 // Succesfull DB open
 DBRequestArticles.onsuccess = () => {
     const db = DBRequestArticles.result;
+
+    function getIDBData(mode){
+        const transaction = db.transaction("articles", mode)
+        const objectStore = transaction.objectStore("articles")
+        return objectStore
+    }
     
     function saveArticle(article){
-        const transaction = db.transaction("articles", "readwrite");    
-        const objectStore = transaction.objectStore("articles")
+        // const transaction = db.transaction("articles", "readwrite");    
+        // const objectStore = transaction.objectStore("articles")
+        const objectStore = getIDBData("readwrite")
         
         const request = objectStore.add(article)
         request.onsuccess = ()=> {
@@ -40,8 +47,9 @@ DBRequestArticles.onsuccess = () => {
 
     function getArticles(){
         return new Promise((resolve, reject) => {
-            const transaction = db.transaction("articles", "readonly");
-            const objectStore = transaction.objectStore("articles");
+            // const transaction = db.transaction("articles", "readonly");
+            // const objectStore = transaction.objectStore("articles");
+            const objectStore = getIDBData("readonly")
     
             const request = objectStore.getAll();
             request.onsuccess = ()=> {
@@ -54,9 +62,38 @@ DBRequestArticles.onsuccess = () => {
         })
     }
 
+    function getArticleById(id){
+        return new Promise((resolve, reject) =>{
+            let objectStore = getIDBData("readonly")
+            const request = objectStore.get(parseInt(id))
+            request.onsuccess = ()=> {
+                const article = request.result;
+                resolve(article)
+            }
+            request.onerror = ()=>{
+                reject(new Error("The ID doesnt match with any article"))
+            }
+        })
+    }
+
+    function updateArticleLikes(article, newLikes){
+        return new Promise((resolve, reject) =>{
+            let objectStore = getIDBData("readwrite")
+            article.likes = newLikes;
+            const request = objectStore.put(article)
+            request.onsuccess = ()=> {
+                resolve(request.result)
+            }
+            request.onerror = ()=>{
+                reject(new Error("There was an error updating the article likes"))
+            }
+        })
+    }
+
     // Load articles on the page
     getArticles().then((articles) =>{
         for (let articleData of articles){
+            const id = articleData.id;
             const title = articleData.title;
             const subtitle = articleData.subtitle;
             const img = articleData.img;
@@ -64,10 +101,8 @@ DBRequestArticles.onsuccess = () => {
             const body = articleData.bodyText;
             const likes = articleData.likes;
             const comments = articleData.comments;
-            // const id = articleData;
-            // console.log(id)
             
-            const article = createArticle(title, subtitle, img, date, body, "a", likes, comments)
+            const article = createArticle(id, title, subtitle, img, date, body, "a", likes, comments)
             
             documentFragment.appendChild(article)
         }
@@ -123,12 +158,12 @@ DBRequestArticles.onsuccess = () => {
                         
                         increaseImgWidth.addEventListener("click", function(){
                             if (img.width < 400) img.width += 50
-                            console.log(img.width)
+                            console.log(img.width);
                         })
                         
                         reduceImgWidth.addEventListener("click", function(){
                             if (img.width > 200) img.width -= 50
-                            console.log(img.width)
+                            console.log(img.width);
                         })
                     };
                     reader.readAsDataURL(file);
@@ -166,22 +201,40 @@ DBRequestArticles.onsuccess = () => {
 
             const likeButtons = document.querySelectorAll(".like-button")
             for (let button of likeButtons){
-                let clicked = false;
+                
                 button.addEventListener("click", ()=> {
                     const likeCount = button.nextElementSibling;
                     let currentLikes = parseInt(likeCount.textContent);
-                    
-                    if (!clicked) {
-                        button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                        currentLikes ++;
-                        clicked = true;
-                    }
-                    else {
-                        button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
-                        currentLikes --;
+                    let buttonPostID = getParentElement(button, 4).id;
+
+                    let clickedState = localStorage.getItem(`clickedStateButton${buttonPostID}${userInfo.username}`);
+                    let clicked;
+                    if (clickedState)
+                        clicked = stringToBoolConvertion(clickedState);
+                    else
                         clicked = false;
-                    }
-                    likeCount.textContent = currentLikes;
+                    
+                    getArticleById(buttonPostID).then((buttonArticle) =>{
+                        if (!clicked) {
+                            button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                            currentLikes ++;
+                            clicked = true;
+                        }
+                        else {
+                            button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+                            currentLikes --;
+                            clicked = false;
+                        }
+                        likeCount.textContent = currentLikes;
+                        updateArticleLikes(buttonArticle, currentLikes).then(smt => {
+                            console.log("Succesfull like update") 
+                            localStorage.setItem(`clickedStateButton${buttonPostID}${userInfo.username}`, clicked)
+                        })
+                        
+                    }).catch(e =>{
+                        console.log(e)
+                    })
+
                 })
             }
         }  
@@ -288,7 +341,7 @@ function createSection(date,bodyText){
     return section;
 }
 
-function createFooter(topics, likes, comments){
+function createFooter(id, topics, likes, comments){
     const footer = document.createElement("footer");
     footer.classList.add("article-footer");
 
@@ -312,7 +365,12 @@ function createFooter(topics, likes, comments){
         let count;
         if (i == 0){
             buttonType = "like"
-            iclassIconType = "fa-regular"
+            if (stringToBoolConvertion(localStorage.getItem(`clickedStateButton${id}${userInfo.username}`)))  
+                iclassIconType = "fa-solid"
+            else
+                iclassIconType = "fa-regular"
+        
+
             iclassIcon = "fa-heart"
             count = likes;
         }
@@ -351,9 +409,10 @@ function createFooter(topics, likes, comments){
     return footer;
 }
 
-function createArticle(title, subtitle, image, date, bodyText, topics, likes, comments){
-    const article = document.createElement("ARTICLE"); 
+function createArticle(id, title, subtitle, image, date, bodyText, topics, likes, comments){
+    const article = document.createElement("article"); 
     article.classList.add("post");
+    article.id = id;
 
     const header = createHeader(title, subtitle, image)
     article.appendChild(header);
@@ -361,7 +420,7 @@ function createArticle(title, subtitle, image, date, bodyText, topics, likes, co
     const section = createSection(date, bodyText)
     article.appendChild(section);
 
-    const footer = createFooter(topics, likes, comments)
+    const footer = createFooter(id, topics, likes, comments)
     article.appendChild(footer)
 
     return article
@@ -503,3 +562,9 @@ const getCompleteDate = ()=> {
 }
 
 
+const getParentElement = (element, timesFather) =>{
+    for (let i = 0; i < timesFather; i++) {
+        element = element.parentNode;
+    }
+    return element;
+}

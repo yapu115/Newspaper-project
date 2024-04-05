@@ -98,11 +98,12 @@ DBRequestArticles.onsuccess = () => {
             const subtitle = articleData.subtitle;
             const img = articleData.img;
             const date = articleData.date;
+            const author = articleData.author;
             const body = articleData.bodyText;
             const likes = articleData.likes;
             const comments = articleData.comments;
             
-            const article = createArticle(id, title, subtitle, img, date, body, "a", likes, comments)
+            const article = createArticle(id, title, subtitle, img, date, author, body, "a", likes, comments)
             
             documentFragment.appendChild(article)
         }
@@ -179,6 +180,7 @@ DBRequestArticles.onsuccess = () => {
                 const subtitle = document.getElementById("new-article-subtitle").value;
                 const img = document.getElementById("new-article-img-file").files[0];
                 const date = document.getElementById("new-article-date").innerHTML;
+                const author = `${userInfo.name} ${userInfo.last_name}`
                 const bodyText = document.getElementById("new-article-body").value;
                 const hashtags = document.getElementById("new-article-hashtags").value;
                 
@@ -187,6 +189,7 @@ DBRequestArticles.onsuccess = () => {
                     subtitle: subtitle,
                     img: img,
                     date: date,
+                    author: author,
                     bodyText: bodyText,
                     likes: 0,
                     comments: 0,
@@ -300,8 +303,8 @@ function createHeader(title, subtitle, image){
 }
 
 
-function createSection(date,bodyText){
-    let author = `${userInfo.name} ${userInfo.last_name}`
+function createSection(date, author, bodyText){
+    const articleAuthor = author; 
 
     const section = document.createElement("SECTION");
     section.classList.add("post-content");
@@ -313,7 +316,7 @@ function createSection(date,bodyText){
     divDate.classList.add("post-date")
     
     const pWritter = document.createElement("P");
-    const textWritter = document.createTextNode(`Written by: ${author}`)
+    const textWritter = document.createTextNode(`Written by: ${articleAuthor}`)
     pWritter.appendChild(textWritter)
     
     const pDate = document.createElement("P");
@@ -403,13 +406,25 @@ function createFooter(id, topics, likes, comments){
         divButtonContainer.appendChild(divButtonWrapper)
     }
 
+    // const formCommentSection = document.createElement("form");
+    
+    // const textAreaCommentSection = document.createElement("textarea");
+    // const buttonCommentSection = document.createElement("button")
+
+
+    // formCommentSection.appendChild(textAreaCommentSection);
+    // formCommentSection.appendChild(buttonCommentSection);
+
+
+    
     footer.appendChild(divTopics);
     footer.appendChild(divButtonContainer);
+    // footer.appendChild(formCommentSection)
 
     return footer;
 }
 
-function createArticle(id, title, subtitle, image, date, bodyText, topics, likes, comments){
+function createArticle(id, title, subtitle, image, date, author, bodyText, topics, likes, comments){
     const article = document.createElement("article"); 
     article.classList.add("post");
     article.id = id;
@@ -417,7 +432,7 @@ function createArticle(id, title, subtitle, image, date, bodyText, topics, likes
     const header = createHeader(title, subtitle, image)
     article.appendChild(header);
 
-    const section = createSection(date, bodyText)
+    const section = createSection(date, author, bodyText)
     article.appendChild(section);
 
     const footer = createFooter(id, topics, likes, comments)

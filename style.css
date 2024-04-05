@@ -214,6 +214,67 @@ body {
     /* background-color: #888; */
 }
 
+.article-comment-section {
+    /* display: none; */
+    text-align: center;
+    margin-top: 10%;
+    margin-bottom: 5%;
+}
+
+
+.form-article-comment  {
+    /* background: #000; */
+    /* display: flex; */
+}
+
+.text-article-comment, .buttons-article-comment {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+    width: 100%;
+}
+.text-article-comment textarea {
+    resize: none;
+    background: #fff;
+    padding: 6px 10px;
+    width: 85%;
+    height: 20px;
+
+    border: none;
+    border-bottom: 2px solid #888;
+    border-radius: 5px;
+}
+
+.form-article-comment img {
+    border-radius: 50%;
+    width: 9%;
+    margin-right: 20px;
+}
+
+.buttons-article-comment button {
+    border: none;
+    border-radius: 35px;
+    margin: 0 5px;
+    padding: 10px;
+    background: #fff;
+
+    transition: background-color 0.5s ease;
+}
+
+.buttons-article-comment button:hover {
+    background-color: #ccc;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
 img {
     display: block;
     margin: 0 auto;

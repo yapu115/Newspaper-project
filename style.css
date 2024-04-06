@@ -12,6 +12,8 @@ body {
     background-color: #dfdfdf;
 }
 
+
+
 /* La parte de arriba*/
 .page-head {
     background-color: #1c4065;
@@ -93,7 +95,10 @@ body {
 }
 
 .logo-head {
-    padding: 0;
+    margin: 0 auto;
+    display: block;
+    width: 100%;
+
 }
 
 
@@ -139,6 +144,8 @@ body {
 
 
 .post-photo {
+    display: block;
+    margin: 0 auto;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     max-width: 900px;
 }
@@ -214,25 +221,24 @@ body {
     /* background-color: #888; */
 }
 
+
+
+
 .article-comment-section {
-    /* display: none; */
-    text-align: center;
-    margin-top: 10%;
+    display: none;
+    margin-top: 5%;
     margin-bottom: 5%;
 }
 
 
-.form-article-comment  {
-    /* background: #000; */
-    /* display: flex; */
-}
 
-.text-article-comment, .buttons-article-comment {
+.text-article-comment, .buttons-article-comment, .article-comment{
     display: flex;
     justify-content: flex-end;
     flex-direction: row;
     width: 100%;
 }
+
 .text-article-comment textarea {
     resize: none;
     background: #fff;
@@ -245,10 +251,17 @@ body {
     border-radius: 5px;
 }
 
-.form-article-comment img {
+.text-article-comment textarea:focus{
+    outline: none;
+}
+
+
+.new-article-comment img, .article-comment img {
     border-radius: 50%;
-    width: 9%;
-    margin-right: 20px;
+    border: 3px solid #000;
+    width: 8%;
+    height: 8%;
+    margin-right: 18px;
 }
 
 .buttons-article-comment button {
@@ -265,20 +278,59 @@ body {
     background-color: #ccc;
     cursor: pointer;
 }
-
-
-
-
-
-
-
-
-
-
-img {
-    display: block;
-    margin: 0 auto;
+ 
+.article-comment {
+    margin: 5px 0;
+    justify-content: flex-start;
 }
+
+
+.article-comment img {
+    margin-top: 20px;
+}
+
+
+
+.comment-user-data {
+    margin-top: 5px;
+    height: 25px;
+    font-size: 13px;
+    display: flex;
+    /* background: #1c4065;     */
+}
+
+
+.comment-user-data :nth-child(1) {
+    color: #000;
+    font-style: italic;
+}
+.comment-user-data :nth-child(2) {
+    color: #666;
+    margin-left: 8px;
+}
+
+
+.comment-user-text {
+    margin-bottom: 20px;
+    /* background: #026a13; */
+    width: 500px;
+}
+
+.comment-user-text p {
+    word-wrap: break-word;
+    font-size: 14px;
+    /* overflow-y: auto; */
+    /* background-color: #24619f; */
+}
+
+
+
+
+
+
+
+
+
 
 
 .staff-members-list {
@@ -309,6 +361,8 @@ img {
 
 
 .staff-member-photo{
+    display: block;
+    margin: 0 auto;
     margin-top: 10px;
     width: 50%;
     object-fit: cover;

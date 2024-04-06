@@ -90,6 +90,20 @@ DBRequestArticles.onsuccess = () => {
         })
     }
 
+    function updateArticleComments(article, newComment){
+        return new Promise((resolve, reject) =>{
+            let objectStore = getIDBData("readwrite")
+            article.comments.push(newComment);
+            const request = objectStore.put(article)
+            request.onsuccess = ()=> {
+                resolve(request.result)
+            }
+            request.onerror = ()=>{
+                reject(new Error("There was an error updating the article comment"))
+            }
+        })
+    }
+
     // Load articles on the page
     getArticles().then((articles) =>{
         for (let articleData of articles){
@@ -179,11 +193,14 @@ DBRequestArticles.onsuccess = () => {
                 const title = document.getElementById("new-article-title").value;
                 const subtitle = document.getElementById("new-article-subtitle").value;
                 const img = document.getElementById("new-article-img-file").files[0];
-                const date = document.getElementById("new-article-date").innerHTML;
+                // const date = document.getElementById("new-article-date").innerHTML;
+                const date = getCompleteDate()
                 const author = `${userInfo.name} ${userInfo.last_name}`
                 const bodyText = document.getElementById("new-article-body").value;
                 const hashtags = document.getElementById("new-article-hashtags").value;
                 
+                const commentsList = []
+
                 const newArticleJSON = {
                     title: title,
                     subtitle: subtitle,
@@ -192,7 +209,7 @@ DBRequestArticles.onsuccess = () => {
                     author: author,
                     bodyText: bodyText,
                     likes: 0,
-                    comments: 0,
+                    comments: commentsList,
                 }
                 
                 saveArticle(newArticleJSON)
@@ -232,6 +249,8 @@ DBRequestArticles.onsuccess = () => {
                         updateArticleLikes(buttonArticle, currentLikes).then(smt => {
                             console.log("Succesfull like update") 
                             localStorage.setItem(`clickedStateButton${buttonPostID}${userInfo.username}`, clicked)
+                        }).catch(e =>{
+                            console.log(e)
                         })
                         
                     }).catch(e =>{
@@ -240,6 +259,61 @@ DBRequestArticles.onsuccess = () => {
 
                 })
             }
+            const commentButtons = document.querySelectorAll(".comment-button");
+            for (let button of commentButtons){
+                let clicked = false;
+                button.addEventListener("click", ()=> {
+                    let buttonPostId = getParentElement(button, 2).nextElementSibling;
+                    if (!clicked) {
+                        button.innerHTML = `<i class="fa-solid fa-comment"></i>`;
+                        buttonPostId.style.display = "block";
+                        clicked = true;
+                    }
+                    else {
+                        buttonPostId.style.display = "none";
+                        button.innerHTML = `<i class="fa-regular fa-comment"></i>`;
+                        clicked = false;
+                    }
+
+                })
+            }
+
+            const cancelCommentButtons = document.querySelectorAll(".new-art-cancel-btn")
+            
+
+            const confirmCommentButtons = document.querySelectorAll(".new-art-comment-btn")
+            for (let button of confirmCommentButtons){
+                const articleId = getParentElement(button, 5).id;
+
+                button.addEventListener("click", ()=> {
+                    const comment = getParentElement(button, 1).previousElementSibling.lastElementChild.value;
+
+
+                    if (comment.length > 0){
+                        const username = userInfo.username;
+                        const completeDate = getCompleteDate()
+
+                        const newComment = {
+                            username: username,
+                            date: completeDate,
+                            comment: comment,
+                        }
+
+                        getArticleById(articleId).then((buttonArticle)=> {
+                            updateArticleComments(buttonArticle, newComment).then(()=> {
+                                console.log("epic")
+                            }).catch(e=>{
+                                console.log(e)
+                            })
+                        }).catch(e=>{
+                            console.log(e)
+                        })
+
+                    }
+
+                })
+            }
+        
         }  
     }).catch(e=>{
         console.log(e)
@@ -320,7 +394,7 @@ function createSection(date, author, bodyText){
     pWritter.appendChild(textWritter)
     
     const pDate = document.createElement("P");
-    const textDate = document.createTextNode(date)
+    const textDate = document.createTextNode(getCompleteDateFormat(date))
     pDate.appendChild(textDate)
     
     divDate.appendChild(pDate)
@@ -379,47 +453,134 @@ function createFooter(id, topics, likes, comments){
         }
         else{
             buttonType = "comment"
-            iclassIconType = "fa-solid"
+            iclassIconType = "fa-regular"
             iclassIcon = "fa-comment"
-            count = comments;
+            count = comments.length;
         }
 
         const divButtonWrapper = document.createElement("div");
         divButtonWrapper.classList.add("button-wrapper");
         
         const button = document.createElement("button");
-        button.classList.add(`${buttonType}-button`)
+        button.classList.add(`${buttonType}-button`);
         button.setAttribute("type", "button");
 
         const iButton = document.createElement("i");
-        iButton.classList.add(iclassIconType)
-        iButton.classList.add(iclassIcon)
+        iButton.classList.add(iclassIconType);
+        iButton.classList.add(iclassIcon);
 
-        const pCount = document.createElement("p")
-        pCount.classList.add(`${buttonType}-count`)
-        const textCount = document.createTextNode(count)
+        const pCount = document.createElement("p");
+        pCount.classList.add(`${buttonType}-count`);
+        const textCount = document.createTextNode(count);
         
-        pCount.appendChild(textCount)
-        button.appendChild(iButton)
-        divButtonWrapper.append(button)
-        divButtonWrapper.append(pCount)
-        divButtonContainer.appendChild(divButtonWrapper)
+        pCount.appendChild(textCount);
+        button.appendChild(iButton);
+        divButtonWrapper.append(button);
+        divButtonWrapper.append(pCount);
+        divButtonContainer.appendChild(divButtonWrapper);
     }
 
-    // const formCommentSection = document.createElement("form");
+    const divArticleCommentSection = document.createElement("div");
+    divArticleCommentSection.classList.add("article-comment-section");
+
+    const divNewArticleComment = document.createElement("div");
+    divNewArticleComment.classList.add("new-article-comment");
+
+    const divTextArticleComment = document.createElement("div");
+    divTextArticleComment.classList.add("text-article-comment");
+
+    const imgNewCommentUser = document.createElement("img")
+    imgNewCommentUser.src = userInfo.picture;
+
+    const textAreaNewComment = document.createElement("textarea");
+    textAreaNewComment.placeholder = "Add a comment...";
+    textAreaNewComment.name = "comment-text"
+
+    divTextArticleComment.appendChild(imgNewCommentUser)
+    divTextArticleComment.appendChild(textAreaNewComment);
+
+    const divButtonsArticleNewComment = document.createElement("div");
+    divButtonsArticleNewComment.classList.add("buttons-article-comment");
+
+    const cancelButton = document.createElement("button");
+    cancelButton.classList.add("new-art-cancel-btn")
+    cancelButton.type = "button";
+    cancelButton.innerHTML = "Cancel";
+
+    const commentButton = document.createElement("button")
+    commentButton.classList.add("new-art-comment-btn")
+    commentButton.type = "button";
+    commentButton.innerHTML = "Comment";
+
+    divButtonsArticleNewComment.appendChild(cancelButton);
+    divButtonsArticleNewComment.appendChild(commentButton);
+
+
+    divNewArticleComment.appendChild(divTextArticleComment);
+    divNewArticleComment.appendChild(divButtonsArticleNewComment);
     
-    // const textAreaCommentSection = document.createElement("textarea");
-    // const buttonCommentSection = document.createElement("button")
+
+    const divArticleComments = document.createElement("div");
+    divArticleComments.classList.add("article-comments");
 
 
-    // formCommentSection.appendChild(textAreaCommentSection);
-    // formCommentSection.appendChild(buttonCommentSection);
+    // Aca iria el for
+    for (let comment of comments) {
+        
+        const divArticleComment = document.createElement("div");
+        divArticleComment.classList.add("article-comment");
+    
+        divArticleComments.appendChild(divArticleComment);
+    
+        const imgArticleComment = document.createElement("img"); 
+        imgArticleComment.src = userInfo.picture;
+    
+        const divArticleCommentText = document.createElement("div");
+        divArticleCommentText.classList.add("article-comment-text");
+    
+        
+        const divCommentUserData = document.createElement("div");
+        divCommentUserData.classList.add("comment-user-data");
+    
+        const pCommentUsername = document.createElement("p");
+        const bCommentUsername = document.createElement("b");
+        bCommentUsername.innerHTML = comment.username;
+    
+        pCommentUsername.appendChild(bCommentUsername)
+    
+        const pCommentDate = document.createElement("p");
+        pCommentDate.innerHTML = getDateDifference(comment.date)
+    
+        divCommentUserData.appendChild(pCommentUsername);
+        divCommentUserData.appendChild(pCommentDate);
+    
+        const divCommentUserText = document.createElement("div");
+        divCommentUserText.classList.add("comment-user-text");
+        
+        const pCommentUserText = document.createElement("p");
+        pCommentUserText.innerHTML = comment.comment;
+    
+        divCommentUserText.appendChild(pCommentUserText);
+    
+        divArticleCommentText.appendChild(divCommentUserData);
+        divArticleCommentText.appendChild(divCommentUserText);
+    
+    
+        divArticleComment.appendChild(imgArticleComment)
+        divArticleComment.appendChild(divArticleCommentText)
+    }
+
+    // Aca terminaria el for
+
+    divArticleCommentSection.appendChild(divNewArticleComment);
+    divArticleCommentSection.appendChild(divArticleComments);
+
 
 
     
     footer.appendChild(divTopics);
     footer.appendChild(divButtonContainer);
-    // footer.appendChild(formCommentSection)
+    footer.appendChild(divArticleCommentSection);
 
     return footer;
 }
@@ -480,7 +641,7 @@ function showNewArticleContainer(modalBackground, newArticleModal) {
     applyTextAreaStyle(newArticleTitle)
     applyTextAreaStyle(newArticleSubtitle)
     
-    document.getElementById("new-article-date").innerHTML = `${getCompleteDate()}`
+    document.getElementById("new-article-date").innerHTML = `${getCompleteDateFormat(getCompleteDate())}`
 }
 
 // Usefull functions
@@ -551,7 +712,8 @@ const applyTextAreaStyle = (textarea)=> {
 
 
 // Date format
-const getCompleteDate = ()=> {
+const getCompleteDateFormat = (dateString)=> {
+    const date = new Date(dateString);
     let suffix;
     let day = date.getDate()
 
@@ -575,6 +737,56 @@ const getCompleteDate = ()=> {
     
     return completeDate
 }
+
+const getCompleteDate = ()=> {
+    return `${date.toLocaleDateString('en-US', {
+        day: 'numeric', 
+        month: 'numeric',
+        year: 'numeric'
+    })}`;
+}
+
+const getDateDifference = (dateString)=> {
+    const initialdate = new Date(dateString);
+    const actualDate = new Date(getCompleteDate());
+
+    console.log(initialdate)
+    
+    const milisDifference = actualDate - initialdate;
+    const minutesDifference = Math.floor(milisDifference / (1000*60));
+    const hoursDifference = Math.floor(minutesDifference / 60)
+    const daysDifference = Math.floor((hoursDifference) / 24);
+    const weeksDifference = Math.floor((daysDifference) / 7);
+    const monthsDifference = Math.floor((weeksDifference) / 30);
+    const yearsDifference = Math.floor((monthsDifference) / 12);
+
+
+    let dateDiffference;
+    if (yearsDifference > 0){
+        dateDiffference = `${yearsDifference} years ago`
+    }
+    else if (monthsDifference > 0){
+        dateDiffference = `${monthsDifference} months ago`
+    }
+    else if (weeksDifference > 0){
+        dateDiffference = `${weeksDifference} weeks ago`
+    }
+    else if (daysDifference > 0){
+        dateDiffference = `${daysDifference} days ago`
+    }
+    else if (hoursDifference > 0){
+        dateDiffference = `${hoursDifference} hours ago`
+    }
+    else if (minutesDifference > 0){
+        dateDiffference = `${minutesDifference} minutes ago`
+    }
+    else {
+        dateDiffference = `A few seconds ago`
+    }
+
+    return dateDiffference
+}
+
 
 
 const getParentElement = (element, timesFather) =>{

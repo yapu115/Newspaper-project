@@ -742,7 +742,9 @@ const getCompleteDate = ()=> {
     return `${date.toLocaleDateString('en-US', {
         day: 'numeric', 
         month: 'numeric',
-        year: 'numeric'
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
     })}`;
 }
 
@@ -750,7 +752,6 @@ const getDateDifference = (dateString)=> {
     const initialdate = new Date(dateString);
     const actualDate = new Date(getCompleteDate());
 
-    console.log(initialdate)
     
     const milisDifference = actualDate - initialdate;
     const minutesDifference = Math.floor(milisDifference / (1000*60));
@@ -761,24 +762,36 @@ const getDateDifference = (dateString)=> {
     const yearsDifference = Math.floor((monthsDifference) / 12);
 
 
+    const dateFormat = (dateDifference, dateType)=>{
+        let dateFormat;    
+        if (dateDifference === 1)
+            dateFormat = `1 ${dateType} ago`
+        else
+            dateFormat = `${dateDifference} ${dateType}s ago`
+
+        return dateFormat;
+        
+    }
+
     let dateDiffference;
     if (yearsDifference > 0){
-        dateDiffference = `${yearsDifference} years ago`
+        dateDiffference = dateFormat(yearsDifference, "year")
     }
     else if (monthsDifference > 0){
-        dateDiffference = `${monthsDifference} months ago`
+        dateDiffference = dateFormat(monthsDifference, "month")
     }
     else if (weeksDifference > 0){
-        dateDiffference = `${weeksDifference} weeks ago`
+        dateDiffference = dateFormat(weeksDifference, "week")
+
     }
     else if (daysDifference > 0){
-        dateDiffference = `${daysDifference} days ago`
+        dateDiffference = dateFormat(daysDifference, "day")
     }
     else if (hoursDifference > 0){
-        dateDiffference = `${hoursDifference} hours ago`
+        dateDiffference = dateFormat(hoursDifference, "hour")
     }
     else if (minutesDifference > 0){
-        dateDiffference = `${minutesDifference} minutes ago`
+        dateDiffference = dateFormat(minutesDifference, "minute")
     }
     else {
         dateDiffference = `A few seconds ago`
@@ -795,3 +808,4 @@ const getParentElement = (element, timesFather) =>{
     }
     return element;
 }
+

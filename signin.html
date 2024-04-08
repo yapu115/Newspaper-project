@@ -22,22 +22,50 @@
             </nav>
         </div>
     </Header>
-    <div id="user-form">
+    <div id="login-register-container">
         <div class="login-container">
-            <form id="loginForm">
-                <h2>Login</h2>
-                <div id="form-username">
-                    <input type="text" id="username" placeholder="username" >
-                </div>
-                <div id="form-password">
-                    <input type="password" id="password" placeholder="password">
-                </div>
-                <button type="button" id="login-button">Login</button>
-                <p id="message">Login to publish more stories and help us discover your truth</p>
+            <h2>Login</h2>
+            <div id="form-username">
+                <input type="text" id="username" placeholder="username" >
+            </div>
+            <div id="form-password">
+                <input type="password" id="password" placeholder="password">
+            </div>
+            <button type="button" id="login-button">Login</button>
+            <p id="message">Login to publish more stories and help us discover your truth</p>
+        </div>
 
-                <script src="script_login.js"></script>
-            </form>
+        <div id="register-container">
+            <h2>Register</h2>
+            <p>Please fill in this form to create an account.</p>
+            
+            
+            <div id="register-username">
+                <input type="text" id="username" placeholder="username" >
+            </div>
+            <div id="register-password">
+                <input type="password" id="password" placeholder="password">
+            </div>
+            <button type="button" id="login-button">Create Account</button>
+            <p id="message">Login to publish more stories and help us discover your truth</p>
+            
+
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="email" id="email" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+
+            <label for="psw-repeat"><b>Repeat Password</b></label>
+            <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+            <hr>
+            <button type="submit" class="registerbtn">Register</button>
+        </div>
+
+        <div class="container signin">
+            <p>Already have an account? <a href="#">Sign in</a>.</p>
         </div>
     </div>
+    <script src="script_login.js"></script>
 </body>
 </html>

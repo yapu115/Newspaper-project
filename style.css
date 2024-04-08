@@ -225,7 +225,7 @@ body {
 
 
 .article-comment-section {
-    /* display: none; */
+    display: none;
     margin-top: 5%;
     margin-bottom: 5%;
 }
@@ -468,6 +468,9 @@ button:hover {
 */
 
 
+#login-register-container div {
+
+}
 
 
 .login-container{

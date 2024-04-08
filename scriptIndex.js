@@ -286,7 +286,9 @@ DBRequestArticles.onsuccess = () => {
                 const articleId = getParentElement(button, 5).id;
 
                 button.addEventListener("click", ()=> {
-                    const comment = getParentElement(button, 1).previousElementSibling.lastElementChild.value;
+                    const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
+                    const comment = commentElement.value;
+
 
 
                     if (comment.length > 0){
@@ -301,7 +303,12 @@ DBRequestArticles.onsuccess = () => {
 
                         getArticleById(articleId).then((buttonArticle)=> {
                             updateArticleComments(buttonArticle, newComment).then(()=> {
-                                console.log("epic")
+                                const divArticleComments = getParentElement(commentElement, 3).lastElementChild;
+                                const divArticleComment = createCommment(newComment);
+
+                                divArticleComments.appendChild(divArticleComment);
+                                commentElement.value = "";
+
                             }).catch(e=>{
                                 console.log(e)
                             })
@@ -352,11 +359,10 @@ function createHeader(title, subtitle, image){
     const imgPost = document.createElement("IMG");
     imgPost.classList.add("post-photo")
     readFileImage(image).then(imgUrl => {
-        imgPost.setAttribute("src", imgUrl)
+        imgPost.setAttribute("src", imgUrl);
     }).catch(error =>{
         console.log(error.message);
     })
-    // imgPost.setAttribute("src", image)
     imgPost.setAttribute("width", "300")
     imgPost.setAttribute("alt", "article image")
 
@@ -416,6 +422,52 @@ function createSection(date, author, bodyText){
     section.appendChild(divBody)
 
     return section;
+}
+
+
+function createCommment(comment){
+    const divArticleComment = document.createElement("div");
+    divArticleComment.classList.add("article-comment");
+
+
+    const imgArticleComment = document.createElement("img"); 
+    imgArticleComment.src = userInfo.picture;
+
+    const divArticleCommentText = document.createElement("div");
+    divArticleCommentText.classList.add("article-comment-text");
+
+    
+    const divCommentUserData = document.createElement("div");
+    divCommentUserData.classList.add("comment-user-data");
+
+    const pCommentUsername = document.createElement("p");
+    const bCommentUsername = document.createElement("b");
+    bCommentUsername.innerHTML = comment.username;
+
+    pCommentUsername.appendChild(bCommentUsername)
+
+    const pCommentDate = document.createElement("p");
+    pCommentDate.innerHTML = getDateDifference(comment.date)
+
+    divCommentUserData.appendChild(pCommentUsername);
+    divCommentUserData.appendChild(pCommentDate);
+
+    const divCommentUserText = document.createElement("div");
+    divCommentUserText.classList.add("comment-user-text");
+    
+    const pCommentUserText = document.createElement("p");
+    pCommentUserText.innerHTML = comment.comment;
+
+    divCommentUserText.appendChild(pCommentUserText);
+
+    divArticleCommentText.appendChild(divCommentUserData);
+    divArticleCommentText.appendChild(divCommentUserText);
+
+
+    divArticleComment.appendChild(imgArticleComment)
+    divArticleComment.appendChild(divArticleCommentText)
+
+    return divArticleComment;
 }
 
 function createFooter(id, topics, likes, comments){
@@ -527,50 +579,12 @@ function createFooter(id, topics, likes, comments){
     // Aca iria el for
     for (let comment of comments) {
         
-        const divArticleComment = document.createElement("div");
-        divArticleComment.classList.add("article-comment");
-    
+        const divArticleComment = createCommment(comment);
         divArticleComments.appendChild(divArticleComment);
-    
-        const imgArticleComment = document.createElement("img"); 
-        imgArticleComment.src = userInfo.picture;
-    
-        const divArticleCommentText = document.createElement("div");
-        divArticleCommentText.classList.add("article-comment-text");
-    
-        
-        const divCommentUserData = document.createElement("div");
-        divCommentUserData.classList.add("comment-user-data");
-    
-        const pCommentUsername = document.createElement("p");
-        const bCommentUsername = document.createElement("b");
-        bCommentUsername.innerHTML = comment.username;
-    
-        pCommentUsername.appendChild(bCommentUsername)
-    
-        const pCommentDate = document.createElement("p");
-        pCommentDate.innerHTML = getDateDifference(comment.date)
-    
-        divCommentUserData.appendChild(pCommentUsername);
-        divCommentUserData.appendChild(pCommentDate);
-    
-        const divCommentUserText = document.createElement("div");
-        divCommentUserText.classList.add("comment-user-text");
-        
-        const pCommentUserText = document.createElement("p");
-        pCommentUserText.innerHTML = comment.comment;
-    
-        divCommentUserText.appendChild(pCommentUserText);
-    
-        divArticleCommentText.appendChild(divCommentUserData);
-        divArticleCommentText.appendChild(divCommentUserText);
-    
-    
-        divArticleComment.appendChild(imgArticleComment)
-        divArticleComment.appendChild(divArticleCommentText)
     }
 
     // Aca terminaria el for
+
 
     divArticleCommentSection.appendChild(divNewArticleComment);
     divArticleCommentSection.appendChild(divArticleComments);
@@ -584,6 +598,7 @@ function createFooter(id, topics, likes, comments){
 
     return footer;
 }
+
 
 function createArticle(id, title, subtitle, image, date, author, bodyText, topics, likes, comments){
     const article = document.createElement("article"); 
@@ -686,7 +701,7 @@ const readFileImage = (file) => {
 
             const reader = new FileReader();
     
-            reader.onload = function(event) {
+            reader.onload = (event) => {
                 const imageUrl = event.target.result;
                 resolve(imageUrl)
             };

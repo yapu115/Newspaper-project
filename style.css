@@ -468,12 +468,8 @@ button:hover {
 */
 
 
-#login-register-container div {
 
-}
-
-
-.login-container{
+#login-container, #register-container{
     background-color: #fff;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
@@ -485,8 +481,12 @@ button:hover {
     margin: 30px auto;
 }
 
+#login-container {
+    /* display: none; */
+}
 
-.login-container p{
+
+#login-container p, #register-container p{
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.3px;
@@ -494,7 +494,7 @@ button:hover {
 }
 
 
-.login-container button{
+#login-container button, #register-container button{
     background-color: #1c4065;
     color: #fff;
     font-size: 12px;
@@ -509,7 +509,7 @@ button:hover {
 }
 
 
-.login-container form{
+#login-container form, #register-container form{
     background-color: #fff;
     display: flex;
     align-items: center;
@@ -519,7 +519,21 @@ button:hover {
     height: 100%;
 }
 
-.login-container input{
+#register-container {
+    width: 500px;
+}
+
+#register-container form{
+    align-items: start;
+}
+
+#register-container form div{
+    margin: 12px 0;
+    margin-right: 20%;
+}
+
+
+#login-container input, #register-container input{
     background-color: #eee;
     border: none;
     margin: 8px 0;
@@ -529,6 +543,36 @@ button:hover {
     width: 100%;
     outline: none;
 }
+
+
+
+#register-picture img {
+    border-radius: 50%;
+    border: 5px #1c4065 solid;
+    width: 50%;
+}
+
+#signin-btn {
+    background-color: #000;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 45px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
 
 
 

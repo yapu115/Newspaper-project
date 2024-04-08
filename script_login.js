@@ -92,8 +92,6 @@ DBRequestUsers.onsuccess = () => {
                 let name = staffUser.name;
                 let lastName = staffUser.last_name;
                 let email = staffUser.email;
-                let age = staffUser.age;
-                let sex = staffUser.sex;
                 getStaffPictureFile(staffUser.picture).then(picture =>{
                     let user = {
                         username: username,
@@ -101,8 +99,6 @@ DBRequestUsers.onsuccess = () => {
                         name: name,
                         lastName: lastName,
                         email: email,
-                        age: age,
-                        sex: sex,
                         picture: picture,
                     }
                     saveUser(user);
@@ -199,7 +195,7 @@ function readFileImage(file){
 
 function welcomeUser(userInfo){
 
-    const loginContainer = document.querySelector(".login-container");
+    const loginContainer = document.getElementById("login-container");
     loginContainer.style.display = "none"
     
     let welcomeDiv = document.createElement("div");

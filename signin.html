@@ -22,9 +22,9 @@
             </nav>
         </div>
     </Header>
-    <div id="login-register-container">
+    <div id="login-signup-container">
         <div id="login-container">
-            <form>
+            <form id="login-form-container">
                 <h2>Login</h2>
                 <div id="form-username">
                     <input type="text" id="username" placeholder="username" >
@@ -32,58 +32,62 @@
                 <div id="form-password">
                     <input type="password" id="password" placeholder="password">
                 </div>
-                <button type="button" id="login-button">Login</button>
-                <p id="message">Login to publish more stories and help us discover your truth</p>
+                <button type="button" id="login-button">Log in</button>
+                <p id="message">Log in to publish more stories and help us discover your truth</p>
             </form>
+            <div id="signup-option">
+                <p>Don't have an account?<button id="signup-option-btn">Sign up</button></p>
+            </div>
         </div>
 
 
 
-        <div id="register-container">
-            <form>
+        <div id="signup-container">
+            <form id="signup-form-container">
                 <div>
-                    <h2>Register</h2>
+                    <h2>Sign up</h2>
                     <p>Please fill in this form to create an account.</p>
                 </div>
-
+                <hr width="100%">
+                
                 <div>
                     <label for="name"><b>Name</b></label>
-                    <input type="text" placeholder="Enter name" name="name" id="register-name" required>
+                    <input type="text" placeholder="Enter name" name="name" id="signup-name" required>
                     
                     <label for="last-name"><b>Last name</b></label>
-                    <input type="text" placeholder="Enter last name" name="last-name" id="register-last-name" required>
+                    <input type="text" placeholder="Enter last name" name="last-name" id="signup-last-name" required>
                 </div>
                 
                 <div>
                     <label for="email"><b>Email</b></label>
-                    <input type="text" placeholder="Enter Email" name="email" id="email" required>
+                    <input type="text" placeholder="Enter Email" name="email" id="signup-email" required>
                     
                     <label for="picture"><b>Picture</b></label>
-                    <input type="file" name="register-picture" id="register-picture-file">
-                    <div id="register-picture"><img src="img/staff/parker.png" alt=""></div>
+                    <input type="file" name="signup-picture" id="signup-picture-file">
+                    <div id="signup-picture"><img src="img/staff/parker.png" alt=""></div>
                 </div>
                 
                 <div>
                     <label for="username"><b>Username</b></label>
-                    <input type="text" placeholder="Enter username" name="username" id="register-username" required>
+                    <input type="text" placeholder="Enter username" name="username" id="signup-username" required>
         
                     <label for="psw"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+                    <input type="password" placeholder="Enter Password" name="signup-password" id="signup-password" required>
                     
         
                     <label for="psw-repeat"><b>Repeat Password</b></label>
-                    <input type="password" placeholder="Repeat Password" name="psw-repeat" id="psw-repeat" required>
+                    <input type="password" placeholder="Repeat Password" name="signup-password-repeat" id="signup-password-repeat" required>
                 </div>
                 <hr width="100%">
                 
-                <button type="submit" class="registerbtn">Register</button>
+                <button type="submit">Sign up</button>
     
             </form>
-            <div class="container signin">
-                <p>Already have an account? <button id="signin-btn">Sign in</button></p>
+            <div id="signin-option">
+                <p>Already have an account?<button id="login-option-btn">Log in</button></p>
             </div>
         </div>
     </div>
-    <script src="script_login.js"></script>
+    <script src="scriptLogin.js"></script>
 </body>
 </html>

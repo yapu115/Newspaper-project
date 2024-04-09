@@ -1,6 +1,6 @@
 "use strict";
 
-let loggedIn;
+let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"));
 
 // json
 const getInfo = async ()=>{
@@ -125,7 +125,7 @@ DBRequestUsers.onsuccess = () => {
                     localStorage.setItem("userId", userInfo.id);
                     localStorage.setItem("userInfo", JSON.stringify(userInfo))
                     localStorage.setItem("loggedIn", loggedIn);
-                    welcomeUser(userInfo)
+                    welcomeUser(userInfo);
                 }
                 else if (user === username && password != userPassword){
                     let errorMessageP = document.createElement("p");
@@ -141,9 +141,70 @@ DBRequestUsers.onsuccess = () => {
         })    
     }
 
+    // document.getElementById("signup-picture").addEventListener("change", function(event) {
+    //     let file = event.target.files[0];
+        
+    //     if (file) {
+    //         let reader = new FileReader();
+    //         reader.onload = function(event) {
+    //             let urlImg = event.target.result;
+                
+    //             const img = document.createElement("img");
+    //             img.src = urlImg;
+    //             img.width = 300;
+                
+    //             newArtImage.innerHTML = "";
+    //             newArtImage.appendChild(img);
+                
+    //             increaseImgWidth.style.display = "inline-block";
+    //             reduceImgWidth.style.display = "inline-block";
+                
+    //             increaseImgWidth.addEventListener("click", function(){
+    //                 if (img.width < 400) img.width += 50
+    //                 console.log(img.width);
+    //             })
+                
+    //             reduceImgWidth.addEventListener("click", function(){
+    //                 if (img.width > 200) img.width -= 50
+    //                 console.log(img.width);
+    //             })
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // });
+
+    document.getElementById("signup-form-container").addEventListener("submit", (event)=>{
+        event.preventDefault()
+        const name = document.getElementById("signup-name").value;
+        const lastName = document.getElementById("signup-last-name").value;
+        const email = document.getElementById("signup-email").value;
+        const picture = document.getElementById("signup-picture-file").files[0];
+        const username = document.getElementById("signup-username").value;
+        const password = document.getElementById("signup-password").value;
+        const repeatedPassword = document.getElementById("signup-password-repeat").value;
+    
+        if (password === repeatedPassword){
+            const newUser = {
+                username: username,
+                password: password,
+                name: name,
+                last_name: lastName,
+                email: email,
+                picture: picture,
+            }
+            
+            console.log(newUser)
+            location.reload()
+            // saveUser(newUser);
+        }
+        else console.log("the passwords do not match")        
+    });
+
+
+
+
     document.getElementById('login-button').addEventListener("click", checkLogin);
     
-    loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
     if (loggedIn){
         const userId = parseInt(localStorage.getItem("userId"));
         getUserById(userId).then(userInfo => {
@@ -152,10 +213,41 @@ DBRequestUsers.onsuccess = () => {
         .catch(e=>{
             console.log(e)
         })
+    }
 }
 
+if (!loggedIn){
+    const loginContainer = document.getElementById("login-container");
+    const signupContainer = document.getElementById("signup-container");
+    
+    const setSignup = ()=> {
+        signupContainer.style.display = "block";
+        loginContainer.style.display = "none";
+    }
 
+    const setLogin = ()=> {
+        signupContainer.style.display = "none";
+        loginContainer.style.display = "block";
+    }
+    document.getElementById("signup-option-btn").addEventListener("click", ()=> {
+        setSignup();
+        window.scrollTo(0, 270)
+        localStorage.setItem("showSignUp", true)
+    })
+    document.getElementById("login-option-btn").addEventListener("click", ()=> {
+        setLogin();
+        localStorage.setItem("showSignUp", false)
+    })
+    
+    const showSignup = localStorage.getItem("showSignUp");
+    if (showSignup && stringToBoolConvertion(showSignup)){
+        setSignup();
+    }
+    else {    
+        setLogin();
+    }
 
+}
 
 
 
@@ -164,8 +256,6 @@ function stringToBoolConvertion(string) {
     if (string == "true") boolStatus = true
     else boolStatus = false
     return boolStatus
-}
-
 }
 
 
@@ -201,7 +291,7 @@ function welcomeUser(userInfo){
     let welcomeDiv = document.createElement("div");
     welcomeDiv.setAttribute("id", "welcome-container")
 
-    let userForm = document.getElementById("login-register-container");
+    let userForm = document.getElementById("login-signup-container");
     userForm.appendChild(welcomeDiv); 
 
     let userPicture = document.createElement("img");

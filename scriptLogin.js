@@ -140,38 +140,27 @@ DBRequestUsers.onsuccess = () => {
             }
         })    
     }
+    //// HACER QUE NADA MAS SE PUEDAN IMPORTAR IMAGENES 1X1 y sacar la eliminacion del localStorage
 
-    // document.getElementById("signup-picture").addEventListener("change", function(event) {
-    //     let file = event.target.files[0];
+    const signupPicture = document.getElementById("signup-picture");
+    document.getElementById("signup-picture-file").addEventListener("change",(event) => {
+        let file = event.target.files[0];
         
-    //     if (file) {
-    //         let reader = new FileReader();
-    //         reader.onload = function(event) {
-    //             let urlImg = event.target.result;
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(event) {
+                let urlImg = event.target.result;
                 
-    //             const img = document.createElement("img");
-    //             img.src = urlImg;
-    //             img.width = 300;
+                const img = document.createElement("img");
+                img.src = urlImg;
                 
-    //             newArtImage.innerHTML = "";
-    //             newArtImage.appendChild(img);
-                
-    //             increaseImgWidth.style.display = "inline-block";
-    //             reduceImgWidth.style.display = "inline-block";
-                
-    //             increaseImgWidth.addEventListener("click", function(){
-    //                 if (img.width < 400) img.width += 50
-    //                 console.log(img.width);
-    //             })
-                
-    //             reduceImgWidth.addEventListener("click", function(){
-    //                 if (img.width > 200) img.width -= 50
-    //                 console.log(img.width);
-    //             })
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // });
+                signupPicture.innerHTML = "";
+                signupPicture.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+    });
 
     document.getElementById("signup-form-container").addEventListener("submit", (event)=>{
         event.preventDefault()
@@ -193,9 +182,8 @@ DBRequestUsers.onsuccess = () => {
                 picture: picture,
             }
             
-            console.log(newUser)
-            location.reload()
-            // saveUser(newUser);
+            saveUser(newUser);
+            location.reload();
         }
         else console.log("the passwords do not match")        
     });
@@ -248,6 +236,7 @@ if (!loggedIn){
     }
 
 }
+window.addEventListener("beforeunload", localStorage.removeItem("showSignUp"))
 
 
 
@@ -282,6 +271,8 @@ function readFileImage(file){
         })
     }
 }
+
+
 
 function welcomeUser(userInfo){
 
@@ -326,12 +317,6 @@ function welcomeUser(userInfo){
         localStorage.setItem("loggedIn", loggedIn)
     })
 }
-
-
-
-
-
-
 
 
 

@@ -548,8 +548,9 @@ button:hover {
 
 #signup-picture img {
     border-radius: 50%;
-    border: 5px #1c4065 solid;
     width: 50%;
+    height: 50%;
+    border: 5px #1c4065 solid;
 }
 
 #signin-option {

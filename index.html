@@ -442,10 +442,24 @@
                         <P id="new-article-date"></P>
                                                 
                         <textarea id="new-article-body" placeholder="Body of the article"></textarea>
-
-                        <textarea id="new-article-hashtags" placeholder="hashtags of the article"></textarea>
+                        
                     </div>
-                        <button type="button" id="publish-new-article-btn">Publish</button>
+                    
+                    <div id="new-article-footer">
+                        <div id="new-article-topics-container">
+                            <div id="new-article-topics">
+                            </div>
+    
+                            <div id="new-topic-container">
+                                <input type="text" maxlength="25" id="new-topic-input">
+                                <button type="button">Add</button>
+                            </div>
+                            
+                            <button type="button" id="new-topic-btn">+ Add new Topic</button>
+                        </div>
+                    </div>
+
+                    <button type="button" id="publish-new-article-btn">Publish</button>
                 </form>
             </div>
             <script src="scriptIndex.js"></script>

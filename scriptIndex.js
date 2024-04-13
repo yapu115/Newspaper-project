@@ -182,8 +182,9 @@ DBRequestArticles.onsuccess = () => {
                     const body = articleData.bodyText;
                     const likes = articleData.likes;
                     const comments = articleData.comments;
+                    const topics = articleData.topics;
                     
-                    const article = createArticle(id, title, subtitle, img, date, author, body, "a", likes, comments, userInfo)
+                    const article = createArticle(id, title, subtitle, img, date, author, body, topics, likes, comments, userInfo)
                     
                     documentFragment.appendChild(article)
                 }
@@ -260,7 +261,7 @@ DBRequestArticles.onsuccess = () => {
                                 const date = getCompleteDate()
                                 const author = `${userInfo.name} ${userInfo.lastName}`
                                 const bodyText = document.getElementById("new-article-body").value;
-                                const hashtags = document.getElementById("new-article-hashtags").value;
+                                const topics = getNewArticleTopics();
                                 
                                 const commentsList = []
                                 
@@ -273,12 +274,44 @@ DBRequestArticles.onsuccess = () => {
                                     bodyText: bodyText,
                                     likes: 0,
                                     comments: commentsList,
+                                    topics: topics,
                                 }
                                 
                                 saveArticle(newArticleJSON)
                                 location.reload();
                                 modalBackground.style.display = "none";
                                 newArticleModal.style.display = "none";
+                            })
+
+                            const newTopicButton = document.getElementById("new-topic-btn");
+                            const newTopicContainer = document.getElementById("new-topic-container");
+                            
+                            newTopicButton.addEventListener("click", ()=> {
+                                newTopicButton.style.display = "none";
+                                newTopicContainer.style.display = "block";
+                            })
+
+                            newTopicContainer.lastElementChild.addEventListener("click", ()=> {
+
+                                const topicInput = document.getElementById("new-topic-input")
+                                const topic = topicInput.value;
+
+                                const divNewTopic = document.createElement("div");
+                                divNewTopic.classList.add("new-topic");
+
+                                const topicLabel = document.createElement("label");
+                                const deleteTopic = document.createElement("button");
+
+                                topicLabel.innerHTML = topic;
+                                deleteTopic.innerHTML = "X";
+                                divNewTopic.appendChild(topicLabel);
+                                divNewTopic.appendChild(deleteTopic);
+
+                                document.getElementById("new-article-topics").appendChild(divNewTopic);
+
+                                topicInput.value = "";
+                                newTopicButton.style.display = "block";
+                                newTopicContainer.style.display = "none";
                             })
                         }
                     }
@@ -424,7 +457,6 @@ DBRequestArticles.onsuccess = () => {
 function verifyCommentButtons(display){
     const commentButtons = document.querySelectorAll(".comment-button");
     for (let button of commentButtons){
-        console.log("a")
         let clicked = false;
         button.addEventListener("click", ()=> {
             let buttonArticleComments = getParentElement(button, 2).nextElementSibling;
@@ -589,11 +621,12 @@ function createFooter(id, topics, likes, comments, userInfo){
     const divTopics = document.createElement("div")
     divTopics.classList.add("article-topics")
 
-    const pTopics = document.createElement("p");
-    const textTopics = document.createTextNode(topics)
-
-    pTopics.appendChild(textTopics)
-    divTopics.appendChild(pTopics);
+    for(const topic of topics){
+        const pTopics = document.createElement("p");
+        const textTopics = document.createTextNode(`#${topic}`);
+        pTopics.appendChild(textTopics)
+        divTopics.appendChild(pTopics);
+    }
 
 
     const divButtonContainer = document.createElement("div");
@@ -694,15 +727,11 @@ function createFooter(id, topics, likes, comments, userInfo){
     divArticleComments.classList.add("article-comments");
 
 
-    // Aca iria el for
     for (let comment of comments) {
         
         const divArticleComment = createCommment(comment);
         divArticleComments.appendChild(divArticleComment);
     }
-
-    // Aca terminaria el for
-
 
     divArticleCommentSection.appendChild(divNewArticleComment);
     divArticleCommentSection.appendChild(divArticleComments);
@@ -779,6 +808,23 @@ function showNewArticleContainer(modalBackground, newArticleModal) {
 
 // Usefull functions
 ////////////////////////////////////////////////////////
+
+function getNewArticleTopics(){
+    const topicsList = [];
+    const topicDivs = document.querySelectorAll(".new-topic");
+    for(const topicDiv of topicDivs){
+        const topic = topicDiv.firstElementChild.innerHTML;
+        topicsList.push(topic);
+    }
+    return topicsList;
+}
+
+
+
+
+
+
+
 
 // convertion
 function stringToBoolConvertion(string) {
@@ -941,4 +987,5 @@ const getParentElement = (element, timesFather) =>{
     }
     return element;
 }
+
 

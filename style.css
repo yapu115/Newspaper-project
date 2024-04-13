@@ -78,13 +78,13 @@ body {
 
     border-left: 2px solid #026a13;
     border-right: 2px solid #026a13;
-
+    
     transition: transform 0.3s ease;
-}
+}    
 
 .navbar-item:hover {
     transform: scale(1.10);
-}
+}    
 
 
 
@@ -92,14 +92,14 @@ body {
     /*
     */
     padding: 0 0 40px;
-}
+}    
 
 .logo-head {
     margin: 0 auto;
     display: block;
     width: 100%;
-
-}
+    
+}    
 
 
 
@@ -112,11 +112,11 @@ body {
     border: 5px solid #222;
     border-radius: 5px;
     padding: 20px;
-}
+}    
 
 .post:hover{
     box-shadow: 0.5rem 0.5rem 2rem rgba(0, 0, 0, 0.3);
-}
+}    
 
 .title {
     /*
@@ -129,7 +129,7 @@ body {
     background-color: #fff;
     border-bottom: 15px double black;
     border-top: 15px double black;
-}
+}    
 
 .subtitle {
     /*
@@ -140,7 +140,7 @@ body {
     font-style: italic;
     text-transform: capitalize;
     word-spacing: 2px;
-}
+}    
 
 
 .post-photo {
@@ -148,18 +148,17 @@ body {
     margin: 0 auto;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     max-width: 900px;
-}
+}    
 
 .post-photo:hover{
     transform: scale(1.05);
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-}
+}    
 
 .post-date {
     display: flex;
     justify-content: flex-end;
-}
-/* El cuerpo de cada post */
+}    
 .post-content {
     /*
     */
@@ -171,6 +170,14 @@ body {
     
     */
     text-align: justify;
+}    
+
+.article-topics {
+    display: flex;
+}
+
+.article-topics p {
+    margin-right: 15px;
 }
 
 
@@ -182,13 +189,13 @@ body {
     /* flex-direction: column;
     align-items: flex-end; */
     justify-content: flex-end;
-}
+}    
 
 .button-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+}    
 
 .buttons-container button {
     /*
@@ -204,22 +211,22 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
     font-size: 20px;
-}
+}    
 
 .buttons-container button:hover {
     background-color: #24619f;
-}
+}    
 
 .buttons-container button i {
     margin: auto;
-}
+}    
 
 .buttons-container p {
     margin-top: 5px;
     margin-left: 25%;
     font-size: 16px;
     /* background-color: #888; */
-}
+}    
 
 
 
@@ -228,7 +235,7 @@ body {
     display: none;
     margin-top: 5%;
     margin-bottom: 5%;
-}
+}    
 
 
 
@@ -237,7 +244,7 @@ body {
     justify-content: flex-end;
     flex-direction: row;
     width: 100%;
-}
+}    
 
 .text-article-comment textarea {
     resize: none;
@@ -246,21 +253,21 @@ body {
     width: 85%;
     height: 20px;
     font-family: "Oswald";
-
+    
     border: none;
     border-bottom: 2px solid #888;
     border-radius: 5px;
     transition: border-bottom-color 0.5 ease;
-}
+}    
 
 .text-article-comment textarea::placeholder{
     color: #888;
-}
+}    
 
 .text-article-comment textarea:focus{
     outline: none;
     border-bottom-color: #000;
-}
+}    
 
 
 
@@ -270,7 +277,7 @@ body {
     width: 8%;
     height: 8%;
     margin-right: 18px;
-}
+}    
 
 .buttons-article-comment button {
     border: none;
@@ -278,24 +285,24 @@ body {
     margin: 0 5px;
     padding: 10px;
     background: #fff;
-
+    
     transition: background-color 0.5s ease;
-}
+}    
 
 .buttons-article-comment button:hover {
     background-color: #ccc;
     cursor: pointer;
-}
- 
+}    
+
 .article-comment {
     margin: 5px 0;
     justify-content: flex-start;
-}
+}    
 
 
 .article-comment img {
     margin-top: 20px;
-}
+}    
 
 
 
@@ -305,32 +312,28 @@ body {
     font-size: 13px;
     display: flex;
     /* background: #1c4065;     */
-}
+}    
 
 
 .comment-user-data :nth-child(1) {
     color: #000;
     font-style: italic;
-}
+}    
 .comment-user-data :nth-child(2) {
     color: #666;
     margin-left: 8px;
-}
+}    
 
 
 .comment-user-text {
     margin-bottom: 20px;
-    /* background: #026a13; */
     width: 500px;
-}
+}    
 
 .comment-user-text p {
     word-wrap: break-word;
     font-size: 14px;
-    /* overflow-y: auto; */
-    /* background-color: #24619f; */
-}
-
+}    
 
 
 
@@ -684,8 +687,8 @@ button:hover {
     padding: 20px;
     border: 5px solid #222;
     border-radius: 5px;
-
-
+    
+    
     text-align: center;
     font-size: medium;
     overflow-y: auto;
@@ -710,11 +713,10 @@ button:hover {
 #new-article-modal input {
     margin-bottom: 20px;
     margin-top: 5px;
-
+    
     border-radius: 5px;
-
+    
     margin: 0 auto;
-    display: block;
     margin-top: 10px;
 }
 
@@ -729,7 +731,7 @@ button:hover {
     background-color: #fff;
     border-bottom: 10px double black;
     border-top: 10px double black;
-
+    
     width: 90%;
     height: 40px;
 }
@@ -800,7 +802,7 @@ button:hover {
 
     border: 2px solid #ccc;
     border-radius: 5px;
-
+    
 }
 
 #new-article-body::-webkit-scrollbar {
@@ -815,4 +817,80 @@ button:hover {
 #new-article-body::-webkit-scrollbar-thumb:hover {
     cursor:auto
 }
+
+
+/* Topics section */
+
+#new-article-topics-container {
+    text-align: left;
+    margin-top: 30px;
+}
+
+#new-article-topics {
+    display: flex;
+    flex-wrap: wrap; /* Pone los elementos en filas si no caben en el contenedor*/
+}
+
+.new-topic  {
+    display: flex;
+    margin-right: 15px;
+    margin-bottom: 10px; 
+    background-color: #bbb;
+    padding: 6px;
+    box-sizing: border-box;
+    border-radius: 100px;
+    vertical-align: middle;
+}
+
+.new-topic label{
+    margin-right: 5px;
+}
+
+.new-topic button {
+    flex: 1;
+    height: 100%;
+    border: none;
+    cursor: pointer;
+    background: #bbb;
+    border-radius: 100px;
+    padding: 6px;
+}
+.new-topic button:hover {
+    background-color: #666;
+}
+
+#new-topic-container {
+    display: none;
+
+}
+
+#new-topic-input{
+    border: 5px solid #000;
+}
+
+#publish-new-article-btn, #new-topic-btn, #new-topic-container button {
+    background-color: #1c4065;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px 40px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+#new-topic-btn{
+    font-size: 12px;
+    padding: 10px 30px;
+    margin-top: 10px;
+}
+
+#new-topic-container button {
+    font-size: 12px;
+    padding: 5px 20px;
+    font-weight: 100;
+}
+
 

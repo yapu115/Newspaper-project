@@ -3,11 +3,18 @@
 // Variables
 const postsContainer = document.querySelector(".posts")
 let documentFragment = document.createDocumentFragment();
-let userInfo = JSON.parse(localStorage.getItem("userInfo"))
 const date = new Date()
+const loggedInValue = localStorage.getItem("loggedIn");
+let loggedIn; 
+if (loggedInValue) loggedIn = stringToBoolConvertion(loggedInValue);
+else loggedIn = false; 
 
 // IndexedDatabase
 const DBRequestArticles = indexedDB.open("ArticlesDB",1);
+const DBRequestUsers = indexedDB.open("usersDB", 1)
+
+
+
 
 // Open DB
 DBRequestArticles.addEventListener("upgradeneeded", ()=> {
@@ -16,14 +23,60 @@ DBRequestArticles.addEventListener("upgradeneeded", ()=> {
         keyPath: "id",
         autoIncrement: true
     })
-
+    
     store.createIndex("likesCount", "likes", { unique: false } )
     store.createIndex("commentsCount", "comments", { unique: false })
 })
 
+
+
+async function getUserInfo(){
+    return new Promise((resolve, reject) => {
+        DBRequestUsers.onsuccess = ()=>{
+            const db = DBRequestUsers.result;
+            const userId = parseInt(localStorage.getItem("userId"))
+            getUserById(db, userId).then(userInfo => {
+                resolve(userInfo)
+            }).catch(error =>{
+                console.log(error);
+                reject(error);
+            })
+        }
+        DBRequestUsers.onerror = ()=>{
+            const error = new Error("Error obtaining user info");
+            console.log(error);
+            reject(error)
+        }
+    })
+}
+
+function getUserById(db, id){
+    return new Promise((resolve, reject) => {
+        const objectStore = getIDBUserData(db,"readonly")
+
+        const request = objectStore.get(id);
+        request.onsuccess = ()=> {
+            resolve(request.result)
+        }    
+        request.onerror = ()=> {
+            reject(new Error("Error obtaining the users"))
+        }
+    })
+}
+
+function getIDBUserData(db, mode){
+    const transaction = db.transaction("users", mode)
+    const objectStore = transaction.objectStore("users")
+    return objectStore
+}
+
+
 // Succesfull DB open
 DBRequestArticles.onsuccess = () => {
     const db = DBRequestArticles.result;
+    
+
+    // Articles db functions 
 
     function getIDBData(mode){
         const transaction = db.transaction("articles", mode)
@@ -32,8 +85,6 @@ DBRequestArticles.onsuccess = () => {
     }
     
     function saveArticle(article){
-        // const transaction = db.transaction("articles", "readwrite");    
-        // const objectStore = transaction.objectStore("articles")
         const objectStore = getIDBData("readwrite")
         
         const request = objectStore.add(article)
@@ -47,8 +98,6 @@ DBRequestArticles.onsuccess = () => {
 
     function getArticles(){
         return new Promise((resolve, reject) => {
-            // const transaction = db.transaction("articles", "readonly");
-            // const objectStore = transaction.objectStore("articles");
             const objectStore = getIDBData("readonly")
     
             const request = objectStore.getAll();
@@ -104,239 +153,282 @@ DBRequestArticles.onsuccess = () => {
         })
     }
 
-    // Load articles on the page
-    getArticles().then((articles) =>{
-        for (let articleData of articles){
-            const id = articleData.id;
-            const title = articleData.title;
-            const subtitle = articleData.subtitle;
-            const img = articleData.img;
-            const date = articleData.date;
-            const author = articleData.author;
-            const body = articleData.bodyText;
-            const likes = articleData.likes;
-            const comments = articleData.comments;
-            
-            const article = createArticle(id, title, subtitle, img, date, author, body, "a", likes, comments)
-            
-            documentFragment.appendChild(article)
-        }
-        postsContainer.appendChild(documentFragment)
+
+    
         
 
 
-        //////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////
 
-        // If the user is logged
-        let loggedIn = stringToBoolConvertion(localStorage.getItem("loggedIn"))
-        if (loggedIn){
-            let createArticleBtn = createNewArticleButton()
-            
-            const modalBackground = document.getElementById("modal-background");
-            const newArticleModal = document.getElementById("new-article-modal");
-            
-            // New article form
-            createArticleBtn.addEventListener("click", function() {
-                showNewArticleContainer(modalBackground, newArticleModal)
-            })
-            
-            modalBackground.addEventListener("click", function() {
-                modalBackground.style.display = "none";
-                newArticleModal.style.display = "none";
-            });
-            
-            
-            const newArtImgFile = document.getElementById("new-article-img-file");
-            const newArtImage = document.getElementById("new-article-img");
-            const increaseImgWidth = document.getElementById("increase-img-width")
-            const reduceImgWidth = document.getElementById("reduce-img-width")
-            
-
-            // Select an image
-            newArtImgFile.addEventListener("change", function(event) {
-                let file = event.target.files[0];
-                
-                if (file) {
-                    let reader = new FileReader();
-                    reader.onload = function(event) {
-                        let urlImg = event.target.result;
-                        
-                        const img = document.createElement("img");
-                        img.src = urlImg;
-                        img.width = 300;
-                        
-                        newArtImage.innerHTML = "";
-                        newArtImage.appendChild(img);
-                        
-                        increaseImgWidth.style.display = "inline-block";
-                        reduceImgWidth.style.display = "inline-block";
-                        
-                        increaseImgWidth.addEventListener("click", function(){
-                            if (img.width < 400) img.width += 50
-                            console.log(img.width);
-                        })
-                        
-                        reduceImgWidth.addEventListener("click", function(){
-                            if (img.width > 200) img.width -= 50
-                            console.log(img.width);
-                        })
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            
-            // Publish new article 
-            const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
-            publishNewArticleBtn.addEventListener("click", () => {
-                
-                const title = document.getElementById("new-article-title").value;
-                const subtitle = document.getElementById("new-article-subtitle").value;
-                const img = document.getElementById("new-article-img-file").files[0];
-                // const date = document.getElementById("new-article-date").innerHTML;
-                const date = getCompleteDate()
-                const author = `${userInfo.name} ${userInfo.last_name}`
-                const bodyText = document.getElementById("new-article-body").value;
-                const hashtags = document.getElementById("new-article-hashtags").value;
-                
-                const commentsList = []
-
-                const newArticleJSON = {
-                    title: title,
-                    subtitle: subtitle,
-                    img: img,
-                    date: date,
-                    author: author,
-                    bodyText: bodyText,
-                    likes: 0,
-                    comments: commentsList,
-                }
-                
-                saveArticle(newArticleJSON)
-                location.reload();
-                modalBackground.style.display = "none";
-                newArticleModal.style.display = "none";
-            } )
-
-
-            const likeButtons = document.querySelectorAll(".like-button")
-            for (let button of likeButtons){
-                
-                button.addEventListener("click", ()=> {
-                    const likeCount = button.nextElementSibling;
-                    let currentLikes = parseInt(likeCount.textContent);
-                    let buttonPostID = getParentElement(button, 4).id;
-
-                    let clickedState = localStorage.getItem(`clickedStateButton${buttonPostID}${userInfo.username}`);
-                    let clicked;
-                    if (clickedState)
-                        clicked = stringToBoolConvertion(clickedState);
-                    else
-                        clicked = false;
+    // If the user is logged
+    if (loggedIn){
+        getUserInfo().then(userInfo =>{
+            getArticles().then((articles) =>{
+                for (let articleData of articles){
+                    const id = articleData.id;
+                    const title = articleData.title;
+                    const subtitle = articleData.subtitle;
+                    const img = articleData.img;
+                    const date = articleData.date;
+                    const author = articleData.author;
+                    const body = articleData.bodyText;
+                    const likes = articleData.likes;
+                    const comments = articleData.comments;
                     
-                    getArticleById(buttonPostID).then((buttonArticle) =>{
-                        if (!clicked) {
-                            button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
-                            currentLikes ++;
-                            clicked = true;
-                        }
-                        else {
-                            button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
-                            currentLikes --;
-                            clicked = false;
-                        }
-                        likeCount.textContent = currentLikes;
-                        updateArticleLikes(buttonArticle, currentLikes).then(smt => {
-                            console.log("Succesfull like update") 
-                            localStorage.setItem(`clickedStateButton${buttonPostID}${userInfo.username}`, clicked)
-                        }).catch(e =>{
-                            console.log(e)
-                        })
-                        
-                    }).catch(e =>{
-                        console.log(e)
-                    })
-
+                    const article = createArticle(id, title, subtitle, img, date, author, body, "a", likes, comments, userInfo)
+                    
+                    documentFragment.appendChild(article)
+                }
+                postsContainer.appendChild(documentFragment)
+                
+                let createArticleBtn = createNewArticleButton()
+                
+                const modalBackground = document.getElementById("modal-background");
+                const newArticleModal = document.getElementById("new-article-modal");
+                
+                // New article form
+                createArticleBtn.addEventListener("click", function() {
+                    showNewArticleContainer(modalBackground, newArticleModal)
                 })
-            }
-            const commentButtons = document.querySelectorAll(".comment-button");
-            for (let button of commentButtons){
-                let clicked = false;
-                button.addEventListener("click", ()=> {
-                    let buttonPostId = getParentElement(button, 2).nextElementSibling;
-                    if (!clicked) {
-                        button.innerHTML = `<i class="fa-solid fa-comment"></i>`;
-                        buttonPostId.style.display = "block";
-                        clicked = true;
-                    }
-                    else {
-                        buttonPostId.style.display = "none";
-                        button.innerHTML = `<i class="fa-regular fa-comment"></i>`;
-                        clicked = false;
-                    }
-
-                })
-            }
-
-            const cancelCommentButtons = document.querySelectorAll(".new-art-cancel-btn")
+                
+                modalBackground.addEventListener("click", function() {
+                modalBackground.style.display = "none";
+                newArticleModal.style.display = "none";
+                });
             
+            
+                const newArtImgFile = document.getElementById("new-article-img-file");
+                const newArtImage = document.getElementById("new-article-img");
+                const increaseImgWidth = document.getElementById("increase-img-width")
+                const reduceImgWidth = document.getElementById("reduce-img-width")
+            
+            
+                // Select an image
+                newArtImgFile.addEventListener("change", function(event) {
+                    let file = event.target.files[0];
+                    
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function(event) {
+                            let urlImg = event.target.result;
+                            
+                            const img = document.createElement("img");
+                            img.src = urlImg;
+                            img.width = 300;
+                            
+                            newArtImage.innerHTML = "";
+                            newArtImage.appendChild(img);
+                            
+                            increaseImgWidth.style.display = "inline-block";
+                            reduceImgWidth.style.display = "inline-block";
+                            
+                            increaseImgWidth.addEventListener("click", function(){
+                                if (img.width < 400) img.width += 50
+                                console.log(img.width);
+                            })
+                            
+                            reduceImgWidth.addEventListener("click", function(){
+                                if (img.width > 200) img.width -= 50
+                                console.log(img.width);
+                            })
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            
+            
+                // Publish new article 
+                const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
+                publishNewArticleBtn.addEventListener("click", () => {
+                    
+                    const title = document.getElementById("new-article-title").value;
+                    const subtitle = document.getElementById("new-article-subtitle").value;
+                    const img = document.getElementById("new-article-img-file").files[0];
+                    const date = getCompleteDate()
+                    const author = `${userInfo.name} ${userInfo.lastName}`
+                    const bodyText = document.getElementById("new-article-body").value;
+                    const hashtags = document.getElementById("new-article-hashtags").value;
+                    
+                    const commentsList = []
+                    
+                    const newArticleJSON = {
+                        title: title,
+                        subtitle: subtitle,
+                        img: img,
+                        date: date,
+                        author: author,
+                        bodyText: bodyText,
+                        likes: 0,
+                        comments: commentsList,
+                    }
+                    
+                    saveArticle(newArticleJSON)
+                    location.reload();
+                    modalBackground.style.display = "none";
+                    newArticleModal.style.display = "none";
+                } )
+            
+                // Give like to a Document
+                const likeButtons = document.querySelectorAll(".like-button")
+                for (let button of likeButtons){
+                    
+                    button.addEventListener("click", ()=> {
+                        const likeCount = button.nextElementSibling;
+                        let currentLikes = parseInt(likeCount.textContent);
+                        let buttonPostID = getParentElement(button, 4).id;
+                        
+                        let clickedState = localStorage.getItem(`clickedStateButton${buttonPostID}${userInfo.username}`);
+                        let clicked;
+                        if (clickedState)
+                        clicked = stringToBoolConvertion(clickedState);
+                        else
+                        clicked = false;
+                
+                        getArticleById(buttonPostID).then((buttonArticle) =>{
+                            if (!clicked) {
+                                button.innerHTML = `<i class="fa-solid fa-heart"></i>`;
+                                currentLikes ++;
+                                clicked = true;
+                            }
+                            else {
+                                button.innerHTML = `<i class="fa-regular fa-heart"></i>`;
+                                currentLikes --;
+                                clicked = false;
+                            }
+                            likeCount.textContent = currentLikes;
+                            updateArticleLikes(buttonArticle, currentLikes).then(smt => {
+                                console.log("Succesfull like update") 
+                                localStorage.setItem(`clickedStateButton${buttonPostID}${userInfo.username}`, clicked)
+                            }).catch(e =>{
+                                console.log(e)
+                            })
+                        
+                        }).catch(e =>{
+                            console.log(e);
+                        })
+                    })
+                }
+        
+                verifyCommentButtons("block");
 
-            const confirmCommentButtons = document.querySelectorAll(".new-art-comment-btn")
-            for (let button of confirmCommentButtons){
-                const articleId = getParentElement(button, 5).id;
+                const cancelCommentButtons = document.querySelectorAll(".new-art-cancel-btn");
+                for (let button of cancelCommentButtons){
+                    const articleID = getParentElement(button, 5);
+                    
+                    button.addEventListener("click", ()=> {
+                        
+                        const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
+                        commentElement.value = "";
+                    })
+                }
 
-                button.addEventListener("click", ()=> {
-                    const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
-                    const comment = commentElement.value;
 
-
-
-                    if (comment.length > 0){
-                        const username = userInfo.username;
-                        const completeDate = getCompleteDate()
-
-                        const newComment = {
-                            username: username,
-                            date: completeDate,
-                            comment: comment,
-                        }
-
-                        getArticleById(articleId).then((buttonArticle)=> {
-                            updateArticleComments(buttonArticle, newComment).then(()=> {
-                                const divArticleComments = getParentElement(commentElement, 3).lastElementChild;
-                                const divArticleComment = createCommment(newComment);
-
-                                divArticleComments.appendChild(divArticleComment);
-                                commentElement.value = "";
-
+                // Save new Comment
+                const confirmCommentButtons = document.querySelectorAll(".new-art-comment-btn")
+                for (let button of confirmCommentButtons){
+                    const articleId = getParentElement(button, 5).id;
+                    button.addEventListener("click", ()=> {
+                        const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
+                        const comment = commentElement.value;
+                        
+                        if (comment.length > 0){
+                            const username = userInfo.username;
+                            const completeDate = getCompleteDate();
+                            console.log(userInfo.picture)
+                            const picture = userInfo.picture;
+                            console.log(picture)
+                            
+                            const newComment = {
+                                username: username,
+                                date: completeDate,
+                                picture: picture,
+                                comment: comment,
+                            }
+                            
+                            getArticleById(articleId).then((buttonArticle)=> {
+                                updateArticleComments(buttonArticle, newComment).then(()=> {
+                                    const divArticleComments = getParentElement(commentElement, 3).lastElementChild;
+                                    const divArticleComment = createCommment(newComment);
+                                    
+                                    divArticleComments.appendChild(divArticleComment);
+                                    commentElement.value = "";
+                                    
+                                }).catch(e=>{
+                                    console.log(e)
+                                })
                             }).catch(e=>{
                                 console.log(e)
                             })
-                        }).catch(e=>{
-                            console.log(e)
-                        })
-
-                    }
-
-                })
+                        
+                        }
+                    })
+                    // event click
+                }
+                // for
+            }).catch(e=> {
+                console.log(e);
+            })
+            // Get articles
+        }).catch(e =>{
+            console.log(e);
+        })
+        // get UserInfo
+    }
+    else {
+        getArticles().then((articles) =>{
+            for (let articleData of articles){
+                const id = articleData.id;
+                const title = articleData.title;
+                const subtitle = articleData.subtitle;
+                const img = articleData.img;
+                const date = articleData.date;
+                const author = articleData.author;
+                const body = articleData.bodyText;
+                const likes = articleData.likes;
+                const comments = articleData.comments;
+                
+                const article = createArticle(id, title, subtitle, img, date, author, body, "a", likes, comments)
+                
+                documentFragment.appendChild(article)
             }
-        
-        }  
-    }).catch(e=>{
-        console.log(e)
-    })
+            postsContainer.appendChild(documentFragment)
 
-    // DB modification
-    function updateLikes(){
-        const transaction = db.transaction("articles", "readonly");
-        const objectStore = transaction.objectStore("articles");  
+            verifyCommentButtons("none");
 
-        const reques = objectStore.put()
-    } 
+        }).catch(e=>{
+            console.log(e);
+        })
+            
+    }
 }
+    
+    
+    
+function verifyCommentButtons(display){
+    const commentButtons = document.querySelectorAll(".comment-button");
+    for (let button of commentButtons){
+        console.log("a")
+        let clicked = false;
+        button.addEventListener("click", ()=> {
+            let buttonArticleComments = getParentElement(button, 2).nextElementSibling;
+            if (!clicked) {
+                button.innerHTML = `<i class="fa-solid fa-comment"></i>`;
+                buttonArticleComments.style.display = "block";
+                
+                const newArticleComment = buttonArticleComments.firstElementChild
+                newArticleComment.style.display = display;
+                
+                clicked = true;
+            }
+            else {
+                buttonArticleComments.style.display = "none";
+                button.innerHTML = `<i class="fa-regular fa-comment"></i>`;
+                clicked = false;
+            }
 
-
-
+        })
+    }  
+}
 
 
 // Articles creation
@@ -429,9 +521,10 @@ function createCommment(comment){
     const divArticleComment = document.createElement("div");
     divArticleComment.classList.add("article-comment");
 
-
     const imgArticleComment = document.createElement("img"); 
-    imgArticleComment.src = userInfo.picture;
+    readFileImage(comment.picture).then(imgUrl => {
+        imgArticleComment.src = imgUrl;
+    })
 
     const divArticleCommentText = document.createElement("div");
     divArticleCommentText.classList.add("article-comment-text");
@@ -470,7 +563,9 @@ function createCommment(comment){
     return divArticleComment;
 }
 
-function createFooter(id, topics, likes, comments){
+
+
+function createFooter(id, topics, likes, comments, userInfo){
     const footer = document.createElement("footer");
     footer.classList.add("article-footer");
 
@@ -495,9 +590,9 @@ function createFooter(id, topics, likes, comments){
         if (i == 0){
             buttonType = "like"
             if (stringToBoolConvertion(localStorage.getItem(`clickedStateButton${id}${userInfo.username}`)))  
-                iclassIconType = "fa-solid"
+                iclassIconType = "fa-solid";
             else
-                iclassIconType = "fa-regular"
+                iclassIconType = "fa-regular";
         
 
             iclassIcon = "fa-heart"
@@ -541,14 +636,20 @@ function createFooter(id, topics, likes, comments){
     const divTextArticleComment = document.createElement("div");
     divTextArticleComment.classList.add("text-article-comment");
 
-    const imgNewCommentUser = document.createElement("img")
-    imgNewCommentUser.src = userInfo.picture;
+    if (loggedIn){
+        const imgNewCommentUser = document.createElement("img");
+        readFileImage(userInfo.picture).then(imgUrl => {
+            imgNewCommentUser.src = imgUrl;
+        }).catch(error =>{
+            console.log(error.message);
+        })
+        divTextArticleComment.appendChild(imgNewCommentUser)
+    }
 
     const textAreaNewComment = document.createElement("textarea");
     textAreaNewComment.placeholder = "Add a comment...";
-    textAreaNewComment.name = "comment-text"
+    textAreaNewComment.name = "comment-text";
 
-    divTextArticleComment.appendChild(imgNewCommentUser)
     divTextArticleComment.appendChild(textAreaNewComment);
 
     const divButtonsArticleNewComment = document.createElement("div");
@@ -600,7 +701,7 @@ function createFooter(id, topics, likes, comments){
 }
 
 
-function createArticle(id, title, subtitle, image, date, author, bodyText, topics, likes, comments){
+function createArticle(id, title, subtitle, image, date, author, bodyText, topics, likes, comments, userInfo={}){
     const article = document.createElement("article"); 
     article.classList.add("post");
     article.id = id;
@@ -611,7 +712,7 @@ function createArticle(id, title, subtitle, image, date, author, bodyText, topic
     const section = createSection(date, author, bodyText)
     article.appendChild(section);
 
-    const footer = createFooter(id, topics, likes, comments)
+    const footer = createFooter(id, topics, likes, comments, userInfo)
     article.appendChild(footer)
 
     return article

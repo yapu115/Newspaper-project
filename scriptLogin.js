@@ -140,7 +140,7 @@ DBRequestUsers.onsuccess = () => {
             }
         })    
     }
-    //// HACER QUE NADA MAS SE PUEDAN IMPORTAR IMAGENES 1X1 y sacar la eliminacion del localStorage
+
 
     const signupPicture = document.getElementById("signup-picture");
     document.getElementById("signup-picture-file").addEventListener("change",(event) => {
@@ -236,8 +236,15 @@ if (!loggedIn){
     }
 
 }
-window.addEventListener("beforeunload", localStorage.removeItem("showSignUp"))
 
+let pageReloading = false;
+window.addEventListener("beforeunload", ()=> {
+    pageReloading = true;
+})
+
+window.addEventListener("unload", ()=>{
+    if (!pageReloading) localStorage.removeItem("showSignUp")
+})
 
 
 function stringToBoolConvertion(string) {
@@ -279,43 +286,30 @@ function welcomeUser(userInfo){
     const loginContainer = document.getElementById("login-container");
     loginContainer.style.display = "none"
     
-    let welcomeDiv = document.createElement("div");
-    welcomeDiv.setAttribute("id", "welcome-container")
+    const profileContainer = document.getElementById("profile-container");
+    const profileImg = document.getElementById("profile-img");
 
-    let userForm = document.getElementById("login-signup-container");
-    userForm.appendChild(welcomeDiv); 
+    const profileText = document.getElementById("profile-text");
 
-    let userPicture = document.createElement("img");
+    profileText.firstElementChild.firstElementChild.innerHTML = userInfo.username;
+    profileText.firstElementChild.nextElementSibling.innerHTML = `${userInfo.name} ${userInfo.lastName}`
+    profileText.lastElementChild.innerHTML = userInfo.email;
+
     readFileImage(userInfo.picture).then(imgUrl => {
-        userPicture.setAttribute("src", imgUrl)
+        profileImg.setAttribute("src", imgUrl)
     }).catch(error => {
         console.log(error.message)
     })
 
-    userPicture.setAttribute("id", "user-picture")
-
-    const welcomeText = document.createTextNode(`Welcome back ${userInfo.name}!`)
-    const welcomeP = document.createElement("p")
-    welcomeP.appendChild(welcomeText)
-    welcomeP.setAttribute("id", "welcome-text")
-
-    const logOutBtn = document.createElement("button")
-    const botonText = document.createTextNode(`Log out`)
-    logOutBtn.appendChild(botonText)
-    
-    
-    
-    welcomeDiv.appendChild(welcomeP)
-    welcomeDiv.appendChild(userPicture)
-    welcomeDiv.appendChild(logOutBtn)
-    
-    
-    logOutBtn.addEventListener("click", function() {
+    profileContainer.style.display = "block";
+    document.getElementById("logout-btn").addEventListener("click", ()=> {
         loginContainer.style.display = "block";
-        welcomeDiv.style.display = "none";
+        profileContainer.style.display = "none";
         loggedIn = false;
         localStorage.setItem("loggedIn", loggedIn)
     })
+
+
 }
 
 

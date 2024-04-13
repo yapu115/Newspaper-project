@@ -2,8 +2,16 @@
 
 // Variables
 const postsContainer = document.querySelector(".posts")
-let documentFragment = document.createDocumentFragment();
+const documentFragment = document.createDocumentFragment();
 const date = new Date()
+
+// Staff info 
+const getStaffInfo = async ()=>{
+    let request = await fetch("staff_info.txt")
+    return await request.json()   
+}
+
+// Logged In
 const loggedInValue = localStorage.getItem("loggedIn");
 let loggedIn; 
 if (loggedInValue) loggedIn = stringToBoolConvertion(loggedInValue);
@@ -180,93 +188,102 @@ DBRequestArticles.onsuccess = () => {
                     documentFragment.appendChild(article)
                 }
                 postsContainer.appendChild(documentFragment)
-                
-                let createArticleBtn = createNewArticleButton()
-                
-                const modalBackground = document.getElementById("modal-background");
-                const newArticleModal = document.getElementById("new-article-modal");
-                
-                // New article form
-                createArticleBtn.addEventListener("click", function() {
-                    showNewArticleContainer(modalBackground, newArticleModal)
+
+                getStaffInfo().then(staffInfo => {
+                    for (let staffUser of staffInfo){
+
+                        if ((userInfo.username === staffUser.username) && (userInfo.password === staffUser.password))
+                        {
+                            let createArticleBtn = createNewArticleButton()
+                            
+                            const modalBackground = document.getElementById("modal-background");
+                            const newArticleModal = document.getElementById("new-article-modal");
+                            
+                            // New article form
+                            createArticleBtn.addEventListener("click", function() {
+                                showNewArticleContainer(modalBackground, newArticleModal)
+                            })
+                            
+                            modalBackground.addEventListener("click", function() {
+                            modalBackground.style.display = "none";
+                            newArticleModal.style.display = "none";
+                            });
+                        
+                        
+                            const newArtImgFile = document.getElementById("new-article-img-file");
+                            const newArtImage = document.getElementById("new-article-img");
+                            const increaseImgWidth = document.getElementById("increase-img-width")
+                            const reduceImgWidth = document.getElementById("reduce-img-width")
+                        
+                        
+                            // Select an image
+                            newArtImgFile.addEventListener("change", function(event) {
+                                let file = event.target.files[0];
+                                
+                                if (file) {
+                                    let reader = new FileReader();
+                                    reader.onload = function(event) {
+                                        let urlImg = event.target.result;
+                                        
+                                        const img = document.createElement("img");
+                                        img.src = urlImg;
+                                        img.width = 300;
+                                        
+                                        newArtImage.innerHTML = "";
+                                        newArtImage.appendChild(img);
+                                        
+                                        increaseImgWidth.style.display = "inline-block";
+                                        reduceImgWidth.style.display = "inline-block";
+                                        
+                                        increaseImgWidth.addEventListener("click", function(){
+                                            if (img.width < 400) img.width += 50
+                                            console.log(img.width);
+                                        })
+                                        
+                                        reduceImgWidth.addEventListener("click", function(){
+                                            if (img.width > 200) img.width -= 50
+                                            console.log(img.width);
+                                        })
+                                    };
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        
+                        
+                            // Publish new article 
+                            const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
+                            publishNewArticleBtn.addEventListener("click", () => {
+                                
+                                const title = document.getElementById("new-article-title").value;
+                                const subtitle = document.getElementById("new-article-subtitle").value;
+                                const img = document.getElementById("new-article-img-file").files[0];
+                                const date = getCompleteDate()
+                                const author = `${userInfo.name} ${userInfo.lastName}`
+                                const bodyText = document.getElementById("new-article-body").value;
+                                const hashtags = document.getElementById("new-article-hashtags").value;
+                                
+                                const commentsList = []
+                                
+                                const newArticleJSON = {
+                                    title: title,
+                                    subtitle: subtitle,
+                                    img: img,
+                                    date: date,
+                                    author: author,
+                                    bodyText: bodyText,
+                                    likes: 0,
+                                    comments: commentsList,
+                                }
+                                
+                                saveArticle(newArticleJSON)
+                                location.reload();
+                                modalBackground.style.display = "none";
+                                newArticleModal.style.display = "none";
+                            })
+                        }
+                    }
                 })
                 
-                modalBackground.addEventListener("click", function() {
-                modalBackground.style.display = "none";
-                newArticleModal.style.display = "none";
-                });
-            
-            
-                const newArtImgFile = document.getElementById("new-article-img-file");
-                const newArtImage = document.getElementById("new-article-img");
-                const increaseImgWidth = document.getElementById("increase-img-width")
-                const reduceImgWidth = document.getElementById("reduce-img-width")
-            
-            
-                // Select an image
-                newArtImgFile.addEventListener("change", function(event) {
-                    let file = event.target.files[0];
-                    
-                    if (file) {
-                        let reader = new FileReader();
-                        reader.onload = function(event) {
-                            let urlImg = event.target.result;
-                            
-                            const img = document.createElement("img");
-                            img.src = urlImg;
-                            img.width = 300;
-                            
-                            newArtImage.innerHTML = "";
-                            newArtImage.appendChild(img);
-                            
-                            increaseImgWidth.style.display = "inline-block";
-                            reduceImgWidth.style.display = "inline-block";
-                            
-                            increaseImgWidth.addEventListener("click", function(){
-                                if (img.width < 400) img.width += 50
-                                console.log(img.width);
-                            })
-                            
-                            reduceImgWidth.addEventListener("click", function(){
-                                if (img.width > 200) img.width -= 50
-                                console.log(img.width);
-                            })
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            
-            
-                // Publish new article 
-                const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
-                publishNewArticleBtn.addEventListener("click", () => {
-                    
-                    const title = document.getElementById("new-article-title").value;
-                    const subtitle = document.getElementById("new-article-subtitle").value;
-                    const img = document.getElementById("new-article-img-file").files[0];
-                    const date = getCompleteDate()
-                    const author = `${userInfo.name} ${userInfo.lastName}`
-                    const bodyText = document.getElementById("new-article-body").value;
-                    const hashtags = document.getElementById("new-article-hashtags").value;
-                    
-                    const commentsList = []
-                    
-                    const newArticleJSON = {
-                        title: title,
-                        subtitle: subtitle,
-                        img: img,
-                        date: date,
-                        author: author,
-                        bodyText: bodyText,
-                        likes: 0,
-                        comments: commentsList,
-                    }
-                    
-                    saveArticle(newArticleJSON)
-                    location.reload();
-                    modalBackground.style.display = "none";
-                    newArticleModal.style.display = "none";
-                } )
             
                 // Give like to a Document
                 const likeButtons = document.querySelectorAll(".like-button")

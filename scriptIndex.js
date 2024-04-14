@@ -415,6 +415,22 @@ DBRequestArticles.onsuccess = () => {
                     // event click
                 }
                 // for
+            
+                window.onscroll = function(){stickNavBar()}
+        
+                var navbar = document.getElementById("navbar");
+                var sticky = navbar.offsetTop - 5;
+                
+                function stickNavBar() {
+                    if (window.pageYOffset >= sticky) {
+                        console.log(sticky)
+                        navbar.classList.add("sticky")
+                    } else {
+                        navbar.classList.remove("sticky");
+                    }
+                }
+            
+            
             }).catch(e=> {
                 console.log(e);
             })
@@ -423,6 +439,8 @@ DBRequestArticles.onsuccess = () => {
             console.log(e);
         })
         // get UserInfo
+    
+    
     }
     else {
         getArticles().then((articles) =>{
@@ -447,9 +465,17 @@ DBRequestArticles.onsuccess = () => {
 
         }).catch(e=>{
             console.log(e);
-        })
-            
+        })       
     }
+
+    document.getElementById("sidebar-btn").addEventListener("click", function() {
+        document.getElementById("sidebar").style.left = "0"; // Mostrar el menú
+    });
+    
+    document.getElementById("closeBtn").addEventListener("click", function() {
+        document.getElementById("sidebar").style.left = "-250px"; // Ocultar el menú
+    });
+   
 }
     
     

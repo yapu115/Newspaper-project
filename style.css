@@ -14,19 +14,15 @@ body {
 
 
 
-/* La parte de arriba*/
 .page-head {
     background-color: #1c4065;
     color: white;
     text-align: center;
-    
+    position: relative;
+
 }
 
 .head-elements{
-    padding: 0 10rem;
-    /*
-    
-    */
     font-family: 'Times New Roman', Times, serif;
 }
 
@@ -51,26 +47,40 @@ body {
 }
 
 
-.navbar {
+#navbar {
     /*
     
-    */
-    /* position: fixed; */
-    width: 100%;
     margin-top: 2rem;
+    */    
     display: flex;
-    justify-content:center;
-    padding: 10px 20px;
+    width: 100%;
+    height: 30px;
+    padding: 10px;
+    background-color: #1c4065;
+    z-index: 1000;
+    /* justify-content: space-between; */
+}
+
+.sticky{
+    position: fixed;
+    top: 0;
+}
+
+#navbar-left-item {
+    width: 30px;
+    margin-left: 20px;
+}
+#navbar-center-items{
+    margin: 0 auto;
 }
 
 .navbar-item {
-       /*
-       
-       */
+    /*
+    
+    */
+    padding: 5px 15px;
+    margin: 0 10px;
     color: white;
-    margin-right: 15px;
-    margin-left: 15px;
-    padding: 0.3rem 2rem;
     text-decoration: none;
     background-size: cover;
     background-color: transparent;
@@ -86,7 +96,65 @@ body {
     transform: scale(1.10);
 }    
 
+#sidebar-btn {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
 
+
+#sidebar-container {
+    display: flex;
+    margin-left: 100px;
+}
+
+
+#sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Inicialmente oculto fuera de la pantalla */
+    transition: left 0.3s ease;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+    color: white;
+}
+
+#sidebar ul li a:hover {
+    background-color: #555;
+}
+
+#content {
+    flex: 1;
+    padding: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+/* Cada post individual*/
 
 .heading {
     /*
@@ -103,7 +171,6 @@ body {
 
 
 
-/* Cada post individual*/
 .post {
     width: 600px;
     margin: 50px auto 50px; 

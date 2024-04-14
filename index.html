@@ -18,14 +18,29 @@
                 <h1 class="head-title">THE DAILY BUGLE</h1>
                 <h3 class="head-subtitle">New york's most trusted newspaper</h3>
             </div>
-            <nav class="navbar">
+            <nav id="navbar">
+                <div id="navbar-left-item">
+                    <button id="sidebar-btn" class="navbar-item">=</button>
+                </div>
+                <div id="navbar-center-items">
                     <a href="index.html" class="navbar-item">Articles</a>
                     <a href="staff.html" class="navbar-item">Staff</a>
                     <a href="signin.html" class="navbar-item">Sign in</a>
                     <a href="about.html" class="navbar-item">About</a>
+                </div>
             </nav>
         </div>
     </Header>
+    <div id="sidebar-container">
+        <div id="sidebar">
+            <ul>
+                <li>Economy</li>
+                <li>Sports</li>
+                <li>Politics</li>
+                <li>Spiderman</li>
+            </ul>
+        </div>
+    </div>
     <form class="articles">
         <section class="posts">
             <!-- Primer -->
@@ -444,7 +459,7 @@
                         <textarea id="new-article-body" placeholder="Body of the article"></textarea>
                         
                     </div>
-                    
+
                     <div id="new-article-footer">
                         <div id="new-article-topics-container">
                             <div id="new-article-topics">

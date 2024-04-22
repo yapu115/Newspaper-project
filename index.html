@@ -18,31 +18,37 @@
                 <h1 class="head-title">THE DAILY BUGLE</h1>
                 <h3 class="head-subtitle">New york's most trusted newspaper</h3>
             </div>
-            <nav id="navbar">
-                <div id="navbar-left-item">
-                    <button id="sidebar-btn" class="navbar-item">=</button>
+            <div id="bars">
+                <nav id="navbar">
+                    
+                    <div id="navbar-left-item">
+                        <button id="sidebar-btn" class="navbar-item">☰</button>
+                    </div>
+                    <div id="navbar-center-items">
+                        <a href="index.html" class="navbar-item">Articles</a>
+                        <a href="staff.html" class="navbar-item">Staff</a>
+                        <a href="signin.html" class="navbar-item">Sign in</a>
+                        <a href="about.html" class="navbar-item">About</a>
+                    </div>
+                </nav>
+                
+                <div id="sidebar">
+                    <div id="general-topics">
+                        <h2>General topics</h2>
+                        <button class="featured-topic">Economy</button>
+                        <button class="featured-topic">Sports</button>
+                        <button class="featured-topic">Politics</button>
+                        <button class="featured-topic">Spiderman</button>
+                    </div>
+                    <div id="popular-topics">
+                        <h2>Most published topics</h2>
+                    </div>
                 </div>
-                <div id="navbar-center-items">
-                    <a href="index.html" class="navbar-item">Articles</a>
-                    <a href="staff.html" class="navbar-item">Staff</a>
-                    <a href="signin.html" class="navbar-item">Sign in</a>
-                    <a href="about.html" class="navbar-item">About</a>
-                </div>
-            </nav>
+            </div>
         </div>
     </Header>
-    <div id="sidebar-container">
-        <div id="sidebar">
-            <ul>
-                <li>Economy</li>
-                <li>Sports</li>
-                <li>Politics</li>
-                <li>Spiderman</li>
-            </ul>
-        </div>
-    </div>
     <form class="articles">
-        <section class="posts">
+        <section id="posts">
             <!-- Primer -->
             <article class="post">
                 <header class="heading">

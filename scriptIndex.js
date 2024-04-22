@@ -1,7 +1,7 @@
 "use strict"
 
 // Variables
-const postsContainer = document.querySelector(".posts")
+const postsContainer = document.getElementById("posts")
 const documentFragment = document.createDocumentFragment();
 const date = new Date()
 
@@ -53,7 +53,7 @@ async function getUserInfo(){
         DBRequestUsers.onerror = ()=>{
             const error = new Error("Error obtaining user info");
             console.log(error);
-            reject(error)
+            reject(error);
         }
     })
 }
@@ -173,18 +173,7 @@ DBRequestArticles.onsuccess = () => {
         getUserInfo().then(userInfo =>{
             getArticles().then((articles) =>{
                 for (let articleData of articles){
-                    const id = articleData.id;
-                    const title = articleData.title;
-                    const subtitle = articleData.subtitle;
-                    const img = articleData.img;
-                    const date = articleData.date;
-                    const author = articleData.author;
-                    const body = articleData.bodyText;
-                    const likes = articleData.likes;
-                    const comments = articleData.comments;
-                    const topics = articleData.topics;
-                    
-                    const article = createArticle(id, title, subtitle, img, date, author, body, topics, likes, comments, userInfo)
+                    const article = createArticle(articleData, userInfo)
                     
                     documentFragment.appendChild(article)
                 }
@@ -415,20 +404,7 @@ DBRequestArticles.onsuccess = () => {
                     // event click
                 }
                 // for
-            
-                window.onscroll = function(){stickNavBar()}
-        
-                var navbar = document.getElementById("navbar");
-                var sticky = navbar.offsetTop - 5;
-                
-                function stickNavBar() {
-                    if (window.pageYOffset >= sticky) {
-                        console.log(sticky)
-                        navbar.classList.add("sticky")
-                    } else {
-                        navbar.classList.remove("sticky");
-                    }
-                }
+                setPopularTopics(articles, userInfo);
             
             
             }).catch(e=> {
@@ -445,35 +421,42 @@ DBRequestArticles.onsuccess = () => {
     else {
         getArticles().then((articles) =>{
             for (let articleData of articles){
-                const id = articleData.id;
-                const title = articleData.title;
-                const subtitle = articleData.subtitle;
-                const img = articleData.img;
-                const date = articleData.date;
-                const author = articleData.author;
-                const body = articleData.bodyText;
-                const likes = articleData.likes;
-                const comments = articleData.comments;
-                
-                const article = createArticle(id, title, subtitle, img, date, author, body, "a", likes, comments)
+                const article = createArticle(articleData)
                 
                 documentFragment.appendChild(article)
             }
             postsContainer.appendChild(documentFragment)
 
             verifyCommentButtons("none");
+            setPopularTopics(articles);
 
         }).catch(e=>{
             console.log(e);
         })       
     }
 
-    document.getElementById("sidebar-btn").addEventListener("click", function() {
-        document.getElementById("sidebar").style.left = "0"; // Mostrar el menú
-    });
+    window.onscroll = function(){
+        stickNavBar();
+    }
     
-    document.getElementById("closeBtn").addEventListener("click", function() {
-        document.getElementById("sidebar").style.left = "-250px"; // Ocultar el menú
+    const navbar = document.getElementById("navbar");
+    const sidebar = document.getElementById("sidebar");
+    const bars = document.getElementById("bars");
+    
+    let sticky = navbar.offsetTop;
+    
+    function stickNavBar() {
+        if (window.pageYOffset >= sticky) {
+            bars.classList.add("sticky");
+        } else {
+            bars.classList.remove("sticky");
+        }
+    }
+
+    
+
+    document.getElementById("sidebar-btn").addEventListener("click", ()=> {
+        sidebar.classList.toggle("active");
     });
    
 }
@@ -773,15 +756,27 @@ function createFooter(id, topics, likes, comments, userInfo){
 }
 
 
-function createArticle(id, title, subtitle, image, date, author, bodyText, topics, likes, comments, userInfo={}){
+function createArticle(articleData, userInfo={}){
+
+    const id = articleData.id;
+    const title = articleData.title;
+    const subtitle = articleData.subtitle;
+    const img = articleData.img;
+    const date = articleData.date;
+    const author = articleData.author;
+    const body = articleData.bodyText;
+    const likes = articleData.likes;
+    const comments = articleData.comments;
+    const topics = articleData.topics;
+
     const article = document.createElement("article"); 
     article.classList.add("post");
     article.id = id;
 
-    const header = createHeader(title, subtitle, image)
+    const header = createHeader(title, subtitle, img)
     article.appendChild(header);
 
-    const section = createSection(date, author, bodyText)
+    const section = createSection(date, author, body)
     article.appendChild(section);
 
     const footer = createFooter(id, topics, likes, comments, userInfo)
@@ -846,10 +841,83 @@ function getNewArticleTopics(){
 }
 
 
+function setPopularTopics(articles, userInfo={}){
+    let topicsList = [];
+        for(const article of articles){
+
+            const topics = article.topics;
+            for(let topic of topics){
+                topicsList.push(topic);
+            }
+        }
+        const popularTopicsSidebar = document.getElementById("popular-topics");
+
+        let orderedTopics = findMostRepeatedElements(topicsList);
+        for (let topic in orderedTopics){
+
+            const topicButton = document.createElement("button");
+            topicButton.classList.add("featured-topic");
+            topicButton.innerHTML = topic;
+
+            popularTopicsSidebar.appendChild(topicButton);
+        };
+        
+        const featuredTopics = document.querySelectorAll(".featured-topic");
+
+        for(let fTopic of featuredTopics){
+            fTopic.addEventListener("click", ()=> {
+                getArticlesByTopic(articles, fTopic.innerHTML, userInfo);
+                document.getElementById("sidebar").classList.remove("active");
+            })
+        }
+}
 
 
+function findMostRepeatedElements(array) {
+    let counter = {};
+
+    for(let element of array) {
+        counter[element] = (counter[element] || 0) + 1;
+    };
+    
+    let elementCounterList = Object.entries(counter);
+    elementCounterList.sort((a, b) => b[1] - a[1]);
+    
+    let topElements = elementCounterList.slice(0, 5);
+    let topicCounerPair = {}
+
+    for(let element of topElements){
+        topicCounerPair[element[0]] = element[1];
+    }
+    return topicCounerPair;
+}
 
 
+function getArticlesByTopic(articles, topic, userInfo){
+    let topicArticles = [];
+
+    for(let article of articles){
+        let articleTopics = article.topics;
+
+        for (let artTopic of articleTopics){
+            if (artTopic.toLowerCase() === topic.toLowerCase()){
+                topicArticles.push(article);
+
+            }
+        }
+    }
+    while(postsContainer.firstChild){
+        postsContainer.removeChild(postsContainer.firstChild);
+    }
+    if (topicArticles.length > 0){
+
+        for (let articleData of topicArticles){
+            const article = createArticle(articleData, userInfo);
+            documentFragment.appendChild(article);
+        }
+        postsContainer.appendChild(documentFragment)
+    }
+}
 
 
 // convertion

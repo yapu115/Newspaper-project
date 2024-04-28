@@ -121,7 +121,7 @@ body {
     transition: left 0.3s ease;
     z-index: 999;
     position: absolute;
-    height: 750px;
+    height: 900px;
 }
 
 #sidebar.active {

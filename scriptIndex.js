@@ -17,6 +17,9 @@ let loggedIn;
 if (loggedInValue) loggedIn = stringToBoolConvertion(loggedInValue);
 else loggedIn = false; 
 
+// Ordered by
+let orderByLikes = false;
+
 // IndexedDatabase
 const DBRequestArticles = indexedDB.open("ArticlesDB",1);
 const DBRequestUsers = indexedDB.open("usersDB", 1)
@@ -405,6 +408,9 @@ DBRequestArticles.onsuccess = () => {
                 }
                 // for
                 setPopularTopics(articles, userInfo);
+
+                getSort(articles, userInfo);
+                
             
             
             }).catch(e=> {
@@ -429,6 +435,7 @@ DBRequestArticles.onsuccess = () => {
 
             verifyCommentButtons("none");
             setPopularTopics(articles);
+            getSort(articles);
 
         }).catch(e=>{
             console.log(e);
@@ -458,6 +465,8 @@ DBRequestArticles.onsuccess = () => {
     document.getElementById("sidebar-btn").addEventListener("click", ()=> {
         sidebar.classList.toggle("active");
     });
+
+    
    
 }
     
@@ -782,7 +791,7 @@ function createArticle(articleData, userInfo={}){
     const footer = createFooter(id, topics, likes, comments, userInfo)
     article.appendChild(footer)
 
-    return article
+    return article;
 }
 
 
@@ -906,9 +915,7 @@ function getArticlesByTopic(articles, topic, userInfo){
             }
         }
     }
-    while(postsContainer.firstChild){
-        postsContainer.removeChild(postsContainer.firstChild);
-    }
+    cleanArticles();
     if (topicArticles.length > 0){
 
         for (let articleData of topicArticles){
@@ -919,6 +926,84 @@ function getArticlesByTopic(articles, topic, userInfo){
     }
 }
 
+function cleanArticles(){
+    while(postsContainer.firstChild){
+        postsContainer.removeChild(postsContainer.firstChild);
+    }
+}
+
+
+
+
+function getSort(articles, userInfo={}){
+
+    const ascArtBtn = document.getElementById("asc-article-btn");
+    const descArtBtn = document.getElementById("desc-article-btn");
+
+    document.getElementById("sort-by-date").addEventListener("click", ()=>{
+        orderByLikes = false;
+        sortBy(articles, userInfo);
+
+        ascArtBtn.innerHTML = "Least recent";
+        descArtBtn.innerHTML = "Most recent";
+    });
+    document.getElementById("sort-by-like").addEventListener("click", ()=>{
+        orderByLikes = true;
+        sortBy(articles, userInfo);
+
+        ascArtBtn.innerHTML = "Least liked";
+        descArtBtn.innerHTML = "Most liked";
+    }); 
+    ascArtBtn.addEventListener("click", ()=> {
+            sortBy(articles, userInfo, true);
+    }) 
+    descArtBtn.addEventListener("click", ()=> {
+            sortBy(articles, userInfo);
+    }) 
+}
+
+
+function orderArticlesByLikes(articles, asc){
+    if (asc){
+        return articles.sort((a,b) => a.likes - b.likes);
+    }
+    return articles.sort((a, b) => b.likes - a.likes);
+}
+
+function orderArticlesByDate(articles, asc){
+    if (asc) return articles.sort(sortDatesAsc);
+    return articles.sort(sortDatesDesc);
+}
+
+function sortDatesDesc(a, b){
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateA - dateB;
+}
+
+function sortDatesAsc(a, b){
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateB - dateA;
+}
+
+function sortBy(articles, userInfo, asc=false){  
+    let sortedArticles;
+    
+    if ((orderByLikes)){
+        sortedArticles = orderArticlesByLikes(articles, asc);
+    }
+    else{
+        sortedArticles = orderArticlesByDate(articles, asc);
+    }
+
+    cleanArticles();
+    for (let articleData of sortedArticles){
+        const article = createArticle(articleData, userInfo);
+        documentFragment.appendChild(article);
+    }
+    postsContainer.appendChild(documentFragment)
+}
 
 // convertion
 function stringToBoolConvertion(string) {

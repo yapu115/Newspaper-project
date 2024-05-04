@@ -45,10 +45,10 @@
                     </div>
                     <div id="order-by">
                         <h2>Order by</h2>
-                        <button id="sort-by-like">Likes</button>
-                        <button id="sort-by-date">Date</button>
-                        <button id="desc-article-btn">Most recent</button>
-                        <button id="asc-article-btn">Least recent</button>
+                        <button id="sort-by-like" class="featured-topic">Likes</button>
+                        <button id="sort-by-date" class="featured-topic">Date</button>
+                        <button id="desc-article-btn" class="featured-topic">Most recent</button>
+                        <button id="asc-article-btn" class="featured-topic">Least recent</button>
 
                     </div>
                 </div>
@@ -58,7 +58,7 @@
     <form class="articles">
         <section id="posts">
             <!-- Primer -->
-            <article class="post">
+            <!-- <article class="post">
                 <header class="heading">
                     <img src="img/bugle_logo.jpg" alt="daily bugle logo" class="logo-head" width="500">
                     <h2 class="title">The Stacy family: One year later</h2>
@@ -294,7 +294,7 @@
                                 </div>
                             </div>
 
-                        <!-- THE comment section -->
+                        THE comment section
                             <div class="article-comment-section">
                                 <div class="new-article-comment">
                                     <div class="text-article-comment">
@@ -366,17 +366,15 @@
 
 
 
-
+-->
             <article class="post">
                 <header class="heading">
-                    <!-- CABEZA DEL POST -->
                     <img src="img/bugle_logo.jpg" alt="daily bugle logo" class="logo-head" width="600">
                     <h2 class="title">Spiderman: Threat or menace</h2>
                     <p class="subtitle">Is spiderman really who he says he is?</p>
                     <img src="img/report_images/spiderman_wanted.jpg" alt="spiderman wanted" class="post-photo" width="300">
                 </header>
                 <section class="post-content">
-                    <!-- CONTENIDO DEL POST -->
                     <div class="post-date">
                         <p>October 30th 2013</p>
                     </div> 
@@ -425,7 +423,7 @@
                         </div>
                     </section>
                     <footer class="article-footer">
-                        <!-- PIE DEL POST -->
+                        
                         <div class="article-topics">
                             <p>#spiderman #daily bugle #news #j.jonah jameson</p>
                         </div>
@@ -439,8 +437,11 @@
                                 <p class="comment-count">20</p>
                             </div>
                         </div>
+                        <div>
+                            <button>Edit</button>
+                        </div>
                     </footer>
-                </article>
+                </article> 
             </section>
             <div id="new-article-button-div"></div>
             <div id="modal-background" display="none"></div>
@@ -489,6 +490,8 @@
                     </div>
 
                     <button type="button" id="publish-new-article-btn">Publish</button>
+
+                    <button type="button" id="delete-article-btn">delete</button>
                 </form>
             </div>
             <script src="scriptIndex.js"></script>

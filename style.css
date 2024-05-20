@@ -3,7 +3,7 @@ html{
     /*
     font-family: 'Times New Roman', Times, serif;
     */
-    font-family: 'Oswald';
+    font-family: 'Oswald', "Times New Roman", Times, serif;
 }
 
 /* Toda la página */
@@ -130,10 +130,18 @@ body {
     left: 0;
 }
 
+#order-by h2, #general-topics h2, #popular-topics h2 {
+    font-size: 2em;
+    font-weight: bold; 
+    color: #aaa;
+    text-align: center; /* Centrado */
+    margin: 20px 0; /* Espaciado arriba y abajo */
+    padding: 10px; /* Relleno */
+    border-bottom: 2px solid #aaa; /* Línea inferior */
+}
 
-
-#popular-topics, #general-topics{
-    margin-left: 30px;
+#popular-topics, #order-by{
+    margin-left: 20px;
     padding: 20px;
 
     flex: 1;
@@ -142,7 +150,7 @@ body {
 #sidebar button {
     background: none;
     border: none;
-    color: white;
+    color: #eee;
     cursor: pointer;
     display: block;
     font: inherit;
@@ -220,11 +228,13 @@ body {
     /*
     
     */
+    margin-bottom: 30px;
     text-align: center;
     font-weight: bold;
     font-style: italic;
     text-transform: capitalize;
     word-spacing: 2px;
+
 }    
 
 
@@ -489,7 +499,7 @@ body {
 
 
 .about-us-description {
-    margin: 80px 250px;
+    margin: 5% 10%;
     font-size: 25px;
 }
 
@@ -817,7 +827,6 @@ button:hover {
     background-color: #fff;
     border-bottom: 10px double black;
     border-top: 10px double black;
-    
     width: 90%;
     height: 40px;
 }

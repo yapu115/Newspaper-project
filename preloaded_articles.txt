@@ -1,0 +1,104 @@
+[
+    {
+        "title": "Curt Connors, 1 year later",  
+        "subtitle": "What does his wife think about him?",
+        "img": "img/report_images/dr_connors.jpg",
+        "img_width": "250",
+        "date": "4/28/2014, 08:00 PM",
+        "author": "Joseph Robertson",
+        "bodyText": "In the wake of her husband Dr. Curt Connors’s horrifying transformation into a lizard creature and subsequent rampage across New York, Martha Connors left the city to begin a new life with her son Billy. As the one year anniversary of the event approaches on Thursday, we caught up with her to talk where she’s been, where she’s going and ultimately what it’s like to have a convicted bioterrorist as an estranged husband.$$$Daily Bugle: How hard has this been for you?$$$Martha Connors: Are you kidding? Is this a joke? My heart aches every day for what Curt did.$$$DB: What do you think his reasons were?$$$Martha: Like he said at his trial, I do believe his reasons started out for noble purposes. But he took it too far, he was obsessive. Whenever you push boundaries like that… it can get bad.$$$DB: Do you think Oscorp bears some responsibility for what happened?$$$Martha: (long pause) I think it’s best if I kept my opinions to myself.$$$DB: Is that because Oscorp was rumored to have paid you a substantial fee in return for your silence?$$$Martha: Any money I received from Oscorp was all based on Curt’s contract with the company.$$$DB: Even though they claim to have fired him before the Lizard’s attack?$$$Martha: You’d have to ask them.$$$DB: I’m sorry, I didn’t want to go off on a tangent. Tell me about Billy?$$$Martha: He’s ten. He’s too young to really comprehend the magnitude of the pain his father has caused, but he is old enough to understand his father has issues and has done some very horrible things.$$$DB: What did you think when you first heard the news?$$$Martha: Like everyone else, I watched the attack live on cable news, shocked at what was going on. But the first time the cameras caught it ­–him – the Lizard – in close-up, I knew… I just knew it was Curt. I knew he had finally perfected the cross-genetic formula to regrow limbs… and all it had cost him was his humanity.",
+        "likes": "1092",
+        "comments": "",
+        "topics": "Exclusive,Dr. Curt Connors,Oscorp,The lizard,science"
+    },
+    
+    {
+        "title": "The Stacy family, 1 year later",
+        "subtitle": "How does the family remeber the fateful day",
+        "img": "img/report_images/miss_stacy.jpg",
+        "img_width": "250",
+        "date": "5/1/2014, 10:00 AM",
+        "author": "Edward Leeds",
+        "bodyText": "Today marks the one-year anniversary of the Lizard’s attack on Manhattan and the death of Captain George Stacy, of New York City Police Department’s Major Crimes Unit. Stacy was a decorated police veteran who left behind a loving wife and four children. In this Daily Bugle exclusive we spoke with the Stacy family, Helen, who lost a heroic husband that day, and Gwen, Phillip, Howard, and Simon, who lost their father.$$$Daily Bugle: Helen, is this a hard anniversary to commemorate?$$$Helen Stacy: It’s hard to believe George died a year ago. That night, that call, it still hurts as if it happened five seconds ago.$$$DB: Does your family take any solace that Curt Connors will spend the rest of his life in prison?$$$Helen Stacy: I think that would have mattered much more to George, just to know Connors is paying for his crimes. He cared very deeply about the law and about justice.$$$DB: Gwen, your graduation from Midtown Science High School is coming up and you are the valedictorian. How proud would your father have been?$$$Gwen Stacy: Very proud, I’m sure. (fighting back tears) And nervous for me, and concerned because he wouldn’t want me to be scared. And excited for my future. $$$DB: Do you ever have any regrets that Spider-Man and your father saved the city but only one of them walked away that night?$$$Gwen Stacy: I think… (long pause) I think both of them did what they thought needed to be done without regard to the risk. I think both of them were heroes that night. I regret that my dad died, but not at the expense of anyone else.$$$DB: What about the kids? What do your classmates say about that night?$$$Simon Stacy: All my friends think that Spidey was totally cool, but that my dad was the coolest!",
+        "likes": "4990",
+        "comments": "",
+        "topics": "spiderman,new york city,Captain George Stacy"
+    },
+    
+    
+    {
+        "title": "Spiderman's shocking showdonwn",  
+        "subtitle": "The spider menace unleashes chaos once again at the heart of the city",
+        "img": "img/report_images/spiderman_on_policecar.jpg",
+        "img_width": "250",
+        "date": "5/5/2014, 08:00 PM",
+        "author": "J Jonah Jameson",
+        "bodyText": "In the heart of our beloved city, chaos erupted like never before, all thanks to one menace – Spider-Man. Yes, you read that right, the so-called “hero” who claims to protect New York was at the center of yet another catastrophe, this time facing off against the electrifying disaster known as Electro.$$$The scene unfolded in Times Square, a place normally bustling with life but now turned into a battleground of destruction. Spider-Man, in his garish red and blue attire, swung in to confront Electro, but it was clear from the start that he was out of his depth.$$$Instead of diffusing the situation, Spider-Man’s presence only seemed to escalate it. With each swing of his webs, he inadvertently stirred Electro into a frenzy, igniting a storm of electricity that tore through the streets, leaving devastation in its wake.$$$As the clash intensified, it became painfully evident that Spider-Man’s recklessness knows no bounds. He carelessly endangered the lives of innocent bystanders, using Times Square as his personal arena without a second thought for the safety of those around him.$$$And let’s not forget his feeble attempts at diplomacy. Rather than subduing Electro with strategy and reason, Spider-Man resorted to futile gestures of empathy, as if a few kind words could undo the chaos he had helped unleash.$$$But perhaps the most infuriating aspect of Spider-Man’s behavior was his utter lack of accountability. Even as the city lay in ruins, he remained defiant, refusing to acknowledge his role in the catastrophe or the harm he had caused to New York and its citizens.$$$In the end, it was not heroism that saved the day, but sheer luck and the timely intervention of others. Spider-Man’s so-called sacrifice was nothing more than a desperate bid to salvage what little remained of his tarnished reputation, a feeble attempt to paint himself as a martyr in the eyes of a gullible public.$$$As the smoke cleared and the city began to rebuild, one thing became abundantly clear – Spider-Man is not a hero, but a menace, a danger to society that must be held accountable for his actions. The people of New York deserve better than to be subjected to his reckless antics and self-righteous posturing.$$$So, the next time you see Spider-Man swinging through the streets, remember the chaos he leaves in his wake and ask yourself – is this the hero we deserve, or simply another disaster waiting to happen?",
+        "likes": "10823",
+        "comments": "",
+        "topics": "spiderman,spider menace,Electro,Times square, new york city" 
+    },
+
+    {
+        "title": "Spiderman vs electro: The end",  
+        "subtitle": "After a long figth at oscorp power grid spiderman finally defeats electro",
+        "img": "img/report_images/TASM_03.jpg",
+        "img_width": "400",
+        "date": "5/12/2014, 08:00 AM",
+        "author": "Joseph Robertson",
+        "bodyText": "Last night, during a terrifying power outage throughout the city, our friendly neighbor Spiderman and the thundering menace Electro fought in an intence battle.$$$As the two adversaries clashed, the power grid became a battleground, with Spider-Man using his wit and agility to evade Electro's lethal blasts while searching for a way to neutralize the threat. But Electro, fueled by his newfound power and consumed by a thirst for vengeance, proved to be a formidable opponent, unleashing a barrage of electrifying attacks that threatened to overwhelm our hero.$$$But true to form, Spider-Man refused to back down in the face of adversity. With courage and determination, he pressed on, utilizing every trick in his arsenal to gain the upper hand against his electrified foe. With quick thinking and strategic maneuvering, Spider-Man managed to exploit Electro's weaknesses, leading to a pulse-pounding climax that left him fried$$$As the people of New York breathed a collective sigh of relief, they were reminded once again of the unwavering heroism of Spider-Man – a beacon of hope in a world fraught with danger. For as long as evil threatens to rear its head, Spider-Man will be there to stand against it, ready to defend the city he calls home.",
+        "likes": "20332",
+        "comments": "",
+        "topics": "spiderman,electro,oscorp,power shutdown"
+    },
+
+    {
+        "title": "Tragedy Strikes – Gwen Stacy’s Untimely Demise",  
+        "subtitle": "After the striking fight at oscorp we have confirmation about a terrible news",
+        "img": "img/report_images/gwen_stacy_rip.jpg",
+        "img_width": "250",
+        "date": "5/12/2014, 01:00 PM",
+        "author": "Ben Ulrich",
+        "bodyText": "In New York City’s history, there are moments that etch themselves into the collective consciousness, leaving an indelible mark on the hearts and minds of its inhabitants. Today, we mourn the loss of one such individual – Gwen Stacy, a bright light extinguished far too soon.$$$The circumstances surrounding Gwen’s tragic demise are as heart-wrenching as they are uncertain. A promising young woman, full of ambition and potential, cut down in the prime of her life by forces beyond her control.$$$As a reporter who has witnessed the best and worst that this city has to offer, I am no stranger to tragedy. But there was something uniquely cruel about Gwen’s fate, a senseless act of violence that defies explanation or justification.$$$In her final moments, Gwen found herself caught in the crossfire of a battle that raged not just between spiderman and Electro, but between the very forces of good and evil that define our world. She was a bystander, an innocent caught in the machinations of beings far beyond her understanding or influence.$$$And yet, despite the overwhelming odds stacked against her, Gwen faced her fate with a courage and grace that few could muster. In the face of impending doom, she remained resolute, a beacon of strength amidst the chaos that threatened to consume her.$$$But alas, her bravery was not enough to save her from the cruel hand of fate. In a moment of heart-stopping tragedy, Gwen was torn from us, leaving behind a void that can never be filled.$$$For those who knew her, Gwen was more than just a friend or loved one – she was a source of inspiration, a reminder of the boundless potential that resides within each and every one of us. Her loss leaves a gaping hole in the fabric of our community, a wound that will never fully heal.$$$As we grapple with the enormity of this loss, let us not forget the legacy that Gwen leaves behind. Let us honor her memory by striving to be the best versions of ourselves, by cherishing every moment we have with those we hold dear, and by never allowing ourselves to succumb to the darkness that threatens to engulf us. Quoting this brillant young woman: 'We have to be greater than what we suffer'$$$In the end, Gwen Stacy may have been taken from us far too soon, but her spirit will live on in the hearts of all who were fortunate enough to know her. And as we mourn her passing, let us take solace in the knowledge that she has found peace at last, free from the pain and suffering of this world.$$$Rest in peace, Gwen Stacy. You will be dearly missed, but never forgotten.",
+        "likes": "52367",
+        "comments": "",
+        "topics": "Gwen Stacy,spiderman,RIP"
+    },
+    {
+        "title": "Spiderman vanishes: The mystery of his disappearance",  
+        "subtitle": "After his fight with electro there have been cero news about the masked hero",
+        "img": "img/report_images/spiderma_missing.jpg",
+        "img_width": "250",
+        "date": "5/26/2014, 08:00 AM",
+        "author": "Edward Leeds",
+        "bodyText": "In a city where chaos and calamity are all too common occurrences, there are few figures who embody the spirit of heroism quite like Spider-Man. But in a startling turn of events, our friendly neighborhood web-slinger has vanished without a trace, leaving behind a city in turmoil and a populace in search of answers.$$$The circumstances surrounding Spider-Man's disappearance are shrouded in mystery, leaving many to speculate about the fate of the masked vigilante. Some claim he simply retired, weary of the constant battles and scrutiny that come with being a superhero. Others whisper of darker possibilities – abduction, foul play, or perhaps even a sinister conspiracy at play.$$$Whatever the truth may be, one thing is certain – the absence of Spider-Man has left a void in the hearts of New Yorkers, a sense of unease that permeates the very fabric of our city. For years, Spider-Man has stood as a symbol of hope and resilience, a beacon of light in a world darkened by crime and corruption. Without him, many feel adrift, unsure of what the future may hold.$$$But amidst the uncertainty, there are those who refuse to give up hope. They cling to the belief that Spider-Man will return, that he will once again swing through the streets of New York, ready to face whatever challenges may come his way.$$$And perhaps they are right. After all, Spider-Man has faced countless adversaries and overcome insurmountable odds time and time again. His disappearance may be temporary, a brief hiatus in a lifelong battle against injustice.$$$But until he returns, the people of New York will continue to wait and wonder, their faith unwavering in the face of uncertainty. For as long as there is evil in the world, there will always be a need for heroes like Spider-Man – and as long as there is a need, there will always be hope.$$$So, wherever you are, Spider-Man, know that your city awaits your return with open arms. The streets may be quieter without you, but your spirit lives on in the hearts of those you have sworn to protect. Until we meet again, dear friend, may you find peace wherever your journey may take you.",
+        "likes": "7998",
+        "comments": "",
+        "topics": "spiderman,webhead"
+    },
+    {
+        "title": "Spider-Man's Triumphant Return – The Battle Against Rhino",  
+        "subtitle": "Our friendly neighbor spidey finally returns to give us the hope that we need",
+        "img": "img/report_images/spiderman_saves_spiderkid.jpg",
+        "img_width": "300",
+        "date": "9/12/2014, 08:00 AM",
+        "author": "Joseph Robertson",
+        "bodyText": "In a city where danger lurks around every corner, there are few sights more welcome than the return of a hero. And return he did – in a moment of heart-stopping triumph, Spider-Man swung back into action to face off against the formidable foe known as Rhino, sending shockwaves of hope through the streets of New York.$$$The circumstances surrounding Spider-Man's sudden reappearance remain shrouded in mystery, but one thing is clear, his return could not have come at a more crucial moment. With Rhino rampaging through the streets, leaving destruction in his wake, the city was in desperate need of a savior. So much so that before spidey's arrival, a new york kid, dressed as him stood tall before the Rhino, calling the spirit of our friendly neighbor and challenging the menace to stop. Right at that exact moment Spider-Man answered the call.$$$In a showdown that shook the very foundations of the city, Spider-Man and Rhino clashed in a battle of epic proportions, their titanic struggle playing out against the backdrop of a city in turmoil. With each blow, with each swing of his webs, Spider-Man proved why he is considered one of the greatest heroes this city has ever known.$$$But it was not just his strength or agility that set Spider-Man apart – it was his unwavering resolve, his refusal to back down in the face of overwhelming odds. Despite the danger, despite the uncertainty, Spider-Man stood firm, a symbol of hope in a world gripped by fear.$$$And when the dust finally settled, when Rhino lay defeated at his feet, Spider-Man stood tall, a beacon of light in the darkness that threatened to consume us all. His return was more than just a victory – it was a reminder that no matter how dire the situation may seem, there is always hope.$$$As the people of New York cheered and celebrated, Spider-Man swung off into the night, his mission far from over but his resolve stronger than ever. For as long as there is evil in the world, there will always be a need for heroes like Spider-Man – and as long as there is a need, he will be there to answer the call.$$$So, to Spider-Man, wherever you are, know that your city stands behind you, ready to face whatever challenges may come our way. You may have disappeared for a time, but your return has proven that true heroes never truly leave us – they are always there, watching over us, ready to fight for what is right.",
+        "likes": "122748",
+        "comments": "",
+        "topics": "spiderman,rhino,heroe's comeback"
+    },
+
+    {
+        "title": "SPIDERMAN: THREAT OR MENACE",  
+        "subtitle": "Is Spiderman Really Who He Says He Is?",
+        "img": "img/report_images/spiderman_wanted.jpg",
+        "img_width": "250",
+        "date": "10/30/2013, 08:00 AM",
+        "author": "J Jonah Jameson",
+        "bodyText": "Last night, I walked out of the 6-train at 96th Street, only to be greeted by a freshly painted graffiti tag of a large red spider painted on a wooden construction fence.$$$Generally, I ignore the “modern art” of the masses. I must be far too uncivilized to appreciate the subtle nuances of the work. But in this case, the meaning was not open to interpretation.$$$Do the young people of this city really want to turn the mysterious creature known as Spider-Man into some kind of modern-day Robin Hood?$$$It has been three months since the terrorist attack at Oscorp Tower in Midtown Manhattan. Three months since a man who had changed into a seven-foot tall lizard battled against another man in a red and blue unitard who could crawl up walls. Three months since the city was introduced to a new status quo, one that will adversely affect the entire planet. It has been three months, and we know nothing more about the man called Spider-Man than we did on that terrible night.$$$This masked, web-slinging vigilante has refused to identify himself. He has given no public statements. He has refused to be interviewed by the police. He has repeatedly refused requests from the media, including from this paper, to provide some assurance to the people of this city that he means us no harm.$$$Who appointed him as the new sheriff in town? I didn’t. Did you?$$$What gives him the moral, much less legal, authority to decide who deserves punishment and how that punishment should be doled out?$$$Heroes do not need to promote their actions, but they also do not hide from the people they help. Until Spider-Man tells us more about himself, he is no hero. I dare him to prove me wrong.",
+        "likes": "23667",
+        "comments": "",
+        "topics": "spiderman,criminal,menace,j. jonah jameson"
+    }
+]

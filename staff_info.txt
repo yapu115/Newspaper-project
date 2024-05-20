@@ -11,7 +11,7 @@
     {
         "username": "JJonahJ",
         "password": "IHateSpiderman",
-        "name": "James",
+        "name": "J Jonah",
         "last_name": "Jameson",
         "email": "JJJameson99@gmail.com",
         "picture": "img/staff/jameson.png"
@@ -24,6 +24,16 @@
         "last_name": "Robertson",
         "email": "RobbieRob15@gmail.com",
         "picture": "img/staff/Robertson.png"
+    },
+    
+
+    {
+        "username": "BenUL03",
+        "password": "FuckKingpin123",
+        "name": "Ben",
+        "last_name": "Ulrich",
+        "email": "HobLeeds935@gmail.com",
+        "picture" : "img/staff/Ulrich.png"
     },
 
     {

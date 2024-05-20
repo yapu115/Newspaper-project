@@ -96,15 +96,19 @@ DBRequestArticles.onsuccess = () => {
     }
     
     function saveArticle(article){
-        const objectStore = getIDBData("readwrite")
-        
-        const request = objectStore.add(article)
-        request.onsuccess = ()=> {
-            console.log("Article saved")
-        }
-        request.onerror = ()=> {
-            console.log("There has been an error")
-        }
+        return new Promise((resolve, reject) =>{
+            const objectStore = getIDBData("readwrite")
+            
+            const request = objectStore.add(article)
+            request.onsuccess = ()=> {
+                console.log("Article saved")
+                resolve(request.result)
+            }
+            request.onerror = ()=> {
+                console.log("There has been an error")
+                reject(new Error("There was an error adding the article in the DataBase"));
+            }
+        })
     }
 
     function updateArticle(article, updatedArticle){
@@ -209,23 +213,105 @@ DBRequestArticles.onsuccess = () => {
     }
 
 
-    function getLikesFromArticleId(id){
-        return new Promise((resolve, reject) => {
-            let objectStore = getIDBData("readonly");
+    const getArticlesInfo = async ()=>{
+        let request = await fetch("preloaded_articles.txt")
+        return await request.json()   
+    }
 
-            const index = objectStore.index("likesCount");
-            const request = index.get(id);
+     //////////////////////////////////////////////
+     async function getArticlePictureFile(pictureUrl) {
+        try {
+            const response = await fetch(pictureUrl);
+            
+            const blob = await response.blob();
 
-            request.onsuccess = ()=>{
-                resolve(request.result)
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+
+                reader.onloadend = () => {
+                    const imageBase64 = reader.result;
+                    const file = dataURItoBlob(imageBase64);
+                    resolve(file);
+                };
+
+                reader.onerror = () => {
+                    reject(new Error("Error getting the article picture in base64"));
+                };
+
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error("error obtaining the image: ", error);
+        }
+    }
+
+    
+    function dataURItoBlob(dataURI) {
+        const parts = dataURI.split(';base64,');
+        const type = parts[0].split(':')[1]; 
+        const byteString = atob(parts[1]); 
+
+        const buffer = new ArrayBuffer(byteString.length);
+        const view = new Uint8Array(buffer);
+        for (let i = 0; i < byteString.length; i++) {
+            view[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([buffer], { type: type });
+    }
+    ////////////////////////////////////////////////////
+
+    function addPreloadedArticles(){
+        getArticlesInfo().then(articlesInfo => {
+            console.log(articlesInfo)
+            for (const articleData of articlesInfo){
+                const title = articleData.title;
+                console.log(title)
+                const subtitle = articleData.subtitle;
+                const imgPath = articleData.img;
+                const imgWidth = articleData.img_width;
+                const date = articleData.date;
+                const bodyText = getPreloadedParagraphs(articleData.bodyText);
+                const author = articleData.author;
+                const likes = articleData.likes;
+                const comments = articleData.comments;
+                const topics = (articleData.topics).split(",");
+
+                getArticlePictureFile(imgPath).then(img =>{
+                    const article = {
+                        title: title,
+                        subtitle: subtitle,
+                        img: img,
+                        img_width: imgWidth,
+                        date: date,
+                        author: author,
+                        bodyText: bodyText,
+                        likes: likes,
+                        comments: comments,
+                        topics: topics,
+                    }
+                    saveArticle(article).then(art => {
+                        console.log(art)
+                        console.log(article)
+                    });
+                })
             }
-            request.onerror = ()=>{
-                reject(new Error("There was an error getting the likes from the article"));
-            }
+        }).catch(e =>{
+            console.log(e)
         })
     }
 
-        
+    if (localStorage.getItem("preloadedArticlesAdded")){
+        console.log("The articles were already updated")
+    }
+    else{
+        addPreloadedArticles()
+        localStorage.setItem("preloadedArticlesAdded", true)
+    }
+
+    
+    
+   
     
         
 
@@ -236,6 +322,7 @@ DBRequestArticles.onsuccess = () => {
     if (loggedIn){
         getUserInfo().then(userInfo =>{
             getArticles().then((articles) =>{
+                articles = orderArticlesByDate(articles, true)
                 for (let articleData of articles){
                     const article = createArticle(articleData, userInfo)
                     
@@ -324,7 +411,12 @@ DBRequestArticles.onsuccess = () => {
                                 const imgWidth = localStorage.getItem("artImgWidth");
                                 const date = getCompleteDate()
                                 const author = `${userInfo.name} ${userInfo.lastName}`
-                                const bodyText = document.getElementById("new-article-body").value;
+                                
+                                
+                                
+                                const bodyText = getParagraphs(document.getElementById("new-article-body").value);
+
+
                                 const topics = getNewArticleTopics();
 
                                 if (localStorage.getItem("articleInModification") && stringToBoolConvertion(localStorage.getItem("ArticleInModification"))){
@@ -344,6 +436,7 @@ DBRequestArticles.onsuccess = () => {
                                     comments: commentsList,
                                     topics: topics,
                                 }
+                                console.log(newArticleJSON)
 
                                 if (localStorage.getItem("articleInModification") && stringToBoolConvertion(localStorage.getItem("articleInModification"))){
                                     const articleId = localStorage.getItem("articleInModificationId");
@@ -355,8 +448,10 @@ DBRequestArticles.onsuccess = () => {
                                     })
                                 }
                                 else{
-                                    saveArticle(newArticleJSON)
-                                    console.log("a")
+                                    saveArticle(newArticleJSON).then(art=> {
+                                        console.log(art)
+
+                                    })
                                 }
                                 // location.reload();
                                 modalBackground.style.display = "none";
@@ -387,15 +482,15 @@ DBRequestArticles.onsuccess = () => {
                                 
                                 // esto se puede hacer una funcion porque lo llamo en dos lados ditintos igual
                                 const topicLabel = document.createElement("label");
-                                const deleteTopic = document.createElement("button");
+                                const deleteTopicBtn = document.createElement("button");
 
                                 topicLabel.innerHTML = topic;
-                                deleteTopic.innerHTML = "X";
-                                deleteTopic.classList.add("delete-topic-btn");
-                                deleteTopic.setAttribute("type", "button")
+                                deleteTopicBtn.innerHTML = "X";
+                                deleteTopicBtn.classList.add("delete-topic-btn");
+                                deleteTopicBtn.setAttribute("type", "button")
 
                                 divNewTopic.appendChild(topicLabel);
-                                divNewTopic.appendChild(deleteTopic);
+                                divNewTopic.appendChild(deleteTopicBtn);
 
                                 document.getElementById("new-article-topics").appendChild(divNewTopic);
                                 //////////////////
@@ -842,10 +937,21 @@ function verifyCommentButtons(display){
 
 
 // Articles creation
-function createHeader(title, subtitle, image, imgWidth){
+function createHeader(title, subtitle, image, imgWidth, author, userInfo){
     const header = document.createElement("HEADER");
     header.classList.add("heading");
     
+    if (author === (`${userInfo.name} ${userInfo.lastName}`)){
+        const divEditButton = document.createElement("div");
+        const editButton = document.createElement("button");
+        editButton.setAttribute("type", "button");
+        editButton.classList.add("edit-article-btn");
+        editButton.innerHTML = "Edit";
+
+        divEditButton.appendChild(editButton);
+        header.appendChild(divEditButton);
+    }
+
     const imgLogo = document.createElement("IMG");
     imgLogo.classList.add("logo-head")
     imgLogo.setAttribute("src", "img/bugle_logo.jpg")
@@ -913,13 +1019,16 @@ function createSection(date, author, bodyText){
     
     const divBody = document.createElement("DIV");
 
-    const divParagraph = document.createElement("DIV")
-    const pParagraph = document.createElement("P")
-    const textParagraph = document.createTextNode(bodyText)
-    pParagraph.appendChild(textParagraph)
-    divParagraph.appendChild(pParagraph)
+    for (let paragraph of bodyText){
+        const divParagraph = document.createElement("DIV")
+        const pParagraph = document.createElement("P")
+        
+        const textParagraph = document.createTextNode(paragraph)
+        pParagraph.appendChild(textParagraph)
+        divParagraph.appendChild(pParagraph)
+        divBody.appendChild(divParagraph)
+    }
     
-    divBody.appendChild(divParagraph)
 
     section.appendChild(divBody)
 
@@ -975,7 +1084,7 @@ function createCommment(comment){
 
 
 
-function createFooter(id, topics, likes, comments, author, userInfo){
+function createFooter(id, topics, likes, comments, userInfo){
     const footer = document.createElement("footer");
     footer.classList.add("article-footer");
 
@@ -988,7 +1097,7 @@ function createFooter(id, topics, likes, comments, author, userInfo){
         pTopics.appendChild(textTopics)
         divTopics.appendChild(pTopics);
     }
-
+    footer.appendChild(divTopics);
 
     const divButtonContainer = document.createElement("div");
     divButtonContainer.classList.add("buttons-container")
@@ -1037,16 +1146,7 @@ function createFooter(id, topics, likes, comments, author, userInfo){
         divButtonWrapper.append(pCount);
         divButtonContainer.appendChild(divButtonWrapper);
     }
-    if (author === (`${userInfo.name} ${userInfo.lastName}`)){
-        const divEditButton = document.createElement("div");
-        const editButton = document.createElement("button");
-        editButton.setAttribute("type", "button");
-        editButton.classList.add("edit-article-btn");
-        editButton.innerHTML = "Edit";
-
-        divEditButton.appendChild(editButton);
-        footer.appendChild(divEditButton);
-    }
+    
     
 
     const divArticleCommentSection = document.createElement("div");
@@ -1110,7 +1210,6 @@ function createFooter(id, topics, likes, comments, author, userInfo){
     divArticleCommentSection.appendChild(divNewArticleComment);
     divArticleCommentSection.appendChild(divArticleComments);
 
-    footer.appendChild(divTopics);
     footer.appendChild(divButtonContainer);
     footer.appendChild(divArticleCommentSection);
 
@@ -1136,13 +1235,13 @@ function createArticle(articleData, userInfo={}){
     article.classList.add("post");
     article.id = id;
 
-    const header = createHeader(title, subtitle, img, imgWidth)
+    const header = createHeader(title, subtitle, img, imgWidth, author, userInfo)
     article.appendChild(header);
 
     const section = createSection(date, author, body)
     article.appendChild(section);
 
-    const footer = createFooter(id, topics, likes, comments, author, userInfo)
+    const footer = createFooter(id, topics, likes, comments, userInfo)
     article.appendChild(footer)
 
     return article;
@@ -1153,8 +1252,20 @@ function createArticle(articleData, userInfo={}){
 
 
 
+function getParagraphs(text){
+    let paragraphs = text.split("\n");
+    
+    paragraphs = paragraphs.filter(paragraph=> {
+        return paragraph.trim() !== "";
+    })
 
+    return paragraphs;
+}
 
+function getPreloadedParagraphs(text){
+    let paragraphs = text.split("$$$");  
+    return paragraphs;
+}
 
 
 
@@ -1227,7 +1338,7 @@ function showEditArticleContainer(modalBackground, editArticleModal, article){
     const img = article.img;
     const imgWidth = article.img_width;
     const date =  getCompleteDateFormat(article.date);
-    const body = article.body;
+    const body = article.bodyText;
     const topics = article.topics;
     
     const  dataTransfer = new DataTransfer()
@@ -1256,6 +1367,7 @@ function showEditArticleContainer(modalBackground, editArticleModal, article){
     editArticleImgContainer.appendChild(editArticleImg);
     editArticleDate.innerHTML = date;
     editArticleBody.value = body;
+    console.log(body)
     for(let topic of topics){
         const divNewTopic = document.createElement("div");
         divNewTopic.classList.add("new-topic");
@@ -1454,50 +1566,3 @@ const getParentElement = (element, timesFather) =>{
 
 
 
-
-
-
-
-async function getArticleImgFile(imgUrl) {
-    try {
-        const response = await fetch(pictureUrl);
-        
-        // transform the response to a blob object
-        const blob = await response.blob();
-
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onloadend = () => {
-                // Transform the base64 response to a blob object
-                const imageBase64 = reader.result;
-                const file = dataURItoBlob(imageBase64);
-                resolve(file);
-            };
-
-            reader.onerror = () => {
-                reject(new Error("Error getting the staff picture in base64"));
-            };
-
-            reader.readAsDataURL(blob);
-        });
-    } catch (error) {
-        console.error("error obtaining the image: ", error);
-    }
-}
-
-///////////////////////////////////////////
-function dataURItoBlob(dataURI) {
-    const parts = dataURI.split(';base64,');
-    const type = parts[0].split(':')[1]; 
-    const byteString = atob(parts[1]); 
-
-    const buffer = new ArrayBuffer(byteString.length);
-    const view = new Uint8Array(buffer);
-    for (let i = 0; i < byteString.length; i++) {
-        view[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([buffer], { type: type });
-}
-///////////////////////////////////////////

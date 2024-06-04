@@ -322,12 +322,14 @@ DBRequestArticles.onsuccess = () => {
   } else {
     addPreloadedArticles();
     localStorage.setItem("preloadedArticlesAdded", true);
+    location.reload();
   }
 
   //////////////////////////////////////////////////////////////
 
   // If the user is logged
   if (loggedIn) {
+    console.log("a");
     getUserInfo()
       .then((userInfo) => {
         getArticles()
@@ -335,7 +337,6 @@ DBRequestArticles.onsuccess = () => {
             articles = orderArticlesByDate(articles, true);
             for (let articleData of articles) {
               const article = createArticle(articleData, userInfo);
-
               documentFragment.appendChild(article);
             }
             postsContainer.appendChild(documentFragment);
@@ -573,6 +574,7 @@ DBRequestArticles.onsuccess = () => {
   } else {
     getArticles()
       .then((articles) => {
+        articles = orderArticlesByDate(articles, true);
         for (let articleData of articles) {
           const article = createArticle(articleData);
 
@@ -920,6 +922,7 @@ DBRequestArticles.onsuccess = () => {
   }
 
   function orderArticlesByDate(articles, asc) {
+    console.log("aa");
     if (asc) return articles.sort(sortDatesAsc);
     return articles.sort(sortDatesDesc);
   }

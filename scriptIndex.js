@@ -322,7 +322,6 @@ DBRequestArticles.onsuccess = () => {
   } else {
     addPreloadedArticles();
     localStorage.setItem("preloadedArticlesAdded", true);
-    location.reload();
   }
 
   //////////////////////////////////////////////////////////////

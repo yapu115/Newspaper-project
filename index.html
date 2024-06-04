@@ -1,119 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>The daily bugle</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
 
-    <script src="https://kit.fontawesome.com/64ef505ef4.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/64ef505ef4.js"
+      crossorigin="anonymous"
+    ></script>
 
-    <link rel="icon" href="img/news_icon.ico">
-</head>
-<body>
+    <link rel="icon" href="img/news_icon.ico" />
+  </head>
+  <body>
     <!-- CABEZA DE LA PAGINA -->
-    <Header class="page-head">
-        <div class="head-elements">
-            <div>
-                <h1 class="head-title">THE DAILY BUGLE</h1>
-                <h3 class="head-subtitle">New york's most trusted newspaper</h3>
-            </div>
-            <div id="bars">
-                <nav id="navbar">
-                    
-                    <div id="navbar-left-item">
-                        <button id="sidebar-btn" class="navbar-item">☰</button>
-                    </div>
-                    <div id="navbar-center-items">
-                        <a href="index.html" class="navbar-item">Articles</a>
-                        <a href="staff.html" class="navbar-item">Staff</a>
-                        <a href="signin.html" class="navbar-item">Sign in</a>
-                        <a href="about.html" class="navbar-item">About</a>
-                    </div>
-                </nav>
-                
-                <div id="sidebar">
-                    <div id="popular-topics">
-                        <h2>Most published topics</h2>
-                    </div>
-                    <div id="order-by">
-                        <h2>Order by</h2>
-                        <button id="sort-by-like" class="featured-topic">Likes</button>
-                        <button id="sort-by-date" class="featured-topic">Date</button>
-                        <button id="desc-article-btn" class="featured-topic">Most recent</button>
-                        <button id="asc-article-btn" class="featured-topic">Least recent</button>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </Header>
-    <div class="articles">
-        <section id="posts">
-            
-           
-                    
-        </section>
-        <div id="new-article-button-div"></div>
-        <div id="modal-background" display="none"></div>
-        <div id="new-article-modal" display="none">
-            <form id="new-article-form">
-                <div>
-                    <img src="img/bugle_logo.jpg" alt="daily bugle logo" id="new-article-logo-head">
-                </div>
-
-                <div>
-                    <textarea id="new-article-title" maxlength="40" placeholder="Title"></textarea>
-                </div>
-                <div>
-                    <textarea id="new-article-subtitle" maxlength="80" placeholder="Subtitle"></textarea>
-                </div>
-
-                <div id="new-article-img-container">
-                    <label for="new-article-img-file">Image</label>
-                    <input type="file" id="new-article-img-file" name="image">
-
-                    <div id="new-article-img"></div>
-                    
-                    <button type="button" id="reduce-img-width">-</button>
-                    <button type="button" id="increase-img-width">+</button>
-                </div>
-                
-                <div id="new-article-body-container">
-                    <P id="new-article-date"></P>
-                                            
-                    <textarea id="new-article-body" placeholder="Body of the article"></textarea>
-                    
-                </div>
-
-                <div id="new-article-footer">
-                    <div id="new-article-topics-container">
-                        <div id="new-article-topics">
-                        </div>
-
-                        <div id="new-topic-container">
-                            <input type="text" maxlength="25" id="new-topic-input">
-                            <button type="button">Add</button>
-                        </div>
-                        
-                        <button type="button" id="new-topic-btn">+ Add new Topic</button>
-                    </div>
-                </div>
-
-                <button type="button" id="publish-new-article-btn">Publish</button>
-
-                <button type="button" id="delete-article-btn">delete</button>
-            </form>
-        </div>
-        <script src="scriptIndex.js"></script>
-    </div> 
-    <footer class="page-footer">
+    <header class="page-head">
+      <div class="head-elements">
         <div>
-            <p>
-                © Copyright 2024 THE DAILY BUGLE | All rights reserved.
-                Total or partial reproduction of this diary is prohibited.
-            </p>
+          <h1 class="head-title">THE DAILY BUGLE</h1>
+          <h3 class="head-subtitle">New york's most trusted newspaper</h3>
         </div>
+        <div id="bars">
+          <nav id="navbar">
+            <div id="navbar-left-item">
+              <button id="sidebar-btn" class="navbar-item">☰</button>
+            </div>
+            <div id="navbar-center-items">
+              <a href="index.html" class="navbar-item">Articles</a>
+              <a href="staff.html" class="navbar-item">Staff</a>
+              <a href="signin.html" class="navbar-item">Sign in</a>
+              <a href="about.html" class="navbar-item">About</a>
+            </div>
+          </nav>
+
+          <div id="sidebar">
+            <div id="popular-topics">
+              <h2>Most published topics</h2>
+            </div>
+            <div id="order-by">
+              <h2>Order by</h2>
+              <button id="sort-by-like" class="featured-topic">Likes</button>
+              <button id="sort-by-date" class="featured-topic">Date</button>
+              <button id="desc-article-btn" class="featured-topic">
+                Most recent
+              </button>
+              <button id="asc-article-btn" class="featured-topic">
+                Least recent
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="articles">
+      <section id="posts"></section>
+      <div id="new-article-button-div"></div>
+      <div id="modal-background" display="none"></div>
+      <div id="new-article-modal" display="none">
+        <form id="new-article-form">
+          <div>
+            <img
+              src="img/bugle_logo.jpg"
+              alt="daily bugle logo"
+              id="new-article-logo-head"
+            />
+          </div>
+
+          <div>
+            <textarea
+              id="new-article-title"
+              maxlength="40"
+              placeholder="Title"
+            ></textarea>
+          </div>
+          <div>
+            <textarea
+              id="new-article-subtitle"
+              maxlength="80"
+              placeholder="Subtitle"
+            ></textarea>
+          </div>
+
+          <div id="new-article-img-container">
+            <label for="new-article-img-file">Image</label>
+            <input type="file" id="new-article-img-file" name="image" />
+
+            <div id="new-article-img"></div>
+
+            <button type="button" id="reduce-img-width">-</button>
+            <button type="button" id="increase-img-width">+</button>
+          </div>
+
+          <div id="new-article-body-container">
+            <p id="new-article-date"></p>
+
+            <textarea
+              id="new-article-body"
+              placeholder="Body of the article"
+            ></textarea>
+          </div>
+
+          <div id="new-article-footer">
+            <div id="new-article-topics-container">
+              <div id="new-article-topics"></div>
+
+              <div id="new-topic-container">
+                <input type="text" maxlength="25" id="new-topic-input" />
+                <button type="button">Add</button>
+              </div>
+
+              <button type="button" id="new-topic-btn">+ Add new Topic</button>
+            </div>
+          </div>
+          <p id="new-art-incompleted-msg">
+            All inputs must be completed to publish the new article
+          </p>
+          <p id="edit-art-incompleted-msg">
+            All inputs must be completed to publish the edited article
+          </p>
+          <button type="button" id="publish-new-article-btn">Publish</button>
+
+          <button type="button" id="delete-article-btn">delete</button>
+        </form>
+      </div>
+      <script src="scriptIndex.js"></script>
+    </div>
+    <footer class="page-footer">
+      <div>
+        <p>
+          © Copyright 2024 THE DAILY BUGLE | All rights reserved. Total or
+          partial reproduction of this diary is prohibited.
+        </p>
+      </div>
     </footer>
-</body>
+  </body>
 </html>

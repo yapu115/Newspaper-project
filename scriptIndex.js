@@ -148,6 +148,7 @@ DBRequestArticles.onsuccess = () => {
 
             request.onsuccess = ()=>{
                 resolve(request.result)
+                
             }
             request.onerror = ()=> {
                 reject(new Error("There was an error deleting the article in the database"))
@@ -201,6 +202,8 @@ DBRequestArticles.onsuccess = () => {
     function updateArticleComments(article, newComment){
         return new Promise((resolve, reject) =>{
             let objectStore = getIDBData("readwrite")
+            console.log(article)
+            console.log(article.comments)
             article.comments.push(newComment);
             const request = objectStore.put(article)
             request.onsuccess = ()=> {
@@ -219,54 +222,57 @@ DBRequestArticles.onsuccess = () => {
     }
 
      //////////////////////////////////////////////
-     async function getArticlePictureFile(pictureUrl) {
+     async function getArticlePictureFile(pictureUrl, fileName) {
         try {
             const response = await fetch(pictureUrl);
             
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            
             const blob = await response.blob();
-
+    
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-
+    
                 reader.onloadend = () => {
                     const imageBase64 = reader.result;
-                    const file = dataURItoBlob(imageBase64);
+                    const file = dataURItoFile(imageBase64, fileName);
                     resolve(file);
                 };
-
+    
                 reader.onerror = () => {
                     reject(new Error("Error getting the article picture in base64"));
                 };
-
+    
                 reader.readAsDataURL(blob);
             });
         } catch (error) {
-            console.error("error obtaining the image: ", error);
+            console.error("Error obtaining the image:", error);
+            throw error;  // Re-lanza el error para que pueda ser manejado externamente
         }
     }
-
     
-    function dataURItoBlob(dataURI) {
+    function dataURItoFile(dataURI, fileName) {
         const parts = dataURI.split(';base64,');
         const type = parts[0].split(':')[1]; 
         const byteString = atob(parts[1]); 
-
+    
         const buffer = new ArrayBuffer(byteString.length);
         const view = new Uint8Array(buffer);
         for (let i = 0; i < byteString.length; i++) {
             view[i] = byteString.charCodeAt(i);
         }
-
-        return new Blob([buffer], { type: type });
+    
+        // Crear y devolver un objeto File en lugar de Blob
+        return new File([buffer], fileName, { type: type });
     }
     ////////////////////////////////////////////////////
 
     function addPreloadedArticles(){
         getArticlesInfo().then(articlesInfo => {
-            console.log(articlesInfo)
             for (const articleData of articlesInfo){
                 const title = articleData.title;
-                console.log(title)
                 const subtitle = articleData.subtitle;
                 const imgPath = articleData.img;
                 const imgWidth = articleData.img_width;
@@ -274,10 +280,11 @@ DBRequestArticles.onsuccess = () => {
                 const bodyText = getPreloadedParagraphs(articleData.bodyText);
                 const author = articleData.author;
                 const likes = articleData.likes;
-                const comments = articleData.comments;
+                const comments = verifyEmptyComments(articleData.comments);
                 const topics = (articleData.topics).split(",");
 
-                getArticlePictureFile(imgPath).then(img =>{
+                getArticlePictureFile(imgPath, title).then(img =>{
+                    console.log(img);
                     const article = {
                         title: title,
                         subtitle: subtitle,
@@ -292,7 +299,6 @@ DBRequestArticles.onsuccess = () => {
                     }
                     saveArticle(article).then(art => {
                         console.log(art)
-                        console.log(article)
                     });
                 })
             }
@@ -404,64 +410,66 @@ DBRequestArticles.onsuccess = () => {
                             const publishNewArticleBtn = document.getElementById("publish-new-article-btn")
                             publishNewArticleBtn.addEventListener("click", () => {
                                 
-
                                 const title = document.getElementById("new-article-title").value;
                                 const subtitle = document.getElementById("new-article-subtitle").value;
                                 const img = document.getElementById("new-article-img-file").files[0];
                                 const imgWidth = localStorage.getItem("artImgWidth");
                                 const date = getCompleteDate()
                                 const author = `${userInfo.name} ${userInfo.lastName}`
-                                
-                                
-                                
                                 const bodyText = getParagraphs(document.getElementById("new-article-body").value);
-
-
                                 const topics = getNewArticleTopics();
-
-                                if (localStorage.getItem("articleInModification") && stringToBoolConvertion(localStorage.getItem("ArticleInModification"))){
-                                    document.getElementById("")
-                                }
                                 const commentsList = []
+
+
+                                console.log(img)
+                                console.log(bodyText)
+                                console.log(topics)
                                 
-                                const newArticleJSON = { //cambiarle el nombre a todos estos que dicen "new" ya que se comparten con modificar
-                                    title: title,
-                                    subtitle: subtitle,
-                                    img: img,
-                                    img_width: imgWidth,
-                                    date: date,
-                                    author: author,
-                                    bodyText: bodyText,
-                                    likes: 0,
-                                    comments: commentsList,
-                                    topics: topics,
-                                }
-                                console.log(newArticleJSON)
-
-                                if (localStorage.getItem("articleInModification") && stringToBoolConvertion(localStorage.getItem("articleInModification"))){
-                                    const articleId = localStorage.getItem("articleInModificationId");
-
-                                    getArticleById(articleId).then(article => {
-                                        newArticleJSON.likes = article.likes;
-                                        newArticleJSON.comments = article.comments;
-                                        updateArticle(article, newArticleJSON);
-                                    })
-                                }
-                                else{
+                                if ((title !== "") && (subtitle !== "") && ( img !== undefined) && (bodyText !== "") && (topics !== "")){
+                                    const newArticleJSON = { //cambiarle el nombre a todos estos que dicen "new" ya que se comparten con modificar
+                                        title: title,
+                                        subtitle: subtitle,
+                                        img: img,
+                                        img_width: imgWidth,
+                                        date: date,
+                                        author: author,
+                                        bodyText: bodyText,
+                                        likes: 0,
+                                        comments: commentsList,
+                                        topics: topics,
+                                    }
+                                    
+                                    if (localStorage.getItem("articleInModification") && stringToBoolConvertion(localStorage.getItem("articleInModification"))){
+                                        const articleId = localStorage.getItem("articleInModificationId");
+                                        
+                                        getArticleById(articleId).then(article => {
+                                            newArticleJSON.likes = article.likes;
+                                            newArticleJSON.comments = article.comments;
+                                            updateArticle(article, newArticleJSON);
+                                        })
+                                    }
+                                    else{
                                     saveArticle(newArticleJSON).then(art=> {
                                         console.log(art)
-
-                                    })
+                                        })
+                                    }
+                                    // location.reload();
+                                    modalBackground.style.display = "none";
+                                    newArticleModal.style.display = "none";
                                 }
-                                // location.reload();
-                                modalBackground.style.display = "none";
-                                newArticleModal.style.display = "none";
+                                else{
+                                    document.getElementById("new-art-incompleted-msg").style.display = "block";
+                                }
                             })
 
                             // delete article
                             const deleteArticleBtn = document.getElementById("delete-article-btn")
                             deleteArticleBtn.addEventListener("click", ()=> {
-                                deleteArticle(localStorage.getItem("articleInModificationId"))
+                                if (confirm("Are you sure you want to delete this Article?\nIt will be lost forever")){
+                                    deleteArticle(localStorage.getItem("articleInModificationId"));
+                                    location.reload();
+                                    window.scrollTo(0, 0)
+                                }
                             })
 
                             const newTopicButton = document.getElementById("new-topic-btn");
@@ -487,7 +495,7 @@ DBRequestArticles.onsuccess = () => {
                                 topicLabel.innerHTML = topic;
                                 deleteTopicBtn.innerHTML = "X";
                                 deleteTopicBtn.classList.add("delete-topic-btn");
-                                deleteTopicBtn.setAttribute("type", "button")
+                                deleteTopicBtn.setAttribute("type", "button");
 
                                 divNewTopic.appendChild(topicLabel);
                                 divNewTopic.appendChild(deleteTopicBtn);
@@ -512,95 +520,8 @@ DBRequestArticles.onsuccess = () => {
                 
             
                 getLikes(userInfo);
-        
-                verifyCommentButtons("block");
-
-                const cancelCommentButtons = document.querySelectorAll(".new-art-cancel-btn");
-                for (let button of cancelCommentButtons){
-                    const articleID = getParentElement(button, 5);
-                    
-                    button.addEventListener("click", ()=> {
-                        
-                        const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
-                        commentElement.value = "";
-                    })
-                }
-
-
-                // Save new Comment
-                const confirmCommentButtons = document.querySelectorAll(".new-art-comment-btn")
-                for (let button of confirmCommentButtons){
-                    const articleId = getParentElement(button, 5).id;
-                    button.addEventListener("click", ()=> {
-                        const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
-                        const comment = commentElement.value;
-                        
-                        if (comment.length > 0){
-                            const username = userInfo.username;
-                            const completeDate = getCompleteDate();
-                            console.log(userInfo.picture)
-                            const picture = userInfo.picture;
-                            console.log(picture)
-                            
-                            const newComment = {
-                                username: username,
-                                date: completeDate,
-                                picture: picture,
-                                comment: comment,
-                            }
-                            
-                            getArticleById(articleId).then((buttonArticle)=> {
-                                updateArticleComments(buttonArticle, newComment).then(()=> {
-                                    const divArticleComments = getParentElement(commentElement, 3).lastElementChild;
-                                    const divArticleComment = createCommment(newComment);
-                                    
-                                    divArticleComments.appendChild(divArticleComment);
-                                    commentElement.value = "";
-                                    
-                                }).catch(e=>{
-                                    console.log(e)
-                                })
-                            }).catch(e=>{
-                                console.log(e)
-                            })
-                        
-                        }
-                    })
-                    // event click
-                }
-                // for
-
-                const editArtBtns = document.querySelectorAll(".edit-article-btn");
-
-                for(let editBtn of editArtBtns){
-                    editBtn.addEventListener("click", ()=>{
-                        
-                        const btnId = (getParentElement(editBtn, 3)).id;
-
-                        getArticleById(btnId).then(article => {
-                            
-                            const modalBackground = document.getElementById("modal-background");
-                            const editArticleModal = document.getElementById("new-article-modal");
-                            
-                            localStorage.setItem("articleInModification", true);
-                            localStorage.setItem("articleInModificationId", btnId);
-
-                            showEditArticleContainer(modalBackground, editArticleModal, article);
-
-                            
-
-                        })
-                        
-                    })
-                }
-
-                window.addEventListener('beforeunload', function(event) {
-                    if (localStorage.getItem("articleInModification")){
-                        localStorage.setItem("articleInModification", false)
-                        localStorage.setItem("articleInModificationId", 0)
-                    }
-                });
-
+                verifyCommentButtons("block", userInfo);                
+                getArticleEdits()
                 setPopularTopics(articles, userInfo);
                 getSort(userInfo);
                 
@@ -729,6 +650,125 @@ DBRequestArticles.onsuccess = () => {
         }
     }
 
+    ////////////
+
+    function verifyCommentButtons(display, userInfo={}){
+        const commentButtons = document.querySelectorAll(".comment-button");
+    
+        for (let button of commentButtons){
+            let clicked = false;
+            button.addEventListener("click", ()=> {
+                let buttonArticleComments = getParentElement(button, 2).nextElementSibling;
+                if (!clicked) {
+                    button.innerHTML = `<i class="fa-solid fa-comment"></i>`;
+                    buttonArticleComments.style.display = "block";
+                    
+                    const newArticleComment = buttonArticleComments.firstElementChild
+                    newArticleComment.style.display = display;
+                    
+                    clicked = true;
+                }
+                else {
+                    buttonArticleComments.style.display = "none";
+                    button.innerHTML = `<i class="fa-regular fa-comment"></i>`;
+                    clicked = false;
+                }
+    
+            })
+        }  
+    
+        ///////////// (change the func name)
+        //////////// (Second part)
+        
+        const cancelCommentButtons = document.querySelectorAll(".new-art-cancel-btn");
+        for (let button of cancelCommentButtons){
+            const articleID = getParentElement(button, 5);
+            
+            button.addEventListener("click", ()=> {
+            
+                const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
+                commentElement.value = "";
+            })
+        }
+    
+        if (loggedIn){    
+            
+            // Save new Comment
+            const confirmCommentButtons = document.querySelectorAll(".new-art-comment-btn")
+            
+            for (let button of confirmCommentButtons){
+                const articleId = getParentElement(button, 5).id;
+                button.addEventListener("click", ()=> {
+                    const commentElement = getParentElement(button, 1).previousElementSibling.lastElementChild;
+                    const comment = commentElement.value;
+                    
+                    if (comment.length > 0){
+                        const username = userInfo.username;
+                        const completeDate = getCompleteDate();
+                        console.log(userInfo.picture)
+                        const picture = userInfo.picture;
+                        console.log(picture)
+                        
+                        const newComment = {
+                            username: username,
+                            date: completeDate,
+                            picture: picture,
+                            comment: comment,
+                        }
+                        console.log(articleId)
+                        
+                        getArticleById(articleId).then((buttonArticle)=> {
+                            updateArticleComments(buttonArticle, newComment).then(()=> {
+                                const divArticleComments = getParentElement(commentElement, 3).lastElementChild;
+                                const divArticleComment = createCommment(newComment);
+                                
+                                divArticleComments.appendChild(divArticleComment);
+                                commentElement.value = "";
+                                
+                            }).catch(e=>{
+                                console.log(e)
+                            })
+                        }).catch(e=>{
+                            console.log(e)
+                        })
+                        
+                    }
+                })
+                // event click
+            }
+        }
+    }
+    
+
+    function getArticleEdits() {
+        const editArtBtns = document.querySelectorAll(".edit-article-btn");
+
+        for(let editBtn of editArtBtns){
+            editBtn.addEventListener("click", ()=>{
+                
+                const btnId = (getParentElement(editBtn, 3)).id;
+
+                getArticleById(btnId).then(article => {
+                    
+                    const modalBackground = document.getElementById("modal-background");
+                    const editArticleModal = document.getElementById("new-article-modal");
+                    
+                    localStorage.setItem("articleInModification", true);
+                    localStorage.setItem("articleInModificationId", btnId);
+
+                    showEditArticleContainer(modalBackground, editArticleModal, article);
+                })
+            })
+        }
+
+        window.addEventListener('beforeunload', function(event) {
+            if (localStorage.getItem("articleInModification")){
+                localStorage.setItem("articleInModification", false)
+                localStorage.setItem("articleInModificationId", 0)
+            }
+        });
+    }
+
 
 
     function getNewArticleTopics(){
@@ -769,6 +809,14 @@ DBRequestArticles.onsuccess = () => {
                 fTopic.addEventListener("click", ()=> {
                     getArticlesByTopic(articles, fTopic.innerHTML, userInfo);
                     document.getElementById("sidebar").classList.remove("active");
+                    if (loggedIn){
+                        getLikes(userInfo)
+                        verifyCommentButtons("block", userInfo);
+                        getArticleEdits();
+                    }
+                    else{
+                        verifyCommentButtons("none");
+                    }
                 })
             }
     }
@@ -900,8 +948,14 @@ DBRequestArticles.onsuccess = () => {
             }
             postsContainer.appendChild(documentFragment);
     
-            if (loggedIn)
-            getLikes(userInfo)
+            if (loggedIn){
+                getLikes(userInfo)
+                verifyCommentButtons("block", userInfo);
+                getArticleEdits();
+            }
+            else{
+                verifyCommentButtons("none");
+            }
         })
 
     }
@@ -910,30 +964,6 @@ DBRequestArticles.onsuccess = () => {
     
     
     
-function verifyCommentButtons(display){
-    const commentButtons = document.querySelectorAll(".comment-button");
-    for (let button of commentButtons){
-        let clicked = false;
-        button.addEventListener("click", ()=> {
-            let buttonArticleComments = getParentElement(button, 2).nextElementSibling;
-            if (!clicked) {
-                button.innerHTML = `<i class="fa-solid fa-comment"></i>`;
-                buttonArticleComments.style.display = "block";
-                
-                const newArticleComment = buttonArticleComments.firstElementChild
-                newArticleComment.style.display = display;
-                
-                clicked = true;
-            }
-            else {
-                buttonArticleComments.style.display = "none";
-                button.innerHTML = `<i class="fa-regular fa-comment"></i>`;
-                clicked = false;
-            }
-
-        })
-    }  
-}
 
 
 // Articles creation
@@ -1267,6 +1297,16 @@ function getPreloadedParagraphs(text){
     return paragraphs;
 }
 
+function verifyEmptyComments(comments){
+    if (comments === "" || comments === 0){
+        return [];
+    }
+    return comments;
+}
+
+// function formatTextAreas(TextAreaList){
+
+// }
 
 
 // New articles creation documents/ implementation
@@ -1286,6 +1326,7 @@ function createNewArticleButton() {
 function showNewArticleContainer(modalBackground, newArticleModal) {
     modalBackground.style.display = "block";
     newArticleModal.style.display = "block";    
+    document.getElementById("delete-article-btn").style.display = "none";
     
     const newArticleTitle = document.getElementById("new-article-title");
     const newArticleSubtitle = document.getElementById("new-article-subtitle");
@@ -1302,6 +1343,8 @@ function showNewArticleContainer(modalBackground, newArticleModal) {
     
     document.getElementById("new-article-date").innerHTML = `${getCompleteDateFormat(getCompleteDate())}`
 
+    document.getElementById("new-art-incompleted-msg").style.display = "none";
+    document.getElementById("edit-art-incompleted-msg").style.display = "none";
     
 }
 
@@ -1321,6 +1364,7 @@ function deleteTopic(){
 function showEditArticleContainer(modalBackground, editArticleModal, article){
     modalBackground.style.display = "block";
     editArticleModal.style.display = "block";
+    document.getElementById("delete-article-btn").style.display = "block";
     
     const editArticleTitle = document.getElementById("new-article-title");
     const editArticleSubtitle = document.getElementById("new-article-subtitle");
@@ -1332,13 +1376,15 @@ function showEditArticleContainer(modalBackground, editArticleModal, article){
     editArticleImgContainer.innerHTML = "";
     editArticleTopicsContainer.innerHTML = "";
 
+    document.getElementById("new-art-incompleted-msg").style.display = "none";
+    document.getElementById("edit-art-incompleted-msg").style.display = "none";
 
     const title = article.title;
     const subtitle = article.subtitle;
     const img = article.img;
     const imgWidth = article.img_width;
     const date =  getCompleteDateFormat(article.date);
-    const body = article.bodyText;
+    const body = (article.bodyText).join('\n');
     const topics = article.topics;
     
     const  dataTransfer = new DataTransfer()
@@ -1360,14 +1406,11 @@ function showEditArticleContainer(modalBackground, editArticleModal, article){
 
     // esta bien, ahora le tengo que eliminar el centenar de cosas que cree para arreglarlo,
 
-    console.log(editArticleImgContainer)
-
     editArticleImg.setAttribute("width", imgWidth);
     editArticleImg.setAttribute("alt", "article edit image");
     editArticleImgContainer.appendChild(editArticleImg);
     editArticleDate.innerHTML = date;
     editArticleBody.value = body;
-    console.log(body)
     for(let topic of topics){
         const divNewTopic = document.createElement("div");
         divNewTopic.classList.add("new-topic");

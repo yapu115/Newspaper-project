@@ -11,15 +11,6 @@ const getInfo = async () => {
 // IndexedDatabase
 const DBRequestUsers = indexedDB.open("usersDB", 1);
 
-// Open DB
-DBRequestUsers.addEventListener("upgradeneeded", () => {
-  const db = DBRequestUsers.result;
-  const store = db.createObjectStore("users", {
-    keyPath: "id",
-    autoIncrement: true,
-  });
-});
-
 // Succesfull DB open
 DBRequestUsers.onsuccess = () => {
   const db = DBRequestUsers.result;

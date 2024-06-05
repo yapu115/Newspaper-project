@@ -24,7 +24,7 @@ let orderByLikes = false;
 const DBRequestArticles = indexedDB.open("ArticlesDB", 1);
 const DBRequestUsers = indexedDB.open("usersDB", 1);
 
-// Open DB
+// Open usersDB
 DBRequestUsers.addEventListener("upgradeneeded", () => {
   const db = DBRequestUsers.result;
   console.log("aaa");
@@ -34,7 +34,7 @@ DBRequestUsers.addEventListener("upgradeneeded", () => {
   });
 });
 
-// Open DB
+// Open ArticlesDB
 DBRequestArticles.addEventListener("upgradeneeded", () => {
   const db = DBRequestArticles.result;
   const store = db.createObjectStore("articles", {
@@ -46,6 +46,7 @@ DBRequestArticles.addEventListener("upgradeneeded", () => {
   store.createIndex("commentsCount", "comments", { unique: false });
 });
 
+// get staff_info.txt
 async function getUserInfo() {
   return new Promise((resolve, reject) => {
     DBRequestUsers.onsuccess = () => {
@@ -68,6 +69,7 @@ async function getUserInfo() {
   });
 }
 
+// Get users
 function getUserById(db, id) {
   return new Promise((resolve, reject) => {
     const objectStore = getIDBUserData(db, "readonly");
@@ -88,7 +90,7 @@ function getIDBUserData(db, mode) {
   return objectStore;
 }
 
-// Succesfull DB open
+// Succesfull Articles DB open
 DBRequestArticles.onsuccess = () => {
   const db = DBRequestArticles.result;
 
@@ -224,11 +226,13 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Get preloaded articles
   const getArticlesInfo = async () => {
     let request = await fetch("preloaded_articles.txt");
     return await request.json();
   };
 
+  // Img Files convertion
   //////////////////////////////////////////////
   async function getArticlePictureFile(pictureUrl, fileName) {
     try {
@@ -275,320 +279,332 @@ DBRequestArticles.onsuccess = () => {
     // Crear y devolver un objeto File en lugar de Blob
     return new File([buffer], fileName, { type: type });
   }
+
   ////////////////////////////////////////////////////
 
-  function addPreloadedArticles() {
-    getArticlesInfo()
-      .then((articlesInfo) => {
-        for (const articleData of articlesInfo) {
-          const title = articleData.title;
-          const subtitle = articleData.subtitle;
-          const imgPath = articleData.img;
-          const imgWidth = articleData.img_width;
-          const date = articleData.date;
-          const bodyText = getPreloadedParagraphs(articleData.bodyText);
-          const author = articleData.author;
-          const likes = articleData.likes;
-          const comments = verifyEmptyComments(articleData.comments);
-          const topics = articleData.topics.split(",");
-
-          getArticlePictureFile(imgPath, title).then((img) => {
-            console.log(img);
-            const article = {
-              title: title,
-              subtitle: subtitle,
-              img: img,
-              img_width: imgWidth,
-              date: date,
-              author: author,
-              bodyText: bodyText,
-              likes: likes,
-              comments: comments,
-              topics: topics,
-            };
-            saveArticle(article).then((art) => {
-              console.log(art);
-            });
-          });
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  async function checkPreloadedArticles() {
+    if (localStorage.getItem("preloadedArticlesAdded")) {
+      console.log("The articles were already updated");
+    } else {
+      await addPreloadedArticles();
+      localStorage.setItem("preloadedArticlesAdded", true);
+    }
   }
 
-  if (localStorage.getItem("preloadedArticlesAdded")) {
-    console.log("The articles were already updated");
-  } else {
-    addPreloadedArticles();
-    localStorage.setItem("preloadedArticlesAdded", true);
+  async function addPreloadedArticles() {
+    try {
+      const articlesInfo = await getArticlesInfo();
+      const articlePromises = articlesInfo.map(async (articleData) => {
+        const title = articleData.title;
+        const subtitle = articleData.subtitle;
+        const imgPath = articleData.img;
+        const imgWidth = articleData.img_width;
+        const date = articleData.date;
+        const bodyText = getPreloadedParagraphs(articleData.bodyText);
+        const author = articleData.author;
+        const likes = articleData.likes;
+        const comments = verifyEmptyComments(articleData.comments);
+        const topics = articleData.topics.split(",");
+
+        const img = await getArticlePictureFile(imgPath, title);
+        console.log(img);
+        const article = {
+          title: title,
+          subtitle: subtitle,
+          img: img,
+          img_width: imgWidth,
+          date: date,
+          author: author,
+          bodyText: bodyText,
+          likes: likes,
+          comments: comments,
+          topics: topics,
+        };
+        const art = await saveArticle(article);
+        console.log(art);
+      });
+
+      // Espera a que todas las promesas se resuelvan
+      await Promise.all(articlePromises);
+      console.log("Todos los artículos se han agregado correctamente");
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   //////////////////////////////////////////////////////////////
 
   // If the user is logged
-  if (loggedIn) {
-    console.log("a");
-    getUserInfo()
-      .then((userInfo) => {
-        getArticles()
-          .then((articles) => {
-            articles = orderArticlesByDate(articles, true);
-            for (let articleData of articles) {
-              const article = createArticle(articleData, userInfo);
-              documentFragment.appendChild(article);
-            }
-            postsContainer.appendChild(documentFragment);
+  (async () => {
+    await checkPreloadedArticles();
+    console.log("aaaaaaaaaaaaaaaaaa");
+    if (loggedIn) {
+      getUserInfo()
+        .then((userInfo) => {
+          getArticles()
+            .then((articles) => {
+              articles = orderArticlesByDate(articles, true);
+              for (let articleData of articles) {
+                const article = createArticle(articleData, userInfo);
+                documentFragment.appendChild(article);
+              }
+              postsContainer.appendChild(documentFragment);
 
-            getStaffInfo().then((staffInfo) => {
-              for (let staffUser of staffInfo) {
-                if (
-                  userInfo.username === staffUser.username &&
-                  userInfo.password === staffUser.password
-                ) {
-                  let createArticleBtn = createNewArticleButton();
+              getStaffInfo().then((staffInfo) => {
+                for (let staffUser of staffInfo) {
+                  if (
+                    userInfo.username === staffUser.username &&
+                    userInfo.password === staffUser.password
+                  ) {
+                    let createArticleBtn = createNewArticleButton();
 
-                  const modalBackground =
-                    document.getElementById("modal-background");
-                  const newArticleModal =
-                    document.getElementById("new-article-modal");
+                    const modalBackground =
+                      document.getElementById("modal-background");
+                    const newArticleModal =
+                      document.getElementById("new-article-modal");
 
-                  // New article form
-                  createArticleBtn.addEventListener("click", function () {
-                    showNewArticleContainer(modalBackground, newArticleModal);
-                  });
+                    // New article form
+                    createArticleBtn.addEventListener("click", function () {
+                      showNewArticleContainer(modalBackground, newArticleModal);
+                    });
 
-                  modalBackground.addEventListener("click", function () {
-                    modalBackground.style.display = "none";
-                    newArticleModal.style.display = "none";
-
-                    if (localStorage.getItem("articleInModification")) {
-                      localStorage.setItem("articleInModification", false);
-                      localStorage.setItem("articleInModificationId", 0);
-                    }
-                  });
-
-                  const newArtImgFile = document.getElementById(
-                    "new-article-img-file"
-                  );
-                  const newArtImage =
-                    document.getElementById("new-article-img");
-                  const increaseImgWidth =
-                    document.getElementById("increase-img-width");
-                  const reduceImgWidth =
-                    document.getElementById("reduce-img-width");
-
-                  // Select an image
-                  newArtImgFile.addEventListener("change", function (event) {
-                    let file = event.target.files[0];
-
-                    if (file) {
-                      let reader = new FileReader();
-                      reader.onload = function (event) {
-                        let urlImg = event.target.result;
-
-                        const img = document.createElement("img");
-                        img.src = urlImg;
-                        img.width = 300;
-
-                        newArtImage.innerHTML = "";
-                        newArtImage.appendChild(img);
-
-                        increaseImgWidth.style.display = "inline-block";
-                        reduceImgWidth.style.display = "inline-block";
-
-                        increaseImgWidth.addEventListener("click", function () {
-                          if (img.width < 350) img.width += 25;
-                          localStorage.setItem("artImgWidth", img.width);
-                        });
-
-                        reduceImgWidth.addEventListener("click", function () {
-                          if (img.width > 200) img.width -= 25;
-                          localStorage.setItem("artImgWidth", img.width);
-                        });
-
-                        localStorage.setItem("artImgWidth", img.width);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  });
-
-                  // Publish new article
-                  const publishNewArticleBtn = document.getElementById(
-                    "publish-new-article-btn"
-                  );
-                  publishNewArticleBtn.addEventListener("click", () => {
-                    const title =
-                      document.getElementById("new-article-title").value;
-                    const subtitle = document.getElementById(
-                      "new-article-subtitle"
-                    ).value;
-                    const img = document.getElementById("new-article-img-file")
-                      .files[0];
-                    const imgWidth = localStorage.getItem("artImgWidth");
-                    const date = getCompleteDate();
-                    const author = `${userInfo.name} ${userInfo.lastName}`;
-                    const bodyText = getParagraphs(
-                      document.getElementById("new-article-body").value
-                    );
-                    const topics = getNewArticleTopics();
-                    const commentsList = [];
-
-                    console.log(img);
-                    console.log(bodyText);
-                    console.log(topics);
-
-                    if (
-                      title !== "" &&
-                      subtitle !== "" &&
-                      img !== undefined &&
-                      bodyText !== "" &&
-                      topics !== ""
-                    ) {
-                      const newArticleJSON = {
-                        //cambiarle el nombre a todos estos que dicen "new" ya que se comparten con modificar
-                        title: title,
-                        subtitle: subtitle,
-                        img: img,
-                        img_width: imgWidth,
-                        date: date,
-                        author: author,
-                        bodyText: bodyText,
-                        likes: 0,
-                        comments: commentsList,
-                        topics: topics,
-                      };
-
-                      if (
-                        localStorage.getItem("articleInModification") &&
-                        stringToBoolConvertion(
-                          localStorage.getItem("articleInModification")
-                        )
-                      ) {
-                        const articleId = localStorage.getItem(
-                          "articleInModificationId"
-                        );
-
-                        getArticleById(articleId).then((article) => {
-                          newArticleJSON.likes = article.likes;
-                          newArticleJSON.comments = article.comments;
-                          updateArticle(article, newArticleJSON);
-                        });
-                      } else {
-                        saveArticle(newArticleJSON).then((art) => {
-                          console.log(art);
-                        });
-                      }
-                      // location.reload();
+                    modalBackground.addEventListener("click", function () {
                       modalBackground.style.display = "none";
                       newArticleModal.style.display = "none";
-                    } else {
-                      document.getElementById(
-                        "new-art-incompleted-msg"
-                      ).style.display = "block";
-                    }
-                  });
 
-                  // delete article
-                  const deleteArticleBtn =
-                    document.getElementById("delete-article-btn");
-                  deleteArticleBtn.addEventListener("click", () => {
-                    if (
-                      confirm(
-                        "Are you sure you want to delete this Article?\nIt will be lost forever"
-                      )
-                    ) {
-                      deleteArticle(
-                        localStorage.getItem("articleInModificationId")
+                      if (localStorage.getItem("articleInModification")) {
+                        localStorage.setItem("articleInModification", false);
+                        localStorage.setItem("articleInModificationId", 0);
+                      }
+                    });
+
+                    const newArtImgFile = document.getElementById(
+                      "new-article-img-file"
+                    );
+                    const newArtImage =
+                      document.getElementById("new-article-img");
+                    const increaseImgWidth =
+                      document.getElementById("increase-img-width");
+                    const reduceImgWidth =
+                      document.getElementById("reduce-img-width");
+
+                    // Select an image
+                    newArtImgFile.addEventListener("change", function (event) {
+                      let file = event.target.files[0];
+
+                      if (file) {
+                        let reader = new FileReader();
+                        reader.onload = function (event) {
+                          let urlImg = event.target.result;
+
+                          const img = document.createElement("img");
+                          img.src = urlImg;
+                          img.width = 300;
+
+                          newArtImage.innerHTML = "";
+                          newArtImage.appendChild(img);
+
+                          increaseImgWidth.style.display = "inline-block";
+                          reduceImgWidth.style.display = "inline-block";
+
+                          increaseImgWidth.addEventListener(
+                            "click",
+                            function () {
+                              if (img.width < 350) img.width += 25;
+                              localStorage.setItem("artImgWidth", img.width);
+                            }
+                          );
+
+                          reduceImgWidth.addEventListener("click", function () {
+                            if (img.width > 200) img.width -= 25;
+                            localStorage.setItem("artImgWidth", img.width);
+                          });
+
+                          localStorage.setItem("artImgWidth", img.width);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    });
+
+                    // Publish new article
+                    const publishNewArticleBtn = document.getElementById(
+                      "publish-new-article-btn"
+                    );
+                    publishNewArticleBtn.addEventListener("click", () => {
+                      const title =
+                        document.getElementById("new-article-title").value;
+                      const subtitle = document.getElementById(
+                        "new-article-subtitle"
+                      ).value;
+                      const img = document.getElementById(
+                        "new-article-img-file"
+                      ).files[0];
+                      const imgWidth = localStorage.getItem("artImgWidth");
+                      const date = getCompleteDate();
+                      const author = `${userInfo.name} ${userInfo.lastName}`;
+                      const bodyText = getParagraphs(
+                        document.getElementById("new-article-body").value
                       );
-                      location.reload();
-                      window.scrollTo(0, 0);
-                    }
-                  });
+                      const topics = getNewArticleTopics();
+                      const commentsList = [];
 
-                  const newTopicButton =
-                    document.getElementById("new-topic-btn");
-                  const newTopicContainer = document.getElementById(
-                    "new-topic-container"
-                  );
+                      console.log(img);
+                      console.log(bodyText);
+                      console.log(topics);
 
-                  newTopicButton.addEventListener("click", () => {
-                    newTopicButton.style.display = "none";
-                    newTopicContainer.style.display = "block";
-                  });
+                      if (
+                        title !== "" &&
+                        subtitle !== "" &&
+                        img !== undefined &&
+                        bodyText !== "" &&
+                        topics !== ""
+                      ) {
+                        const newArticleJSON = {
+                          //cambiarle el nombre a todos estos que dicen "new" ya que se comparten con modificar
+                          title: title,
+                          subtitle: subtitle,
+                          img: img,
+                          img_width: imgWidth,
+                          date: date,
+                          author: author,
+                          bodyText: bodyText,
+                          likes: 0,
+                          comments: commentsList,
+                          topics: topics,
+                        };
 
-                  newTopicContainer.lastElementChild.addEventListener(
-                    "click",
-                    () => {
-                      const topicInput =
-                        document.getElementById("new-topic-input");
-                      const topic = topicInput.value;
+                        if (
+                          localStorage.getItem("articleInModification") &&
+                          stringToBoolConvertion(
+                            localStorage.getItem("articleInModification")
+                          )
+                        ) {
+                          const articleId = localStorage.getItem(
+                            "articleInModificationId"
+                          );
 
-                      const divNewTopic = document.createElement("div");
-                      divNewTopic.classList.add("new-topic");
+                          getArticleById(articleId).then((article) => {
+                            newArticleJSON.likes = article.likes;
+                            newArticleJSON.comments = article.comments;
+                            updateArticle(article, newArticleJSON);
+                          });
+                        } else {
+                          saveArticle(newArticleJSON).then((art) => {
+                            console.log(art);
+                          });
+                        }
+                        // location.reload();
+                        modalBackground.style.display = "none";
+                        newArticleModal.style.display = "none";
+                      } else {
+                        document.getElementById(
+                          "new-art-incompleted-msg"
+                        ).style.display = "block";
+                      }
+                    });
 
-                      // esto se puede hacer una funcion porque lo llamo en dos lados ditintos igual
-                      const topicLabel = document.createElement("label");
-                      const deleteTopicBtn = document.createElement("button");
+                    // delete article
+                    const deleteArticleBtn =
+                      document.getElementById("delete-article-btn");
+                    deleteArticleBtn.addEventListener("click", () => {
+                      if (
+                        confirm(
+                          "Are you sure you want to delete this Article?\nIt will be lost forever"
+                        )
+                      ) {
+                        deleteArticle(
+                          localStorage.getItem("articleInModificationId")
+                        );
+                        location.reload();
+                        window.scrollTo(0, 0);
+                      }
+                    });
 
-                      topicLabel.innerHTML = topic;
-                      deleteTopicBtn.innerHTML = "X";
-                      deleteTopicBtn.classList.add("delete-topic-btn");
-                      deleteTopicBtn.setAttribute("type", "button");
+                    const newTopicButton =
+                      document.getElementById("new-topic-btn");
+                    const newTopicContainer = document.getElementById(
+                      "new-topic-container"
+                    );
 
-                      divNewTopic.appendChild(topicLabel);
-                      divNewTopic.appendChild(deleteTopicBtn);
+                    newTopicButton.addEventListener("click", () => {
+                      newTopicButton.style.display = "none";
+                      newTopicContainer.style.display = "block";
+                    });
 
-                      document
-                        .getElementById("new-article-topics")
-                        .appendChild(divNewTopic);
-                      //////////////////
+                    newTopicContainer.lastElementChild.addEventListener(
+                      "click",
+                      () => {
+                        const topicInput =
+                          document.getElementById("new-topic-input");
+                        const topic = topicInput.value;
 
-                      topicInput.value = "";
-                      newTopicButton.style.display = "block";
-                      newTopicContainer.style.display = "none";
+                        const divNewTopic = document.createElement("div");
+                        divNewTopic.classList.add("new-topic");
 
-                      deleteTopic();
-                    }
-                  );
+                        // esto se puede hacer una funcion porque lo llamo en dos lados ditintos igual
+                        const topicLabel = document.createElement("label");
+                        const deleteTopicBtn = document.createElement("button");
+
+                        topicLabel.innerHTML = topic;
+                        deleteTopicBtn.innerHTML = "X";
+                        deleteTopicBtn.classList.add("delete-topic-btn");
+                        deleteTopicBtn.setAttribute("type", "button");
+
+                        divNewTopic.appendChild(topicLabel);
+                        divNewTopic.appendChild(deleteTopicBtn);
+
+                        document
+                          .getElementById("new-article-topics")
+                          .appendChild(divNewTopic);
+                        //////////////////
+
+                        topicInput.value = "";
+                        newTopicButton.style.display = "block";
+                        newTopicContainer.style.display = "none";
+
+                        deleteTopic();
+                      }
+                    );
+                  }
                 }
-              }
+              });
+
+              getLikes(userInfo);
+              verifyCommentButtons("block", userInfo);
+              getArticleEdits();
+              setPopularTopics(articles, userInfo);
+              getSort(userInfo);
+            })
+            .catch((e) => {
+              console.log(e);
             });
+          // Get articles
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      // get UserInfo
+    } else {
+      getArticles()
+        .then((articles) => {
+          console.log("despues");
+          articles = orderArticlesByDate(articles, true);
+          for (let articleData of articles) {
+            const article = createArticle(articleData);
 
-            getLikes(userInfo);
-            verifyCommentButtons("block", userInfo);
-            getArticleEdits();
-            setPopularTopics(articles, userInfo);
-            getSort(userInfo);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        // Get articles
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    // get UserInfo
-  } else {
-    getArticles()
-      .then((articles) => {
-        articles = orderArticlesByDate(articles, true);
-        for (let articleData of articles) {
-          const article = createArticle(articleData);
+            documentFragment.appendChild(article);
+          }
+          postsContainer.appendChild(documentFragment);
 
-          documentFragment.appendChild(article);
-        }
-        postsContainer.appendChild(documentFragment);
-
-        verifyCommentButtons("none");
-        setPopularTopics(articles);
-        getSort(articles);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+          verifyCommentButtons("none");
+          setPopularTopics(articles);
+          getSort(articles);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  })();
 
   window.onscroll = function () {
     stickNavBar();

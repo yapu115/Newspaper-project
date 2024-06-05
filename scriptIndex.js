@@ -261,7 +261,7 @@ DBRequestArticles.onsuccess = () => {
       });
     } catch (error) {
       console.error("Error obtaining the image:", error);
-      throw error; // Re-lanza el error para que pueda ser manejado externamente
+      throw error;
     }
   }
 
@@ -276,10 +276,8 @@ DBRequestArticles.onsuccess = () => {
       view[i] = byteString.charCodeAt(i);
     }
 
-    // Crear y devolver un objeto File en lugar de Blob
     return new File([buffer], fileName, { type: type });
   }
-
   ////////////////////////////////////////////////////
 
   async function checkPreloadedArticles() {
@@ -307,7 +305,6 @@ DBRequestArticles.onsuccess = () => {
         const topics = articleData.topics.split(",");
 
         const img = await getArticlePictureFile(imgPath, title);
-        console.log(img);
         const article = {
           title: title,
           subtitle: subtitle,
@@ -324,9 +321,7 @@ DBRequestArticles.onsuccess = () => {
         console.log(art);
       });
 
-      // Espera a que todas las promesas se resuelvan
       await Promise.all(articlePromises);
-      console.log("Todos los artículos se han agregado correctamente");
     } catch (e) {
       console.log(e);
     }
@@ -334,15 +329,15 @@ DBRequestArticles.onsuccess = () => {
 
   //////////////////////////////////////////////////////////////
 
-  // If the user is logged
   (async () => {
     await checkPreloadedArticles();
-    console.log("aaaaaaaaaaaaaaaaaa");
+    // If the user is logged
     if (loggedIn) {
       getUserInfo()
         .then((userInfo) => {
           getArticles()
             .then((articles) => {
+              //order articles and show them
               articles = orderArticlesByDate(articles, true);
               for (let articleData of articles) {
                 const article = createArticle(articleData, userInfo);

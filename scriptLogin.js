@@ -156,7 +156,7 @@ DBRequestUsers.onsuccess = () => {
           username: username,
           password: password,
           name: name,
-          last_name: lastName,
+          lastName: lastName,
           email: email,
           picture: picture,
         };

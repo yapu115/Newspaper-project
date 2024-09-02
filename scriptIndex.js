@@ -27,7 +27,6 @@ const DBRequestUsers = indexedDB.open("usersDB", 1);
 // Open usersDB
 DBRequestUsers.addEventListener("upgradeneeded", () => {
   const db = DBRequestUsers.result;
-  console.log("aaa");
   db.createObjectStore("users", {
     keyPath: "id",
     autoIncrement: true,
@@ -582,7 +581,6 @@ DBRequestArticles.onsuccess = () => {
     } else {
       getArticles()
         .then((articles) => {
-          console.log("despues");
           articles = orderArticlesByDate(articles, true);
           for (let articleData of articles) {
             const article = createArticle(articleData);
@@ -932,7 +930,6 @@ DBRequestArticles.onsuccess = () => {
   }
 
   function orderArticlesByDate(articles, asc) {
-    console.log("aa");
     if (asc) return articles.sort(sortDatesAsc);
     return articles.sort(sortDatesDesc);
   }
@@ -940,13 +937,13 @@ DBRequestArticles.onsuccess = () => {
   function sortDatesDesc(a, b) {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
-    return dateA - dateB;
+    return dateB - dateA;
   }
 
   function sortDatesAsc(a, b) {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
-    return dateB - dateA;
+    return dateA - dateB;
   }
 
   function sortBy(userInfo, asc = false) {

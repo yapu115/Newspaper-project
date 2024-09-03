@@ -19,13 +19,13 @@ It consists of 4 main sections:
 ### Articles 
 In this section you can see all the published articles and interact with them.
 
-Each article shows a different new story written by a new york's most famoust columnists.
+Each article shows a different new story written by new york's most famoust columnists.
 
 ![ArticleTitle](https://github.com/user-attachments/assets/2df8f2c9-e9f4-4218-80c7-6801080ffe00) 
 
 You can watch what other people commented on the article and how many likes it has.
 
-![Likes and comments](https://github.com/user-attachments/assets/4c6706b9-d1a5-46bf-8fb0-c53b1cf3eabc)
+![likes and comments](https://github.com/user-attachments/assets/5f1eab2a-9ebd-4f89-afc6-193cb93b023b)
 
 ![Comments](https://github.com/user-attachments/assets/67e49300-ab56-4e15-b264-2eb761f6e527)
 
@@ -37,9 +37,10 @@ You can also filter your search with a sidebar, which shows the most used topics
 ### Staff
 Here you can see how the page staff is composed and a brief description of each person.
 
-![Staff](https://github.com/user-attachments/assets/39a8345b-1c25-46e8-8235-ca333e13018d)
+![staff](https://github.com/user-attachments/assets/2ba8d816-fde5-4834-aa4d-16cffb116c8f)
 
-Sign in: In this section you can log in with a staff account to be able to enjoy all the functions of the page (Including the creation of new articles)
+### Sign in: 
+In this section you can log in with a staff account to be able to enjoy all the functions of the page (Including the creation of new articles)
 
 #### Staff Users - Passwords
 - Peter Parker: park3r115 - IloveSpidey
@@ -70,4 +71,4 @@ Here you can find a description of our newspaper
 
 ## Main Features: 
 
-This page was designed to test front end fundamentals and  improve Javascripts concepts to apply them efficiently. This concepts include: IndexedDB, Local storage, promises, asynchronous functions, among others.
+This page was designed to test front end fundamentals and  improve Javascripts concepts to apply them efficiently. This concepts include: IndexedDB, Local storage, promises, async functions, among others.

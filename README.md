@@ -1,4 +1,4 @@
-# The daily Bugle (fake) Projec
+# The daily Bugle (fake) Project
 
 Web page link: https://thedailybuglefake.netlify.app
 

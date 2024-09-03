@@ -13,7 +13,6 @@
     />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- AL AGREGAR LA LINEA DE CODIGO ANTERIOR CAMBIA TODO, NO ES ALGO DEL CSS -->
 
     <script
       src="https://kit.fontawesome.com/64ef505ef4.js"
@@ -23,7 +22,7 @@
     <link rel="icon" href="img/news_icon.ico" />
   </head>
   <body>
-    <!-- CABEZA DE LA PAGINA -->
+    <!-- Page header -->
     <header class="page-head">
       <div class="head-elements">
         <div>
@@ -31,9 +30,10 @@
           <h3 class="head-subtitle">New york's most trusted newspaper</h3>
         </div>
         <div id="bars">
+          <!-- NavBar -->
           <nav id="navbar">
             <div id="navbar-left-item">
-              <button id="sidebar-btn" class="navbar-item">≣</button>
+              <button id="sidebar-btn" class="navbar-item">☰</button>
             </div>
             <div id="navbar-center-items">
               <a href="index.html" class="navbar-item">Articles</a>
@@ -43,6 +43,7 @@
             </div>
           </nav>
 
+          <!-- SideBar -->
           <div id="sidebar">
             <div id="popular-topics">
               <h2>Most published topics</h2>
@@ -62,8 +63,11 @@
         </div>
       </div>
     </header>
+
+    <!-- Body / Articles -->
     <div class="articles">
       <section id="posts"></section>
+      <!-- New Article -->
       <div id="new-article-button-div"></div>
       <div id="modal-background" display="none"></div>
       <div id="new-article-modal" display="none">
@@ -124,9 +128,6 @@
           </div>
           <p id="new-art-incompleted-msg">
             All inputs must be completed to publish the new article
-          </p>
-          <p id="edit-art-incompleted-msg">
-            All inputs must be completed to publish the edited article
           </p>
           <button type="button" id="publish-new-article-btn">Publish</button>
 

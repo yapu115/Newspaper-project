@@ -285,7 +285,6 @@ body {
   margin-top: 5px;
   margin-left: 25%;
   font-size: 16px;
-  /* background-color: #888; */
 }
 
 .article-comment-section {
@@ -502,45 +501,6 @@ body {
   background-color: #a8a8ac;
   bottom: 0;
 }
-
-/*
-.login-container {
-    width: 400px;
-    padding: 30px;
-    margin: 0 auto;
-    margin-top: 40px;
-    border: 4px double #000;
-    border-radius: 5px;
-}
-
-.form-group {
-    margin-bottom: 10px;
-}
-
-
-
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-*/
 
 #login-container,
 #signup-container,
@@ -875,7 +835,7 @@ button:hover {
 
 #new-article-topics {
   display: flex;
-  flex-wrap: wrap; /* Pone los elementos en filas si no caben en el contenedor*/
+  flex-wrap: wrap;
 }
 
 .new-topic {

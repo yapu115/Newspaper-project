@@ -1,114 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="img/news_icon.ico"> 
+  <head>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="img/news_icon.ico" />
     <title>Login</title>
-</head>
-<body>
-    <!-- CABEZA DE LA PAGINA -->
-    <Header class="page-head">
-        <div class="head-elements">
-            <div>
-                <h1 class="head-title">THE DAILY BUGLE</h1>
-                <h3 class="head-subtitle">New york's most trusted newspaper</h3>
-            </div>
-            <div id="bars">
-                <nav id="navbar">
-                    <div id="navbar-center-items">
-                        <a href="index.html" class="navbar-item">Articles</a>
-                        <a href="staff.html" class="navbar-item">Staff</a>
-                        <a href="signin.html" class="navbar-item">Sign in</a>
-                        <a href="about.html" class="navbar-item">About</a>
-                    </div>
-                </nav>
-            </div>
+  </head>
+  <body>
+    <header class="page-head">
+      <div class="head-elements">
+        <div>
+          <h1 class="head-title">THE DAILY BUGLE</h1>
+          <h3 class="head-subtitle">New york's most trusted newspaper</h3>
         </div>
-    </Header>
+        <div id="bars">
+          <nav id="navbar">
+            <div id="navbar-center-items">
+              <a href="index.html" class="navbar-item">Articles</a>
+              <a href="staff.html" class="navbar-item">Staff</a>
+              <a href="signin.html" class="navbar-item">Sign in</a>
+              <a href="about.html" class="navbar-item">About</a>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
     <div id="login-signup-container">
-
-        <div id="login-container">
-            <form id="login-form-container">
-                <h2>Login</h2>
-                <div id="form-username">
-                    <input type="text" id="username" placeholder="username" >
-                </div>
-                <div id="form-password">
-                    <input type="password" id="password" placeholder="password">
-                    <p id="error-message">Wrong pasword</p>
-                </div>
-                <button type="button" id="login-button">Log in</button>
-                <p id="message">Log in to publish more stories and help us discover your truth</p>
-            </form>
-            <div id="signup-option">
-                <p>Don't have an account?<button id="signup-option-btn">Sign up</button></p>
-            </div>
+      <div id="login-container">
+        <form id="login-form-container">
+          <h2>Login</h2>
+          <div id="form-username">
+            <input type="text" id="username" placeholder="username" />
+          </div>
+          <div id="form-password">
+            <input type="password" id="password" placeholder="password" />
+            <p id="error-message">Wrong pasword</p>
+          </div>
+          <button type="button" id="login-button">Log in</button>
+          <p id="message">
+            Log in to publish more stories and help us discover your truth
+          </p>
+        </form>
+        <div id="signup-option">
+          <p>
+            Don't have an account?<button id="signup-option-btn">
+              Sign up
+            </button>
+          </p>
         </div>
+      </div>
 
+      <div id="signup-container">
+        <form id="signup-form-container">
+          <div>
+            <h2>Sign up</h2>
+            <p>Please fill in this form to create an account.</p>
+          </div>
+          <hr width="100%" />
 
+          <div>
+            <label for="name"><b>Name</b></label>
+            <input
+              type="text"
+              placeholder="Enter name"
+              name="name"
+              id="signup-name"
+              required
+            />
 
-        <div id="signup-container">
-            <form id="signup-form-container">
-                <div>
-                    <h2>Sign up</h2>
-                    <p>Please fill in this form to create an account.</p>
-                </div>
-                <hr width="100%">
-                
-                <div>
-                    <label for="name"><b>Name</b></label>
-                    <input type="text" placeholder="Enter name" name="name" id="signup-name" required>
-                    
-                    <label for="last-name"><b>Last name</b></label>
-                    <input type="text" placeholder="Enter last name" name="last-name" id="signup-last-name" required>
-                </div>
-                
-                <div>
-                    <label for="email"><b>Email</b></label>
-                    <input type="text" placeholder="Enter Email" name="email" id="signup-email" required>
-                    
-                    <label for="picture"><b>Picture</b></label>
-                    <input type="file" name="signup-picture-file" id="signup-picture-file">
-                    <div id="signup-picture"></div>
-                </div>
-                
-                <div>
-                    <label for="username"><b>Username</b></label>
-                    <input type="text" placeholder="Enter username" name="username" id="signup-username" required>
-        
-                    <label for="psw"><b>Password</b></label>
-                    <input type="password" placeholder="Enter Password" name="signup-password" id="signup-password" required>
-                    
-        
-                    <label for="psw-repeat"><b>Repeat Password</b></label>
-                    <input type="password" placeholder="Repeat Password" name="signup-password-repeat" id="signup-password-repeat" required>
-                </div>
-                <hr width="100%">
-                
-                <button type="submit">Sign up</button>
-    
-            </form>
-            <div id="login-option">
-                <p>Already have an account?<button id="login-option-btn">Log in</button></p>
-            </div>
+            <label for="last-name"><b>Last name</b></label>
+            <input
+              type="text"
+              placeholder="Enter last name"
+              name="last-name"
+              id="signup-last-name"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="email"><b>Email</b></label>
+            <input
+              type="text"
+              placeholder="Enter Email"
+              name="email"
+              id="signup-email"
+              required
+            />
+
+            <label for="picture"><b>Picture</b></label>
+            <input
+              type="file"
+              name="signup-picture-file"
+              id="signup-picture-file"
+            />
+            <div id="signup-picture"></div>
+          </div>
+
+          <div>
+            <label for="username"><b>Username</b></label>
+            <input
+              type="text"
+              placeholder="Enter username"
+              name="username"
+              id="signup-username"
+              required
+            />
+
+            <label for="psw"><b>Password</b></label>
+            <input
+              type="password"
+              placeholder="Enter Password"
+              name="signup-password"
+              id="signup-password"
+              required
+            />
+
+            <label for="psw-repeat"><b>Repeat Password</b></label>
+            <input
+              type="password"
+              placeholder="Repeat Password"
+              name="signup-password-repeat"
+              id="signup-password-repeat"
+              required
+            />
+          </div>
+          <hr width="100%" />
+
+          <button type="submit">Sign up</button>
+        </form>
+        <div id="login-option">
+          <p>
+            Already have an account?<button id="login-option-btn">
+              Log in
+            </button>
+          </p>
         </div>
-        
+      </div>
     </div>
     <div id="profile-container">
-        <div id="profile-data">
-            <div id="profile-img-container"><img  id="profile-img" alt=""></div>
-            <div id="profile-text">
-                <p><b></b></p>
-                <p></p>
-                <p></p>
-            </div>
+      <div id="profile-data">
+        <div id="profile-img-container"><img id="profile-img" alt="" /></div>
+        <div id="profile-text">
+          <p><b></b></p>
+          <p></p>
+          <p></p>
         </div>
-        <div id="logout-option">
-            <button id="logout-btn">Log out</button>
-        </div>
+      </div>
+      <div id="logout-option">
+        <button id="logout-btn">Log out</button>
+      </div>
     </div>
     <script src="scriptLogin.js"></script>
-</body>
+  </body>
 </html>

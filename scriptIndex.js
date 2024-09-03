@@ -1,6 +1,6 @@
 "use strict";
 
-// Variables
+// Global Variables
 const postsContainer = document.getElementById("posts");
 const documentFragment = document.createDocumentFragment();
 const date = new Date();
@@ -119,6 +119,7 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Update article in the database
   function updateArticle(article, updatedArticle) {
     return new Promise((resolve, reject) => {
       const objectStore = getIDBData("readwrite");
@@ -149,6 +150,7 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Delete Article from the database
   function deleteArticle(articleID) {
     return new Promise((resolve, reject) => {
       const objectStore = getIDBData("readwrite");
@@ -166,6 +168,7 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Get all articles from the database
   function getArticles() {
     return new Promise((resolve, reject) => {
       const objectStore = getIDBData("readonly");
@@ -181,6 +184,7 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Get one article from the database by the ID
   function getArticleById(id) {
     return new Promise((resolve, reject) => {
       let objectStore = getIDBData("readonly");
@@ -195,6 +199,7 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Update article likes from the database
   function updateArticleLikes(article, newLikes) {
     return new Promise((resolve, reject) => {
       let objectStore = getIDBData("readwrite");
@@ -209,6 +214,7 @@ DBRequestArticles.onsuccess = () => {
     });
   }
 
+  // Update article likes from the database
   function updateArticleComments(article, newComment) {
     return new Promise((resolve, reject) => {
       let objectStore = getIDBData("readwrite");
@@ -336,7 +342,7 @@ DBRequestArticles.onsuccess = () => {
         .then((userInfo) => {
           getArticles()
             .then((articles) => {
-              //order articles and show them
+              //sort articles and show them
               articles = orderArticlesByDate(articles, true);
               for (let articleData of articles) {
                 const article = createArticle(articleData, userInfo);
@@ -442,10 +448,6 @@ DBRequestArticles.onsuccess = () => {
                       const topics = getNewArticleTopics();
                       const commentsList = [];
 
-                      console.log(img);
-                      console.log(bodyText);
-                      console.log(topics);
-
                       if (
                         title !== "" &&
                         subtitle !== "" &&
@@ -535,7 +537,6 @@ DBRequestArticles.onsuccess = () => {
                         const divNewTopic = document.createElement("div");
                         divNewTopic.classList.add("new-topic");
 
-                        // esto se puede hacer una funcion porque lo llamo en dos lados ditintos igual
                         const topicLabel = document.createElement("label");
                         const deleteTopicBtn = document.createElement("button");
 
@@ -550,7 +551,6 @@ DBRequestArticles.onsuccess = () => {
                         document
                           .getElementById("new-article-topics")
                           .appendChild(divNewTopic);
-                        //////////////////
 
                         topicInput.value = "";
                         newTopicButton.style.display = "block";
@@ -592,6 +592,13 @@ DBRequestArticles.onsuccess = () => {
           verifyCommentButtons("none");
           setPopularTopics(articles);
           getSort(articles);
+
+          const likeButtons = document.querySelectorAll(".like-button");
+          for (let button of likeButtons) {
+            button.addEventListener("click", () => {
+              window.location.href = "signin.html";
+            });
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -599,6 +606,7 @@ DBRequestArticles.onsuccess = () => {
     }
   })();
 
+  // Sidebar - headbar
   window.onscroll = function () {
     stickNavBar();
   };
@@ -631,9 +639,6 @@ DBRequestArticles.onsuccess = () => {
         const likeCount = button.nextElementSibling;
         let buttonPostID = getParentElement(button, 4).id;
         let currentLikes = parseInt(likeCount.textContent);
-
-        // getLikesFromArticleId(buttonPostID).then(currentLikes=> {
-        console.log(currentLikes);
 
         let clickedState = localStorage.getItem(
           `clickedStateButton${buttonPostID}${userInfo.username}`
@@ -670,9 +675,6 @@ DBRequestArticles.onsuccess = () => {
           .catch((e) => {
             console.log(e);
           });
-        // }).catch(e =>{
-        //     console.log(e);
-        // })
       });
     }
   }
@@ -705,7 +707,6 @@ DBRequestArticles.onsuccess = () => {
       });
     }
 
-    ///////////// (change the func name)
     //////////// (Second part)
 
     const cancelCommentButtons = document.querySelectorAll(
@@ -1293,10 +1294,6 @@ function verifyEmptyComments(comments) {
   return comments;
 }
 
-// function formatTextAreas(TextAreaList){
-
-// }
-
 // New articles creation documents/ implementation
 function createNewArticleButton() {
   let createArticleBtn = document.createElement("button");
@@ -1390,8 +1387,6 @@ function showEditArticleContainer(modalBackground, editArticleModal, article) {
     });
 
   document.getElementById("new-article-img-file").files = fileList;
-
-  // esta bien, ahora le tengo que eliminar el centenar de cosas que cree para arreglarlo,
 
   editArticleImg.setAttribute("width", imgWidth);
   editArticleImg.setAttribute("alt", "article edit image");

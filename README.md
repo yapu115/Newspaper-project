@@ -37,7 +37,7 @@ You can also filter your search with a sidebar, which shows the most used topics
 ### Staff
 Here you can see how the page staff is composed and a brief description of each person.
 
-![staff](https://github.com/user-attachments/assets/2ba8d816-fde5-4834-aa4d-16cffb116c8f)
+![staff](https://github.com/user-attachments/assets/5be858dd-73f3-4504-aea7-f3049d7fbb47)
 
 ### Sign in: 
 In this section you can log in with a staff account to be able to enjoy all the functions of the page (Including the creation of new articles)
